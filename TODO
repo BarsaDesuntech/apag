@@ -1,0 +1,2 @@
+- Migrate default consent settings state value to get from redux
+- Refactor consent detail components to use shared base component for CTAs

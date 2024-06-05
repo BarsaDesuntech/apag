@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1070211470916",
+    "firebase_url": "https://apag-7528e.firebaseio.com",
+    "project_id": "apag-7528e",
+    "storage_bucket": "apag-7528e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070211470916:android:9952330e92a89b389d0e11",
+        "android_client_info": {
+          "package_name": "de.apag.apagapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1070211470916-46fbdr3592occqj0i6spaq34l224vr2d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApP_SiUgT1J5w32IASEvlYGAta5cOkiUA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1070211470916-46fbdr3592occqj0i6spaq34l224vr2d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1070211470916-557hgb2j02bn901q06t8pc2q9f84rqv8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "de.apag.apagapp",
+                "app_store_id": "417422331"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
