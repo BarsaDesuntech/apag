@@ -1,4 +1,19 @@
 {
   "name": "MyNewApp",
-  "displayName": "MyNewApp"
+  "displayName": "MyNewApp",
+  "version": "1.0.0",
+  "slug": "APAG",
+  "description": "Parken bei der APAG",
+  "sdkVersion": "28.0.0",
+  "ios": {
+    "bundleIdentifier": "de.apag.apagapp",
+    "publishBundlePath": "ios/apag/Supporting/shell-app.bundle",
+    "publishManifestPath": "ios/apag/Supporting/shell-app-manifest.json"
+  },
+  "android": {
+    "package": "de.apag.apagapp",
+    "publishBundlePath": "android/app/src/main/assets/shell-app.bundle",
+    "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json"
+  },
+  "scheme": "apag"
 }

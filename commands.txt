@@ -1,0 +1,6 @@
+./gradlew assembleRelease
+cd app/build/outputs/apk/release
+jarsigner -verbose -sigalg SHA1withRSA -keystore ~/Downloads/android.keystore -digestalg SHA1 app-release-unsigned.apk APAG-APP
+rm apagapp.apk
+zipalign 4 app-release-unsigned.apk apagapp.apk
+cd ../../../../../../
