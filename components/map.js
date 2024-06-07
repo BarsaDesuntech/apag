@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+///@TODO2- few issue here
+
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Dimensions,
@@ -7,12 +9,12 @@ import {
   Text,
   ImageBackground,
 } from 'react-native';
-import { Marker } from 'react-native-maps';
+import {Marker} from 'react-native-maps';
 import MapView from 'react-native-maps-super-cluster';
-import GlobalStyle, { primaryBlue } from '../style';
+import GlobalStyle, {primaryBlue} from '../style';
 import CustomMarker from './custommarker';
 import IconFontawesome5 from 'react-native-vector-icons/FontAwesome5';
-import { MapButton } from './mapButton';
+import {MapButton} from './mapButton';
 import Geolocation from '@react-native-community/geolocation';
 
 const window = Dimensions.get('window');
@@ -74,7 +76,7 @@ const HousesMap = ({
   const requestLocationPermission = async () => {
     Geolocation.getCurrentPosition(
       pos => {
-        mapRef?.current.mapview.animateToRegion(
+        mapRef?.current.mapview?.animateToRegion(
           {
             ...pos.coords,
             latitudeDelta: LATITUDE_DELTA,
@@ -125,13 +127,13 @@ const HousesMap = ({
         coordinate={coordinate}
         onPress={onPress}
         key={clusterId}
-        anchor={Platform.OS === 'android' ? { x: 0.5, y: 1 } : null}
+        anchor={Platform.OS === 'android' ? {x: 0.5, y: 1} : null}
         tracksViewChanges={isReady}>
-        <View style={[GlobalStyle.centerContent, { height: 50 }]}>
+        <View style={[GlobalStyle.centerContent, {height: 50}]}>
           <Image
-            imageStyle={{ resizeMode: 'contain' }}
+            imageStyle={{resizeMode: 'contain'}}
             source={require('../assets/img/cluster.png')}
-            style={[GlobalStyle.pin, { position: 'absolute', top: 0, left: 0 }]}
+            style={[GlobalStyle.pin, {position: 'absolute', top: 0, left: 0}]}
           />
           <Text
             allowFontScaling={false}
@@ -156,11 +158,11 @@ const HousesMap = ({
         coordinate={coordinate}
         onPress={onPress}
         key={clusterId}
-        anchor={Platform.OS === 'android' ? { x: 0.5, y: 1 } : null}
+        anchor={Platform.OS === 'android' ? {x: 0.5, y: 1} : null}
         tracksViewChanges={isReady}>
         <View style={[GlobalStyle.centerContent]}>
           <ImageBackground
-            imageStyle={{ resizeMode: 'contain' }}
+            imageStyle={{resizeMode: 'contain'}}
             source={require('../assets/img/cluster.png')}
             style={GlobalStyle.pin}>
             <Text
@@ -211,7 +213,7 @@ const HousesMap = ({
   return (
     <View
       style={
-        typeof height !== typeof undefined ? { height } : GlobalStyle.container
+        typeof height !== typeof undefined ? {height} : GlobalStyle.container
       }>
       <View style={GlobalStyle.displayNone}>
         <Image source={image1} />
@@ -251,7 +253,7 @@ const HousesMap = ({
           <View />
         )}
       </MapView>
-      <View style={{ top: 50, right: 15, position: 'absolute' }}>
+      <View style={{top: 50, right: 15, position: 'absolute'}}>
         <MapButton onPress={requestLocationPermission}>
           <IconFontawesome5 name="crosshairs" size={22} color={primaryBlue} />
         </MapButton>

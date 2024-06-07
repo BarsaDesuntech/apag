@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -7,20 +7,22 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
-import { StackedAreaChart, XAxis, YAxis } from 'react-native-svg-charts';
-import { IndicatorViewPager, PagerDotIndicator } from 'rn-viewpager-handy';
-import { connect } from 'react-redux';
+import {StackedAreaChart, XAxis, YAxis} from 'react-native-svg-charts';
+import {IndicatorViewPager, PagerDotIndicator} from 'rn-viewpager-handy';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import GlobalStyle from '../style';
-import { fetchParkhouse } from '../store/actions/parkhouses';
+import {fetchParkhouse} from '../store/actions/parkhouses';
 import ParkhouseHeader from '../components/parkhouseHeader';
 import CrazyChart from '../components/crazyChart';
 import ParkhouseChargeList from '../components/parkhouseChargelist';
 import ParkhouseServicesList from '../components/parkhouseServicesList';
 import LoadingScreen from './loading';
-import { withParkhouse } from '../helpers';
-import { getStatusBarHeight, isIphoneX } from 'react-native-iphone-x-helper';
-import { AllHtmlEntities } from 'html-entities';
+import PagerView from 'react-native-pager-view';
+
+import {withParkhouse} from '../helpers';
+import {getStatusBarHeight, isIphoneX} from 'react-native-iphone-x-helper';
+import {AllHtmlEntities} from 'html-entities';
 const STATUS_BAR_HEIGHT = getStatusBarHeight();
 const WINDOW_WIDTH = Dimensions.get('window').width;
 const HEADER_MAX_HEIGHT = (WINDOW_WIDTH / 16) * 9;
@@ -85,21 +87,21 @@ class ParkhouseScreen extends Component {
    */
   updateParkhouse = mounting => {
     const that = this;
-    const { route } = this.props;
-    const { mounted } = this.state;
+    const {route} = this.props;
+    const {mounted} = this.state;
 
     // Does happen when triggering update manually by dragging down
     if (mounting && mounted) {
-      this.setState({ manual: true });
+      this.setState({manual: true});
     }
     if (!mounting && mounted) {
-      this.setState({ interval: true });
+      this.setState({interval: true});
     }
-    const { phid } = route.params;
-    const fetching = this.props.fetchParkhouse({ phid });
+    const {phid} = route.params;
+    const fetching = this.props.fetchParkhouse({phid});
     if (mounting) {
       fetching.then(() => {
-        that.setState({ mounted: true, manual: false });
+        that.setState({mounted: true, manual: false});
       });
     }
   };
@@ -133,7 +135,7 @@ class ParkhouseScreen extends Component {
     const times = Object.keys(data);
 
     for (var i = 0; i < times.length; i++) {
-      array.push({ time: times[i], percent: data[times[i]] });
+      array.push({time: times[i], percent: data[times[i]]});
     }
 
     let value = {};
@@ -149,7 +151,7 @@ class ParkhouseScreen extends Component {
    * @memberof ParkhouseScreen
    */
   setScrollableHeight = (width, height) => {
-    this.setState({ scrollableHeight: height });
+    this.setState({scrollableHeight: height});
     this.checkFullHeight(this.state.viewHeight, height);
   };
   /**
@@ -160,8 +162,8 @@ class ParkhouseScreen extends Component {
    * @memberof ParkhouseScreen
    */
   setHeight = event => {
-    const { height } = event.nativeEvent.layout;
-    this.setState({ viewHeight: height });
+    const {height} = event.nativeEvent.layout;
+    this.setState({viewHeight: height});
     this.checkFullHeight(height, this.state.scrollableHeight);
   };
   /**
@@ -172,7 +174,7 @@ class ParkhouseScreen extends Component {
    * @memberof ParkhouseScreen
    */
   checkFullHeight = (viewHeight, scrollableHeight) => {
-    const { marginBottom } = this.state;
+    const {marginBottom} = this.state;
     if (
       marginBottom === 0 &&
       scrollableHeight - viewHeight < HEADER_SCROLL_DISTANCE &&
@@ -185,8 +187,8 @@ class ParkhouseScreen extends Component {
     }
   };
   render() {
-    const { parkhouse } = this.props;
-    const { manual, marginBottom } = this.state;
+    const {parkhouse} = this.props;
+    const {manual, marginBottom} = this.state;
     const item = parkhouse;
 
     // Render the screen when the parkhouse is inside the Redux store. It will naturally rerender when the fetch is through. We do not need to wait for isFetching.
@@ -194,16 +196,13 @@ class ParkhouseScreen extends Component {
       return <LoadingScreen />;
     }
     // Define and extract some default variables to render
-    const { parkhouses } = this.props;
-    const { isFetching } = parkhouses;
-    const { auslastung, auslastungTimes } = this.formatData(
+    const {parkhouses} = this.props;
+    const {isFetching} = parkhouses;
+    const {auslastung, auslastungTimes} = this.formatData(
       item.history,
       'auslastung',
     );
-    const { prognose, prognoseTimes } = this.formatData(
-      item.predict,
-      'prognose',
-    );
+    const {prognose, prognoseTimes} = this.formatData(item.predict, 'prognose');
     const colors = ['#3f6cb1'];
     const keys = ['percent'];
     const crazyChartHours = [0, 6, 12, 18, 24];
@@ -236,8 +235,8 @@ class ParkhouseScreen extends Component {
             />
           }
           onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
-            { useNativeDriver: true },
+            [{nativeEvent: {contentOffset: {y: this.state.scrollY}}}],
+            {useNativeDriver: true},
           )}
           scrollEventThrottle={1}
           style={[GlobalStyle.container, GlobalStyle.whiteBackground]}
@@ -270,7 +269,8 @@ class ParkhouseScreen extends Component {
             </View>
             {!hasMessage && (
               <View style={GlobalStyle.parkhouseChartContainer}>
-                <IndicatorViewPager
+                {/* TODO1- get uses and implement */}
+                {/* <IndicatorViewPager
                   style={GlobalStyle.h180}
                   indicator={this.renderDotIndicator()}
                   autoPlayEnable={false}
@@ -301,8 +301,8 @@ class ParkhouseScreen extends Component {
                     />
                     <XAxis
                       data={auslastung}
-                      svg={{ fontSize: 10, fill: '#717171' }}
-                      contentInset={{ left: 30 }}
+                      svg={{fontSize: 10, fill: '#717171'}}
+                      contentInset={{left: 30}}
                       style={GlobalStyle.parkhouseAxisPadding}
                       numberOfTicks={auslastung.length / 2}
                       formatLabel={(value, index) => auslastungTimes[index * 2]}
@@ -334,8 +334,8 @@ class ParkhouseScreen extends Component {
                     />
                     <XAxis
                       data={prognose}
-                      svg={{ fontSize: 10, fill: '#717171' }}
-                      contentInset={{ left: 30 }}
+                      svg={{fontSize: 10, fill: '#717171'}}
+                      contentInset={{left: 30}}
                       style={GlobalStyle.parkhouseAxisPadding}
                       numberOfTicks={prognose.length / 2}
                       formatLabel={(value, index) => prognoseTimes[index * 2]}
@@ -354,8 +354,8 @@ class ParkhouseScreen extends Component {
                       <View style={GlobalStyle.crazyChartContainer}>
                         <YAxis
                           data={crazyChartHours}
-                          svg={{ fontSize: 10, fill: '#717171' }}
-                          contentInset={{ top: 15, bottom: 10 }}
+                          svg={{fontSize: 10, fill: '#717171'}}
+                          contentInset={{top: 15, bottom: 10}}
                           style={GlobalStyle.crazyChartYInset}
                           numberOfTicks={4}
                           formatLabel={(value, index) =>
@@ -371,15 +371,15 @@ class ParkhouseScreen extends Component {
                       </View>
                       <XAxis
                         data={weekDaysFakeValues}
-                        svg={{ fontSize: 10, fill: '#717171' }}
-                        contentInset={{ left: 30, right: 20 }}
+                        svg={{fontSize: 10, fill: '#717171'}}
+                        contentInset={{left: 30, right: 20}}
                         style={GlobalStyle.crazyChartXInset}
                         numberOfTicks={weekDays.length}
                         formatLabel={(value, index) => weekDays[index]}
                       />
                     </View>
                   </View>
-                </IndicatorViewPager>
+                </IndicatorViewPager>{' '} */}
               </View>
             )}
             <View style={GlobalStyle.parkhouseSection}>

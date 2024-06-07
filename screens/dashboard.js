@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,10 @@ import {
   RefreshControl,
   Alert,
 } from 'react-native';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 import FileViewer from 'react-native-file-viewer';
 import RNFetchBlob from 'rn-fetch-blob';
 import GlobalStyle from '../style';
@@ -24,9 +24,9 @@ import {
 import LoadingScreen from '../screens/loading';
 import AnimatedCircularProgress from '../components/AnimatedCircularProgress';
 import ErrorScreen from './error';
-import { meineapagapi } from '../env';
-import { getAuthToken } from '../store/actions/helpers';
-import { UNAUTHENTICATED } from '../store/actions/constants';
+import {meineapagapi} from '../env';
+import {getAuthToken} from '../store/actions/helpers';
+import {UNAUTHENTICATED} from '../store/actions/constants';
 
 /**
  * Displays or downloads one invoice to view.
@@ -74,7 +74,7 @@ class Rechnung extends Component {
     if (!this.state.downloaded) {
       try {
         // Initialize default download state
-        this.setState({ percent: 0, downloading: true, size: 0 });
+        this.setState({percent: 0, downloading: true, size: 0});
         // Retreive the currently valid JWT Token from store
         getAuthToken(dispatch, getState)
           .then(accessToken => {
@@ -102,7 +102,7 @@ class Rechnung extends Component {
               )
               .progress((received, total) => {
                 const percent = (received / total) * 100;
-                this.setState({ percent });
+                this.setState({percent});
               })
               .then(res => {
                 const respInfo = res.info();
@@ -141,13 +141,13 @@ class Rechnung extends Component {
                     Rechnungsnummer: this.props.rechnung.Rechnungsnummer,
                   }),
                 );
-                this.setState({ percent: 0, downloading: false, size: 0 });
+                this.setState({percent: 0, downloading: false, size: 0});
               });
           })
           .catch(e => {
             // If there has been a problem getting the current JWT token the download can not be started
             Alert.alert('Hinweis', message);
-            this.setState({ percent: 0, downloading: false, size: 0 });
+            this.setState({percent: 0, downloading: false, size: 0});
             if (
               typeof e.error !== typeof undefined &&
               e.error === 'Could not retrieve JWT.'
@@ -197,8 +197,8 @@ class Rechnung extends Component {
   };
 
   render() {
-    const { rechnung, dispatch } = this.props;
-    const { downloaded, downloading, percent } = this.state;
+    const {rechnung, dispatch} = this.props;
+    const {downloaded, downloading, percent} = this.state;
 
     // Very simple component - the downloaded and downloading state variables just define which icon is displayed the rest stays always the same
     return (
@@ -221,7 +221,7 @@ class Rechnung extends Component {
                 style={[
                   GlobalStyle.invoiceHeader,
                   // eslint-disable-next-line react-native/no-inline-styles
-                  downloading && !downloaded ? { marginRight: 10.5 } : {},
+                  downloading && !downloaded ? {marginRight: 10.5} : {},
                 ]}>
                 {rechnung.Betrag}
               </Text>
@@ -237,7 +237,7 @@ class Rechnung extends Component {
               {!downloaded && !downloading && (
                 <Icon
                   size={30}
-                  name="md-cloud-download"
+                  name="cloud-download"
                   style={GlobalStyle.invoiceIconPadding}
                   color="#3f6cb1"
                 />
@@ -245,7 +245,7 @@ class Rechnung extends Component {
               {downloaded && !downloading && (
                 <Icon
                   size={30}
-                  name="md-cloud-done"
+                  name="cloud-done"
                   style={GlobalStyle.invoiceIconPadding}
                   color="#3f6cb1"
                 />
@@ -297,17 +297,17 @@ class DashboardScreen extends Component {
    */
   checkLoggedIn = props => {
     if (!props.user.isLoggedIn) {
-      const { navigation } = this.props;
+      const {navigation} = this.props;
       const resetAction = CommonActions.reset({
         index: 0,
-        routes: [{ name: 'MeineAPAGLogin' }],
+        routes: [{name: 'MeineAPAGLogin'}],
       });
       navigation.dispatch(resetAction);
     }
   };
 
   render() {
-    const { rechnungen, downloadedRechnungGet, dispatch } = this.props;
+    const {rechnungen, downloadedRechnungGet, dispatch} = this.props;
     const rechnungenData = rechnungen.rechnungen;
     const downloadedRechnungen = rechnungen.downloadedRechnungen;
 

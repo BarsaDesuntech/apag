@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -6,12 +6,12 @@ import {
   ScrollView,
   RefreshControl,
 } from 'react-native';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
 import GlobalStyle from '../style';
 import LoadingScreen from '../screens/loading';
-import { getCurrentUserDetails } from '../store/actions/user';
+import {getCurrentUserDetails} from '../store/actions/user';
 import ErrorScreen from '../screens/error';
 
 /**
@@ -32,23 +32,23 @@ class MeineDatenScreen extends Component {
 
   // Some simple redirect functions
   editPersonalInformation = () => {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     navigation.navigate('EditPersonalInformation');
   };
 
   editPaymentInformation = () => {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     navigation.navigate('EditPaymentInformation');
   };
 
   editSecurityInformation = () => {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     navigation.navigate('EditSecurityInformation');
   };
 
   render() {
-    const { user } = this.props;
-    const { details } = user;
+    const {user} = this.props;
+    const {details} = user;
 
     // Show loading screen if no details are found and isFetching is true
     if (
@@ -91,7 +91,7 @@ class MeineDatenScreen extends Component {
                       ]}>
                       Adressdaten
                     </Text>
-                    <Icon size={26} name="md-create" color="#3f6cb1" />
+                    <Icon size={26} name="create" color="#3f6cb1" />
                   </View>
                   <Text style={[GlobalStyle.dataNumber]}>
                     {details.Name2 + ' ' + details.Name1}
@@ -119,7 +119,7 @@ class MeineDatenScreen extends Component {
                       ]}>
                       Zahlungsdaten
                     </Text>
-                    <Icon size={26} name="md-create" color="#3f6cb1" />
+                    <Icon size={26} name="create" color="#3f6cb1" />
                   </View>
                   {details.Zahlart === 'SEPA-Basislastschrift (CORE)' && (
                     <View>
@@ -161,7 +161,7 @@ class MeineDatenScreen extends Component {
                       ]}>
                       Anmeldung und Sicherheit
                     </Text>
-                    <Icon size={26} name="md-create" color="#3f6cb1" />
+                    <Icon size={26} name="create" color="#3f6cb1" />
                   </View>
                   <View style={GlobalStyle.flexDirectionRow}>
                     <Text style={[GlobalStyle.dataNumber]}>Benutzername: </Text>

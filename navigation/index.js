@@ -603,7 +603,7 @@ const AppNavigation = () => {
           headerTitle: ' ',
           headerLeft: () => (
             <Ionicons
-              name="md-close"
+              name="close"
               size={24}
               color="#3f6cb1"
               style={GlobalStyle.ph15}
@@ -622,7 +622,7 @@ const AppNavigation = () => {
           headerTitle: ' ',
           headerLeft: () => (
             <Ionicons
-              name="md-close"
+              name="close"
               size={24}
               color="#3f6cb1"
               style={GlobalStyle.ph15}
@@ -641,7 +641,7 @@ const AppNavigation = () => {
           headerTitle: ' ',
           headerLeft: () => (
             <Ionicons
-              name="md-close"
+              name="close"
               size={24}
               color="#3f6cb1"
               style={GlobalStyle.ph15}
