@@ -9,7 +9,7 @@
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>
-		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+		<string>de.apag.apagapp</string>
 		<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 		<key>CFBundleName</key>
@@ -48,6 +48,8 @@
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false />
+		<key>NSUserTrackingUsageDescription</key>
+		<string></string>
 		<key>UIAppFonts</key>
 		<array>
 			<string>AntDesign.ttf</string>
@@ -69,6 +71,8 @@
 			<string>Octicons.ttf</string>
 			<string>Zocial.ttf</string>
 			<string>Fontisto.ttf</string>
+			<string>Roboto-Bold.ttf</string>
+			<string>Roboto-Regular.ttf</string>
 		</array>
 	</dict>
 </plist>
