@@ -270,12 +270,12 @@ class ParkhouseScreen extends Component {
             {!hasMessage && (
               <View style={GlobalStyle.parkhouseChartContainer}>
                 {/* TODO1- get uses and implement */}
-                {/* <IndicatorViewPager
-                  style={GlobalStyle.h180}
-                  indicator={this.renderDotIndicator()}
-                  autoPlayEnable={false}
-                  autoPlayInterval={6000}>
-                  <View>
+                {/* // style={GlobalStyle.h180}
+                  // indicator={this.renderDotIndicator()}
+                  // autoPlayEnable={false}
+                  // autoPlayInterval={6000} */}
+                <PagerView collapsable={false} initialPage={0}>
+                  <View key={'1'}>
                     <Text
                       style={[
                         GlobalStyle.primaryTextColor,
@@ -308,7 +308,7 @@ class ParkhouseScreen extends Component {
                       formatLabel={(value, index) => auslastungTimes[index * 2]}
                     />
                   </View>
-                  <View>
+                  <View key={'2'}>
                     <Text
                       style={[
                         GlobalStyle.primaryTextColor,
@@ -341,7 +341,7 @@ class ParkhouseScreen extends Component {
                       formatLabel={(value, index) => prognoseTimes[index * 2]}
                     />
                   </View>
-                  <View>
+                  <View key={'3'}>
                     <Text
                       style={[
                         GlobalStyle.primaryTextColor,
@@ -379,7 +379,7 @@ class ParkhouseScreen extends Component {
                       />
                     </View>
                   </View>
-                </IndicatorViewPager>{' '} */}
+                </PagerView>
               </View>
             )}
             <View style={GlobalStyle.parkhouseSection}>

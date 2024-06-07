@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-maps-super-cluster/ClusteredMapView.js b/node_modules/react-native-maps-super-cluster/ClusteredMapView.js
+index e19ac85..6d5c34c 100644
+--- a/node_modules/react-native-maps-super-cluster/ClusteredMapView.js
++++ b/node_modules/react-native-maps-super-cluster/ClusteredMapView.js
+@@ -84,7 +84,7 @@ export default class ClusteredMapView extends PureComponent {
+   }
+ 
+   clustersChanged(nextState) {
+-    return this.state.data.length !== nextState.data.length
++    return this.state.data?.length !== nextState.data?.length
+   }
+ 
+   onRegionChangeComplete(region) {
