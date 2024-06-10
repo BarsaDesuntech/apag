@@ -71,8 +71,14 @@
 			<string>Octicons.ttf</string>
 			<string>Zocial.ttf</string>
 			<string>Fontisto.ttf</string>
-			<string>Roboto-Bold.ttf</string>
-			<string>Roboto-Regular.ttf</string>
+			<string>fonts/Roboto.ttf</string>
+			<string>fonts/roboto-lght.ttf</string>
+			<string>fonts/Roboto-Bold.ttf</string>
+			<string>fonts/roboto-Medium.ttf</string>
+			<string>fonts/noto-sans-regular.ttf</string>
+			<string>fonts/noto-sans-bold.ttf</string>
+			<string>fonts/noto-sans-regular.ttf</string>
+			<string>noto-sans.scss</string>
 		</array>
 	</dict>
 </plist>
