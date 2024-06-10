@@ -6,9 +6,9 @@ import {
   Platform,
   Animated,
   Dimensions,
+  StyleSheet,
 } from 'react-native';
 import {StackedAreaChart, XAxis, YAxis} from 'react-native-svg-charts';
-import {IndicatorViewPager, PagerDotIndicator} from 'rn-viewpager-handy';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import GlobalStyle from '../style';
@@ -23,6 +23,7 @@ import PagerView from 'react-native-pager-view';
 import {withParkhouse} from '../helpers';
 import {getStatusBarHeight, isIphoneX} from 'react-native-iphone-x-helper';
 import {AllHtmlEntities} from 'html-entities';
+import {PageIndicator} from 'react-native-page-indicator';
 const STATUS_BAR_HEIGHT = getStatusBarHeight();
 const WINDOW_WIDTH = Dimensions.get('window').width;
 const HEADER_MAX_HEIGHT = (WINDOW_WIDTH / 16) * 9;
@@ -56,6 +57,7 @@ class ParkhouseScreen extends Component {
     scrollableHeight: 0,
     viewHeight: 0,
     marginBottom: 0,
+    currentSelectedViewPage: 0,
   };
   intervalId = null;
 
@@ -111,16 +113,16 @@ class ParkhouseScreen extends Component {
    *
    * @returns
    * @memberof ParkhouseScreen
-   */
-  renderDotIndicator() {
-    return (
-      <PagerDotIndicator
-        pageCount={3}
-        dotStyle={GlobalStyle.secondaryBackgroundColor}
-        selectedDotStyle={GlobalStyle.primaryBackgroundColor}
-      />
-    );
-  }
+  //  */
+  // renderDotIndicator() {
+  //   return (
+  //     <PagerDotIndicator
+  //       pageCount={3}
+  //       dotStyle={GlobalStyle.secondaryBackgroundColor}
+  //       selectedDotStyle={GlobalStyle.primaryBackgroundColor}
+  //     />
+  //   );
+  // }
 
   /**
    * Build an object which is the data basis for the graphs on a parkhouse page
@@ -221,6 +223,7 @@ class ParkhouseScreen extends Component {
     // The graph container uses the IndicatorViewPager to make the container between the graphs scrollable
     // The animated variable is passed to the ParkhouseHeader class in order to let the font scale and blur the image. This has to be done because the ScrollView is inside of another scope
     // @todo implement all those sections in separated smaller sub classes (mostly the graphs are still directly inside here)
+
     return (
       <View style={GlobalStyle.container} onLayout={this.setHeight}>
         <Animated.ScrollView
@@ -267,14 +270,57 @@ class ParkhouseScreen extends Component {
                   item.opening_times}
               </Text>
             </View>
+
             {!hasMessage && (
               <View style={GlobalStyle.parkhouseChartContainer}>
-                {/* TODO1- get uses and implement */}
                 {/* // style={GlobalStyle.h180}
                   // indicator={this.renderDotIndicator()}
                   // autoPlayEnable={false}
                   // autoPlayInterval={6000} */}
-                <PagerView collapsable={false} initialPage={0}>
+                <View key={'3'}>
+                  <Text
+                    style={[
+                      GlobalStyle.primaryTextColor,
+                      GlobalStyle.parkhouseHeading,
+                      GlobalStyle.pb10,
+                    ]}>
+                    Wochenübersicht
+                  </Text>
+                  <View style={GlobalStyle.container}>
+                    <View style={GlobalStyle.crazyChartContainer}>
+                      <YAxis
+                        data={crazyChartHours}
+                        svg={{fontSize: 10, fill: '#717171'}}
+                        contentInset={{top: 15, bottom: 10}}
+                        style={[GlobalStyle.crazyChartYInset, {marginTop: 0}]}
+                        numberOfTicks={4}
+                        formatLabel={(value, index) =>
+                          (
+                            '0' +
+                            crazyChartHours[crazyChartHours.length - index - 1]
+                          ).slice(-2) + ':00'
+                        }
+                      />
+                      <CrazyChart data={item.week} />
+                    </View>
+                    <XAxis
+                      data={weekDaysFakeValues}
+                      svg={{fontSize: 10, fill: '#717171'}}
+                      contentInset={{left: 30, right: 20}}
+                      style={GlobalStyle.crazyChartXInset}
+                      numberOfTicks={weekDays.length}
+                      formatLabel={(value, index) => weekDays[index]}
+                    />
+                  </View>
+                </View>
+                <PagerView
+                  collapsable={false}
+                  initialPage={0}
+                  onPageSelected={e =>
+                    this.setState({
+                      currentSelectedViewPage: e.nativeEvent.position,
+                    })
+                  }>
                   <View key={'1'}>
                     <Text
                       style={[
@@ -373,13 +419,30 @@ class ParkhouseScreen extends Component {
                         data={weekDaysFakeValues}
                         svg={{fontSize: 10, fill: '#717171'}}
                         contentInset={{left: 30, right: 20}}
-                        style={GlobalStyle.crazyChartXInset}
+                        // style={GlobalStyle.crazyChartXInset}
                         numberOfTicks={weekDays.length}
                         formatLabel={(value, index) => weekDays[index]}
                       />
                     </View>
                   </View>
                 </PagerView>
+                <View style={styles.pagination}>
+                  {[...Array(3).keys()].map(index => (
+                    <View
+                      key={index}
+                      //               dotStyle={GlobalStyle.secondaryBackgroundColor}
+                      // selectedDotStyle={GlobalStyle.primaryBackgroundColor}
+                      style={[
+                        styles.dot,
+
+                        this.state.currentSelectedViewPage === index
+                          ? GlobalStyle.primaryBackgroundColor
+                          : GlobalStyle.secondaryBackgroundColor,
+                        ,
+                      ]}
+                    />
+                  ))}
+                </View>
               </View>
             )}
             <View style={GlobalStyle.parkhouseSection}>
@@ -446,3 +509,22 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(withParkhouse(ParkhouseScreen));
+
+const styles = StyleSheet.create({
+  pageStyle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pagination: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+});

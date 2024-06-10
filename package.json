@@ -18,7 +18,6 @@
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-community/netinfo": "^11.3.2",
     "@react-native-community/push-notification-ios": "^1.11.0",
-    "@react-native-community/viewpager": "^5.0.11",
     "@react-native-firebase/app": "^20.1.0 ",
     "@react-native-firebase/messaging": "^20.1.0",
     "@react-native-picker/picker": "^2.7.6",
@@ -68,7 +67,6 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
     "rn-fetch-blob": "joltup/rn-fetch-blob#master",
-    "rn-viewpager-handy": "^1.5.0",
     "supercluster": "^8.0.1"
   },
   "devDependencies": {
