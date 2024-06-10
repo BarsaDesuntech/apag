@@ -270,49 +270,13 @@ class ParkhouseScreen extends Component {
                   item.opening_times}
               </Text>
             </View>
-
             {!hasMessage && (
               <View style={GlobalStyle.parkhouseChartContainer}>
                 {/* // style={GlobalStyle.h180}
                   // indicator={this.renderDotIndicator()}
                   // autoPlayEnable={false}
                   // autoPlayInterval={6000} */}
-                <View key={'3'}>
-                  <Text
-                    style={[
-                      GlobalStyle.primaryTextColor,
-                      GlobalStyle.parkhouseHeading,
-                      GlobalStyle.pb10,
-                    ]}>
-                    Wochenübersicht
-                  </Text>
-                  <View style={GlobalStyle.container}>
-                    <View style={GlobalStyle.crazyChartContainer}>
-                      <YAxis
-                        data={crazyChartHours}
-                        svg={{fontSize: 10, fill: '#717171'}}
-                        contentInset={{top: 15, bottom: 10}}
-                        style={[GlobalStyle.crazyChartYInset, {marginTop: 0}]}
-                        numberOfTicks={4}
-                        formatLabel={(value, index) =>
-                          (
-                            '0' +
-                            crazyChartHours[crazyChartHours.length - index - 1]
-                          ).slice(-2) + ':00'
-                        }
-                      />
-                      <CrazyChart data={item.week} />
-                    </View>
-                    <XAxis
-                      data={weekDaysFakeValues}
-                      svg={{fontSize: 10, fill: '#717171'}}
-                      contentInset={{left: 30, right: 20}}
-                      style={GlobalStyle.crazyChartXInset}
-                      numberOfTicks={weekDays.length}
-                      formatLabel={(value, index) => weekDays[index]}
-                    />
-                  </View>
-                </View>
+
                 <PagerView
                   collapsable={false}
                   initialPage={0}
@@ -419,7 +383,7 @@ class ParkhouseScreen extends Component {
                         data={weekDaysFakeValues}
                         svg={{fontSize: 10, fill: '#717171'}}
                         contentInset={{left: 30, right: 20}}
-                        // style={GlobalStyle.crazyChartXInset}
+                        style={GlobalStyle.crazyChartXInset}
                         numberOfTicks={weekDays.length}
                         formatLabel={(value, index) => weekDays[index]}
                       />
