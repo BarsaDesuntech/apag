@@ -1,7 +1,8 @@
-import { Component } from 'react';
-import { Platform } from 'react-native';
-import { connect } from 'react-redux';
-import { Client, Configuration } from 'bugsnag-react-native';
+import {Component} from 'react';
+import {Platform} from 'react-native';
+import {connect} from 'react-redux';
+// import {Client, Configuration} from 'bugsnag-react-native';
+import Bugsnag from '@bugsnag/react-native';
 import {
   requestTrackingPermission,
   getTrackingStatus,
@@ -51,8 +52,12 @@ class BugsnagService extends Component {
     ) {
       this.bugsnag.startSession();
     } else {
-      this.config = new Configuration('d4b7d9f4a2fcf28167fac38085fc19c5');
-      this.bugsnag = new Client(this.config);
+      // this.config = new Configuration('d4b7d9f4a2fcf28167fac38085fc19c5');
+
+      // this.bugsnag = new Client(this.config);
+      Bugsnag.start({
+        codeBundleId: 'd4b7d9f4a2fcf28167fac38085fc19c5',
+      });
       this.configured = true;
     }
   }

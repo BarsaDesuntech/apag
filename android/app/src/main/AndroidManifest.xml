@@ -31,7 +31,64 @@
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
-
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+        <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+      </intent-filter>
+      <intent-filter android:label="filter_react_native">
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="apag" android:host="nupsi" />
+      </intent-filter>
     </activity>
+    <meta-data android:name="com.bugsnag.android.API_KEY"
+      android:value="your-api-key-here" />
+    <meta-data
+      android:name="com.google.android.maps.v2.API_KEY"
+      android:value="AIzaSyBiMgSxTybwwiO33ra7kkYTDhQYDVRJA-k" />
+    <meta-data android:name="com.dieam.reactnativepushnotification.notification_channel_name"
+      android:value="APAG" />
+    <meta-data android:name="com.dieam.reactnativepushnotification.notification_channel_description"
+      android:value="The official APAG notification channel" />
+    <meta-data android:name="com.dieam.reactnativepushnotification.notification_color"
+      android:resource="@android:color/white" />
+    <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+      android:resource="@mipmap/ic_notification" />
+    <receiver
+      android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
+    <receiver
+      android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+      </intent-filter>
+    </receiver>
+    <service
+      android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationRegistrationService" />
+    <service
+      android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="com.google.firebase.MESSAGING_EVENT" />
+      </intent-filter>
+    </service>
+    <provider
+      android:name="com.vinzscam.reactnativefileviewer.FileProvider"
+      android:authorities="${applicationId}.provider"
+      android:exported="false"
+      android:grantUriPermissions="true">
+      <meta-data
+        android:name="android.support.FILE_PROVIDER_PATHS"
+        android:resource="@xml/file_viewer_provider_paths"
+      />
+    </provider>
   </application>
+  <queries>
+    <intent>
+      <action android:name="android.intent.action.VIEW" />
+      <data android:mimeType="application/pdf" />
+    </intent>
+  </queries>
 </manifest>
