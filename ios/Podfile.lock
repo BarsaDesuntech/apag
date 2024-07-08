@@ -1,10 +1,7 @@
 PODS:
   - boost (1.83.0)
-  - BugsnagReactNative (2.23.10):
-    - BugsnagReactNative/Core (= 2.23.10)
-    - React
-  - BugsnagReactNative/Core (2.23.10):
-    - React
+  - BugsnagReactNative (7.25.0):
+    - React-Core
   - BVLinearGradient (2.8.3):
     - React-Core
   - DoubleConversion (1.1.6)
@@ -1029,14 +1026,14 @@ PODS:
     - React-Core
   - react-native-netinfo (11.3.2):
     - React-Core
-  - react-native-safe-area-context (3.4.1):
+  - react-native-pager-view (7.0.0-rc.0):
     - React-Core
-  - react-native-splash-screen (3.3.0):
+  - react-native-safe-area-context (3.1.8):
     - React-Core
+  - react-native-splash-screen (3.2.0):
+    - React
   - react-native-tracking-transparency (0.1.2):
     - React
-  - react-native-viewpager (5.0.11):
-    - React-Core
   - React-nativeconfig (0.74.2)
   - React-NativeModulesApple (0.74.2):
     - glog
@@ -1272,7 +1269,7 @@ PODS:
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
-  - RNCPicker (2.7.6):
+  - RNCPicker (2.7.7):
     - React-Core
   - RNCPushNotificationIOS (1.11.0):
     - React-Core
@@ -1286,11 +1283,11 @@ PODS:
     - RNFBApp
   - RNFileViewer (2.1.5):
     - React-Core
-  - RNFS (2.20.0):
+  - RNFS (2.19.0):
     - React-Core
   - RNGestureHandler (1.10.3):
     - React-Core
-  - RNReanimated (3.12.0):
+  - RNReanimated (3.13.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1311,7 +1308,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.31.1):
+  - RNScreens (3.32.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1361,7 +1358,7 @@ PODS:
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
-  - BugsnagReactNative (from `../node_modules/bugsnag-react-native`)
+  - "BugsnagReactNative (from `../node_modules/@bugsnag/react-native`)"
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -1397,10 +1394,10 @@ DEPENDENCIES:
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
   - react-native-tracking-transparency (from `../node_modules/react-native-tracking-transparency`)
-  - "react-native-viewpager (from `../node_modules/@react-native-community/viewpager`)"
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -1458,7 +1455,7 @@ EXTERNAL SOURCES:
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
   BugsnagReactNative:
-    :path: "../node_modules/bugsnag-react-native"
+    :path: "../node_modules/@bugsnag/react-native"
   BVLinearGradient:
     :path: "../node_modules/react-native-linear-gradient"
   DoubleConversion:
@@ -1526,14 +1523,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-pager-view:
+    :path: "../node_modules/react-native-pager-view"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-splash-screen:
     :path: "../node_modules/react-native-splash-screen"
   react-native-tracking-transparency:
     :path: "../node_modules/react-native-tracking-transparency"
-  react-native-viewpager:
-    :path: "../node_modules/@react-native-community/viewpager"
   React-nativeconfig:
     :path: "../node_modules/react-native/ReactCommon"
   React-NativeModulesApple:
@@ -1613,7 +1610,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
-  BugsnagReactNative: 98fb350df4bb0c94cce903023531a1a5cc11fa51
+  BugsnagReactNative: 5b7370cd797d247983ace25aa07cca0058d7d505
   BVLinearGradient: 880f91a7854faff2df62518f0281afb1c60d49a3
   DoubleConversion: 76ab83afb40bddeeee456813d9c04f67f78771b5
   FBLazyVector: 4bc164e5b5e6cfc288d2b5ff28643ea15fa1a589
@@ -1657,10 +1654,10 @@ SPEC CHECKSUMS:
   react-native-geolocation: 26d62314499618e6a810ed4a9a6121542c76df04
   react-native-maps: 7b2c2cee95271592a92ba485eea1dec66a363a6e
   react-native-netinfo: 076df4f9b07f6670acf4ce9a75aac8d34c2e2ccc
-  react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
-  react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
+  react-native-pager-view: 563a43b511eea680f803ab4fb20bd7525fbde2cc
+  react-native-safe-area-context: 79fea126c6830c85f65947c223a5e3058a666937
+  react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
   react-native-tracking-transparency: 25ff1ff866e338c137c818bdec20526bb05ffcc1
-  react-native-viewpager: b99b53127d830885917ef84809c5065edd614a78
   React-nativeconfig: 5d452e509d6fbedc1522e21b566451fc673ac6b7
   React-NativeModulesApple: 6560431301ffdab8df6212cc8c8eff779396d8e0
   React-perflogger: 32ed45d9cee02cf6639acae34251590dccd30994
@@ -1687,20 +1684,20 @@ SPEC CHECKSUMS:
   rn-fetch-blob: a55789391d32d9c951b5b9eb7e3c3635ec67e324
   RNCAsyncStorage: 826b603ae9c0f88b5ac4e956801f755109fa4d5c
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
-  RNCPicker: f58e790450cb0a74c09dd1c677bd1de41a5741b9
+  RNCPicker: b7873ba797dc586bfaf3307d737cbdc620a9ff3e
   RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
   RNFBApp: 1ae7462cddf74a49df206d3418bc0170f8fa53e5
   RNFBMessaging: 85f661b9f16e2b081e6809ef63d3daa4458b9042
   RNFileViewer: ce7ca3ac370e18554d35d6355cffd7c30437c592
-  RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
+  RNFS: fc610f78fdf8bfc89a9e5cc2f898519f4dba1002
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNReanimated: 967ae35616ef948658afa75d24595d4584051540
-  RNScreens: 30249f9331c3b00ae7cb7922e11f58b3ed369c07
+  RNReanimated: 308bcd09703f16e26367dfd0c2bba43fc296aa47
+  RNScreens: fd2722bcc59f36a629205af8cc7b48e4bc0d09f5
   RNSVG: a48668fd382115bc89761ce291a81c4ca5f2fd2e
   RNVectorIcons: 7ac7aaa83f8f3d4c7c0f7daea5a431e91a29b0cd
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   Yoga: 9ad2c02dbd9811bb5a35fe23081cb0f5d5a3f9dd
 
-PODFILE CHECKSUM: e87451dd95f8cbae23584d54a35a6568d9ef2b9d
+PODFILE CHECKSUM: 4780b0414bea06a051896765a16472a8715b0cd1
 
 COCOAPODS: 1.15.2
