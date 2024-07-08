@@ -14,7 +14,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'MyNewApp' do
+target 'APAG' do
   use_frameworks! :linkage => :static
   config = use_native_modules!
 
@@ -24,7 +24,7 @@ target 'MyNewApp' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'MyNewAppTests' do
+  target 'APAGTests' do
     inherit! :complete
     # Pods for testing
   end

@@ -7,8 +7,8 @@
   "sdkVersion": "28.0.0",
   "ios": {
     "bundleIdentifier": "undefined",
-    "publishBundlePath": "ios/apag/Supporting/shell-app.bundle",
-    "publishManifestPath": "ios/apag/Supporting/shell-app-manifest.json"
+    "publishBundlePath": "ios/APAG/Supporting/shell-app.bundle",
+    "publishManifestPath": "ios/APAG/Supporting/shell-app-manifest.json"
   },
   "android": {
     "package": "undefined",
