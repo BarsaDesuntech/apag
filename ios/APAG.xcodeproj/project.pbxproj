@@ -13,10 +13,10 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		238CEB5A2C172D50002CB255 /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = 238CEB592C172D50002CB255 /* fonts */; };
 		23CBB07A2C131E4200174968 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 23CBB0792C131E4200174968 /* GoogleService-Info.plist */; };
+		64F54C171683EE4B8B3EB14C /* Pods_APAG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91241FF3D1ABCF4323A6C786 /* Pods_APAG.framework */; };
 		776E02DD15054E9C1FF65EFA /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 99F8055C26B1951A6AC887D9 /* PrivacyInfo.xcprivacy */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		8EE754DFA64F46250C85ADE5 /* Pods_MyNewApp_MyNewAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1399B265872CBFA57F0C6ECA /* Pods_MyNewApp_MyNewAppTests.framework */; };
-		F5AF8A789535B24058362487 /* Pods_MyNewApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFC067B4B5B8F11F76254905 /* Pods_MyNewApp.framework */; };
+		A0074022BAF03FDD3ACE214D /* Pods_APAG_APAGTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BB37915EAAC6BEEAF527CAE /* Pods_APAG_APAGTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,31 +25,31 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = "APAG";
+			remoteInfo = APAG;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00E356EE1AD99517003FC87E /* APAGTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "APAGTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* APAGTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = APAGTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* APAGTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "APAGTests.m"; sourceTree = "<group>"; };
-		1399B265872CBFA57F0C6ECA /* Pods_MyNewApp_MyNewAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyNewApp_MyNewAppTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07F961A680F5B00A75B9A /* APAG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "APAG.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = "APAG/AppDelegate.h"; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = "APAG/AppDelegate.mm"; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "APAG/Images.xcassets"; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "APAG/Info.plist"; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "APAG/main.m"; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* APAGTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = APAGTests.m; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* APAG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APAG.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = APAG/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = APAG/AppDelegate.mm; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = APAG/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = APAG/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = APAG/main.m; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = APAG/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		238CEB592C172D50002CB255 /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fonts; sourceTree = "<group>"; };
 		23CBB0792C131E4200174968 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "APAG/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-APAG.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APAG.debug.xcconfig"; path = "Target Support Files/Pods-APAG/Pods-APAG.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-APAG.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APAG.release.xcconfig"; path = "Target Support Files/Pods-APAG/Pods-APAG.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-APAG-APAGTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APAG-APAGTests.debug.xcconfig"; path = "Target Support Files/Pods-APAG-APAGTests/Pods-APAG-APAGTests.debug.xcconfig"; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = "APAG/LaunchScreen.storyboard"; sourceTree = "<group>"; };
+		5BB37915EAAC6BEEAF527CAE /* Pods_APAG_APAGTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_APAG_APAGTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = APAG/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-APAG-APAGTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APAG-APAGTests.release.xcconfig"; path = "Target Support Files/Pods-APAG-APAGTests/Pods-APAG-APAGTests.release.xcconfig"; sourceTree = "<group>"; };
+		91241FF3D1ABCF4323A6C786 /* Pods_APAG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_APAG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99F8055C26B1951A6AC887D9 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = APAG/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		CFC067B4B5B8F11F76254905 /* Pods_MyNewApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyNewApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -58,7 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8EE754DFA64F46250C85ADE5 /* Pods_MyNewApp_MyNewAppTests.framework in Frameworks */,
+				A0074022BAF03FDD3ACE214D /* Pods_APAG_APAGTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,7 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5AF8A789535B24058362487 /* Pods_MyNewApp.framework in Frameworks */,
+				64F54C171683EE4B8B3EB14C /* Pods_APAG.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,7 +79,7 @@
 				00E356F21AD99517003FC87E /* APAGTests.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
-			path = "APAGTests";
+			path = APAGTests;
 			sourceTree = "<group>";
 		};
 		00E356F01AD99517003FC87E /* Supporting Files */ = {
@@ -102,15 +102,15 @@
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
 				99F8055C26B1951A6AC887D9 /* PrivacyInfo.xcprivacy */,
 			);
-			name = "APAG";
+			name = APAG;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				CFC067B4B5B8F11F76254905 /* Pods_MyNewApp.framework */,
-				1399B265872CBFA57F0C6ECA /* Pods_MyNewApp_MyNewAppTests.framework */,
+				91241FF3D1ABCF4323A6C786 /* Pods_APAG.framework */,
+				5BB37915EAAC6BEEAF527CAE /* Pods_APAG_APAGTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -178,8 +178,7 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = "APAGTests";
-			productname = "APAGTests";
+			name = APAGTests;
 			productReference = 00E356EE1AD99517003FC87E /* APAGTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
@@ -200,8 +199,8 @@
 			);
 			dependencies = (
 			);
-			name = "APAG";
-			productName = "APAG";
+			name = APAG;
+			productName = APAG;
 			productReference = 13B07F961A680F5B00A75B9A /* APAG.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -445,7 +444,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "APAGTests/Info.plist";
+				INFOPLIST_FILE = APAGTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -469,7 +468,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				INFOPLIST_FILE = "APAGTests/Info.plist";
+				INFOPLIST_FILE = APAGTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -495,8 +494,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = "APAG/Info.plist";
-             INFOPLIST_KEY_CFBundleDisplayName = "APAG";
+				INFOPLIST_FILE = APAG/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = APAG;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -508,7 +507,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.apag.apagapp;
-				PRODUCT_NAME = "APAG";
+				PRODUCT_NAME = APAG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -522,8 +521,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = "APAG/Info.plist";
-             INFOPLIST_KEY_CFBundleDisplayName = "APAG";
+				INFOPLIST_FILE = APAG/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = APAG;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -535,7 +534,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.apag.apagapp;
-				PRODUCT_NAME = "APAG";
+				PRODUCT_NAME = APAG;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
