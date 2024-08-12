@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import React, {Component} from 'react';
+import {Text, View} from 'react-native';
 import GlobalStyle from '../style';
 import PropTypes from 'prop-types';
-import { AllHtmlEntities } from 'html-entities';
+import {AllHtmlEntities} from 'html-entities';
 const entities = new AllHtmlEntities();
 
 /**
@@ -17,7 +17,7 @@ class ParkhouseChargeItem extends Component {
   };
 
   render() {
-    const { charge } = this.props;
+    const {charge} = this.props;
     return (
       <View
         style={[GlobalStyle.primaryBackgroundColor, GlobalStyle.chargeItem]}>
@@ -56,7 +56,7 @@ export default class ParkhouseChargeList extends Component {
   };
 
   render() {
-    const { charges, chargeMax } = this.props;
+    const {charges, chargeMax} = this.props;
     return (
       <View style={GlobalStyle.container}>
         {charges?.map(charge => (

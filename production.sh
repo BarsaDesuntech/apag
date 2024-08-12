@@ -2,9 +2,7 @@ rm ios-release.bundle
 rm ios-release.bundle.map
 rm android-release.bundle
 rm android-release.bundle.map
-cd android
-./gradlew bundleRelease
-cd ..
+react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/
 
 npx react-native bundle \
   --platform ios \

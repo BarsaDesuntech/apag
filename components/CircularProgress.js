@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {View, ViewPropTypes} from 'react-native';
+import {View} from 'react-native';
+import ViewPropTypes from 'deprecated-react-native-prop-types';
 import {Svg, Path, G} from 'react-native-svg';
 import GlobalStyle from '../style';
 /**
@@ -24,14 +25,23 @@ export default class CircularProgress extends React.PureComponent {
     const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
     const d = [
       // eslint-disable-next-line prettier/prettier
-      'M', start.x, start.y,
+      'M',
+      start.x,
+      start.y,
       // eslint-disable-next-line prettier/prettier
-      'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y,
+      'A',
+      radius,
+      radius,
+      0,
+      largeArcFlag,
+      0,
+      end.x,
+      end.y,
     ];
     return d.join(' ');
   }
 
-  clampFill = (fill) => Math.min(100, Math.max(0, fill));
+  clampFill = fill => Math.min(100, Math.max(0, fill));
 
   render() {
     const {

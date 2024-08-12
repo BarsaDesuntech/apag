@@ -1,12 +1,19 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { useSelector, useDispatch } from 'react-redux';
-import { createStackNavigator } from '@react-navigation/stack';
-import GlobalStyle, { oldBlue, primaryBlue, white } from '../style';
-import { View, Platform, Image, TouchableOpacity, Linking } from 'react-native';
-import { logout } from '../store/actions/user';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {NavigationContainer} from '@react-navigation/native';
+import {useSelector, useDispatch} from 'react-redux';
+import {createStackNavigator} from '@react-navigation/stack';
+import GlobalStyle, {oldBlue, primaryBlue, white} from '../style';
+import {
+  View,
+  Platform,
+  Image,
+  TouchableOpacity,
+  Linking,
+  SafeAreaView,
+} from 'react-native';
+import {logout} from '../store/actions/user';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import IconFontawesome4 from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -25,8 +32,8 @@ import PasswordResetScreen from '../screens/passwordReset';
 import AccessComponent from '../components/accessComponent';
 import EditSecurityInformationScreen from '../screens/editSecurityInformation';
 import ConsentSettingsScreen from '../screens/consentSettings';
-import { useActionSheet } from '@expo/react-native-action-sheet';
-import { startNavigation } from '../helpers';
+import {useActionSheet} from '@expo/react-native-action-sheet';
+import {startNavigation} from '../helpers';
 import LaunchPopper from '../screens/launchPopper';
 import LaunchLoginScreen from '../screens/launchLoginScreen';
 import EmailVerification from '../screens/emailVerification';
@@ -39,7 +46,7 @@ import ConfirmEmail from '../screens/ConfirmEmail';
 import CreditCard from '../screens/CreditCard';
 import AntragFlowStepper from '../components/AntragFlowStepper';
 import Advantages from '../screens/advantages';
-import { getUser } from '../store/selectors/user';
+import {getUser} from '../store/selectors/user';
 
 // Import the logo and calculate the display width and height
 export const APAGImageSrc = require('../img/logo_apag_light_x2.png');
@@ -62,7 +69,7 @@ const getTabNavigationOptions = title => ({
 
 // Handles the Geo intent in order to initiate the navigation via Google Maps, Apple Maps and Co.
 const handleNavigation = (navigation, route) => {
-  const { item } = route.params;
+  const {item} = route.params;
   startNavigation(item);
 };
 
@@ -141,11 +148,11 @@ const MeineDatenOptions = getTabNavigationOptions('Meine Daten');
  * @extends {Component}
  */
 const AppNavigation = () => {
-  const { showActionSheetWithOptions } = useActionSheet();
+  const {showActionSheetWithOptions} = useActionSheet();
   const dispatch = useDispatch();
   const user = useSelector(getUser);
-  const consent = useSelector(({ consent: t }) => t);
-  const app = useSelector(({ app: t }) => t);
+  const consent = useSelector(({consent: t}) => t);
+  const app = useSelector(({app: t}) => t);
   const logoutUser = () => dispatch(logout());
   const showMenu = navigation => {
     const handleAction = index => {
@@ -222,7 +229,7 @@ const AppNavigation = () => {
       <ParkenListeStackNavigator.Screen
         name="Parkhouse"
         component={ParkhouseScreen}
-        options={({ navigation, route }) => ({
+        options={({navigation, route}) => ({
           ...parkhouseHeaderOptions,
           headerRight: _props => (
             <TouchableOpacity
@@ -245,14 +252,14 @@ const AppNavigation = () => {
       <ParkenKarteStackNavigator.Screen
         name="Karte"
         component={MapScreen}
-        options={({ navigation }) => ({
+        options={({navigation}) => ({
           ...parkhouseHeaderOptions,
         })}
       />
       <ParkenKarteStackNavigator.Screen
         name="Parkhouse"
         component={ParkhouseScreen}
-        options={({ navigation, route }) => ({
+        options={({navigation, route}) => ({
           ...parkhouseHeaderOptions,
           headerRight: _props => (
             <TouchableOpacity
@@ -271,13 +278,15 @@ const AppNavigation = () => {
   const AntragFlow = (
     <StepperStackNavigator.Navigator
       initialRouteName="Register"
-      headerMode="float"
+      // headerMode="float"
+
       screenOptions={{
+        headerMode: 'float',
         headerStyle: {
           ...GlobalStyle.stepperTitleStyle,
           borderBottomWidth: 0,
           shadowColor: 'transparent',
-          shadowOffset: { width: -10, height: -1 }, // Shadow offset (iOS only)
+          shadowOffset: {width: -10, height: -1}, // Shadow offset (iOS only)
           shadowRadius: 0, // Shadow blur radius (iOS only)
         },
       }}>
@@ -307,7 +316,7 @@ const AppNavigation = () => {
           headerStyle: {
             ...GlobalStyle.stepperTitleStyle,
             shadowColor: 'transparent',
-            shadowOffset: { width: 0, height: 0 }, // Shadow offset (iOS only)
+            shadowOffset: {width: 0, height: 0}, // Shadow offset (iOS only)
             shadowRadius: 0, // Shadow blur radius (iOS only)
           },
           headerTitle: props => <AntragFlowStepper {...props} />,
@@ -321,7 +330,7 @@ const AppNavigation = () => {
           headerStyle: {
             ...GlobalStyle.stepperTitleStyle,
             shadowColor: 'transparent',
-            shadowOffset: { width: 0, height: 0 }, // Shadow offset (iOS only)
+            shadowOffset: {width: 0, height: 0}, // Shadow offset (iOS only)
             shadowRadius: 0, // Shadow blur radius (iOS only)
           },
           headerTitle: props => <AntragFlowStepper {...props} />,
@@ -335,7 +344,7 @@ const AppNavigation = () => {
           headerStyle: {
             ...GlobalStyle.stepperTitleStyle,
             shadowColor: 'transparent',
-            shadowOffset: { width: 0, height: 0 }, // Shadow offset (iOS only)
+            shadowOffset: {width: 0, height: 0}, // Shadow offset (iOS only)
             shadowRadius: 0, // Shadow blur radius (iOS only)
           },
           headerBackTitleVisible: false,
@@ -350,7 +359,7 @@ const AppNavigation = () => {
           headerStyle: {
             ...GlobalStyle.stepperTitleStyle,
             shadowColor: 'transparent',
-            shadowOffset: { width: 0, height: 0 }, // Shadow offset (iOS only)
+            shadowOffset: {width: 0, height: 0}, // Shadow offset (iOS only)
             shadowRadius: 0, // Shadow blur radius (iOS only)
           },
           headerTitle: props => <AntragFlowStepper {...props} />,
@@ -364,7 +373,7 @@ const AppNavigation = () => {
           headerStyle: {
             ...GlobalStyle.stepperTitleStyle,
             shadowColor: 'transparent',
-            shadowOffset: { width: 0, height: 0 }, // Shadow offset (iOS only)
+            shadowOffset: {width: 0, height: 0}, // Shadow offset (iOS only)
             shadowRadius: 0, // Shadow blur radius (iOS only)
           },
           headerTitle: props => <AntragFlowStepper {...props} />,
@@ -378,7 +387,7 @@ const AppNavigation = () => {
           headerStyle: {
             ...GlobalStyle.stepperTitleStyle,
             shadowColor: 'transparent',
-            shadowOffset: { width: 0, height: 0 }, // Shadow offset (iOS only)
+            shadowOffset: {width: 0, height: 0}, // Shadow offset (iOS only)
             shadowRadius: 0, // Shadow blur radius (iOS only)
           },
           headerTitle: props => <AntragFlowStepper {...props} />,
@@ -392,7 +401,7 @@ const AppNavigation = () => {
           headerStyle: {
             ...GlobalStyle.stepperTitleStyle,
             shadowColor: 'transparent',
-            shadowOffset: { width: 0, height: 0 }, // Shadow offset (iOS only)
+            shadowOffset: {width: 0, height: 0}, // Shadow offset (iOS only)
             shadowRadius: 0, // Shadow blur radius (iOS only)
           },
           headerTitle: props => <AntragFlowStepper {...props} />,
@@ -406,7 +415,7 @@ const AppNavigation = () => {
           headerStyle: {
             ...GlobalStyle.stepperTitleStyle,
             shadowColor: 'transparent',
-            shadowOffset: { width: 0, height: 0 }, // Shadow offset (iOS only)
+            shadowOffset: {width: 0, height: 0}, // Shadow offset (iOS only)
             shadowRadius: 0, // Shadow blur radius (iOS only)
           },
           headerTitle: props => <AntragFlowStepper {...props} />,
@@ -460,18 +469,18 @@ const AppNavigation = () => {
       this.setState(() => ({
         disable: true,
       }));
-      const { index, routes } = this.props.navigation.dangerouslyGetState();
+      const {index, routes} = this.props.navigation.dangerouslyGetState();
       const currentRoute = routes[index];
       const action = currentRoute.params ? currentRoute.params.save : undefined;
       if (typeof action !== typeof undefined) {
         action().then(() => {
-          this.setState(() => ({ disable: false }));
+          this.setState(() => ({disable: false}));
         });
       }
     };
     render() {
-      const { disable } = this.state;
-      const { index, routes } = this.props.navigation.dangerouslyGetState();
+      const {disable} = this.state;
+      const {index, routes} = this.props.navigation.dangerouslyGetState();
       const currentRoute = routes[index];
       const changed = currentRoute.params
         ? currentRoute.params.changed
@@ -493,7 +502,7 @@ const AppNavigation = () => {
     }
   }
 
-  const meineAPAGTitle = app.app.isInLaunchFlow ? ' ' : 'Account';
+  const meineAPAGTitle = app.app.isInLaunchFlow ? ' ' : 'Meine APAG';
 
   // Stack navigator for Meine APAG
   // Handles the initial authentication flow
@@ -501,156 +510,159 @@ const AppNavigation = () => {
   // The Account Tab navigator screen called "MeineAPAG" is only shown by replacing the current navigation stack
   const MeineAPAGGlobalNavigator = createStackNavigator();
   const MeineAPAG = (
-    <MeineAPAGGlobalNavigator.Navigator
-      gestureEnabled={true}
-      options={{
-        headerStatusBarHeight: 0,
-        headerTitle: 'Meine APAG',
-        headerStyle: GlobalStyle.primaryBackgroundColor,
-        headerTitleStyle: {
-          fontFamily: 'Roboto-Bold',
-          fontSize: 18,
-          flex: 1,
-          alignSelf: 'center',
-          textAlign: 'center',
-        },
-        headerTintColor: '#fff',
-        headerBackTitle: 'Zurück',
-      }}>
-      {!user.isLoggedIn && (
+    <SafeAreaView style={[{flex: 1}, GlobalStyle.primaryBackgroundColor]}>
+      <MeineAPAGGlobalNavigator.Navigator
+        gestureEnabled={true}
+        screenOptions={{
+          headerStatusBarHeight: 0,
+          headerTitle: 'Meine APAG',
+
+          headerStyle: GlobalStyle.primaryBackgroundColor,
+          headerTitleStyle: {
+            fontFamily: 'Roboto-Bold',
+            fontSize: 18,
+            flex: 1,
+            alignSelf: 'center',
+            textAlign: 'center',
+          },
+          headerTintColor: '#fff',
+          headerBackTitle: 'Zurück',
+        }}>
+        {!user.isLoggedIn && (
+          <MeineAPAGGlobalNavigator.Screen
+            name="MeineAPAGLogin"
+            component={LoginScreen}
+            title="Meine APAG"
+            options={({route}) => ({
+              ...meineHeaderOptions,
+              title: meineAPAGTitle,
+              headerShown: app.app.isInLaunchFlow ? false : true,
+            })}
+          />
+        )}
+        {!user.isLoggedIn && (
+          <MeineAPAGGlobalNavigator.Screen
+            name="MeineAPAGRegister"
+            component={RegisterScreen}
+            title="Meine APAG"
+            options={({route}) => ({
+              ...meineHeaderOptions,
+              title: meineAPAGTitle,
+              headerShown: app.app.isInLaunchFlow ? false : true,
+            })}
+          />
+        )}
+        {!user.isLoggedIn && (
+          <MeineAPAGGlobalNavigator.Screen
+            name="MeineAPAGPassword"
+            component={PasswordScreen}
+            options={{
+              ...meineHeaderOptions,
+              title: meineAPAGTitle,
+              headerShown: app.app.isInLaunchFlow ? false : true,
+            }}
+          />
+        )}
+        {user.isLoggedIn && user.reset === 'password' && (
+          <MeineAPAGGlobalNavigator.Screen
+            name="MeineAPAGPasswordReset"
+            component={PasswordResetScreen}
+            options={{
+              ...meineHeaderOptions,
+              title: meineAPAGTitle,
+            }}
+          />
+        )}
+        {!user.isLoggedIn && (
+          <MeineAPAGGlobalNavigator.Screen
+            name="AntragFlow"
+            options={{
+              title: meineAPAGTitle,
+              headerTitle: 'Meine APAG',
+              ...meineHeaderOptions,
+            }}>
+            {() => AntragFlow}
+          </MeineAPAGGlobalNavigator.Screen>
+        )}
         <MeineAPAGGlobalNavigator.Screen
-          name="MeineAPAGLogin"
-          component={LoginScreen}
-          title="Meine APAG"
-          options={({ route }) => ({
-            ...meineHeaderOptions,
-            title: meineAPAGTitle,
-            headerShown: app.app.isInLaunchFlow ? false : true,
-          })}
-        />
-      )}
-      {!user.isLoggedIn && (
-        <MeineAPAGGlobalNavigator.Screen
-          name="MeineAPAGRegister"
-          component={RegisterScreen}
-          title="Meine APAG"
-          options={({ route }) => ({
-            ...meineHeaderOptions,
-            title: meineAPAGTitle,
-            headerShown: app.app.isInLaunchFlow ? false : true,
-          })}
-        />
-      )}
-      {!user.isLoggedIn && (
-        <MeineAPAGGlobalNavigator.Screen
-          name="MeineAPAGPassword"
-          component={PasswordScreen}
-          options={{
-            ...meineHeaderOptions,
-            title: meineAPAGTitle,
-            headerShown: app.app.isInLaunchFlow ? false : true,
-          }}
-        />
-      )}
-      {user.isLoggedIn && user.reset === 'password' && (
-        <MeineAPAGGlobalNavigator.Screen
-          name="MeineAPAGPasswordReset"
-          component={PasswordResetScreen}
-          options={{
-            ...meineHeaderOptions,
-            title: meineAPAGTitle,
-          }}
-        />
-      )}
-      {!user.isLoggedIn && (
-        <MeineAPAGGlobalNavigator.Screen
-          name="AntragFlow"
-          options={{
+          name="MeineAPAG"
+          options={({navigation}) => ({
             title: meineAPAGTitle,
             headerTitle: 'Meine APAG',
             ...meineHeaderOptions,
-          }}>
-          {() => AntragFlow}
+            headerRight: _props => (
+              <View
+                // eslint-disable-next-line react-native/no-inline-styles
+                style={{
+                  height: '100%',
+                  padding: Platform.OS === 'ios' ? 8 : 12,
+                }}>
+                <AccessComponent navigation={navigation} />
+                {APAGImage}
+              </View>
+            ),
+          })}>
+          {() => MeineAPAGNavigator}
         </MeineAPAGGlobalNavigator.Screen>
-      )}
-      <MeineAPAGGlobalNavigator.Screen
-        name="MeineAPAG"
-        options={({ navigation }) => ({
-          title: meineAPAGTitle,
-          headerTitle: 'Meine APAG',
-          ...meineHeaderOptions,
-          headerRight: _props => (
-            <View
-              // eslint-disable-next-line react-native/no-inline-styles
-              style={{
-                height: '100%',
-                padding: Platform.OS === 'ios' ? 8 : 12,
-              }}>
-              <AccessComponent navigation={navigation} />
-              {APAGImage}
-            </View>
-          ),
-        })}>
-        {() => MeineAPAGNavigator}
-      </MeineAPAGGlobalNavigator.Screen>
-      <MeineAPAGGlobalNavigator.Screen
-        name="EditPersonalInformation"
-        component={EditPersonalInformationScreen}
-        options={({ navigation }) => ({
-          title: 'Meine APAG',
-          headerTitle: ' ',
-          headerLeft: () => (
-            <Ionicons
-              name="md-close"
-              size={24}
-              color="#3f6cb1"
-              style={GlobalStyle.ph15}
-              onPress={() => navigation.goBack()}
-            />
-          ),
-          headerStyle: { backgroundColor: '#fff', elevation: 0 },
-          headerRight: _props => <HeaderSaveButton navigation={navigation} />,
-        })}
-      />
-      <MeineAPAGGlobalNavigator.Screen
-        name="EditPaymentInformation"
-        component={EditPaymentInformationScreen}
-        options={({ navigation }) => ({
-          title: 'Meine APAG',
-          headerTitle: ' ',
-          headerLeft: () => (
-            <Ionicons
-              name="md-close"
-              size={24}
-              color="#3f6cb1"
-              style={GlobalStyle.ph15}
-              onPress={() => navigation.goBack()}
-            />
-          ),
-          headerStyle: { backgroundColor: '#fff', elevation: 0 },
-          headerRight: _props => <HeaderSaveButton navigation={navigation} />,
-        })}
-      />
-      <MeineAPAGGlobalNavigator.Screen
-        name="EditSecurityInformation"
-        component={EditSecurityInformationScreen}
-        options={({ navigation }) => ({
-          title: 'Meine APAG',
-          headerTitle: ' ',
-          headerLeft: () => (
-            <Ionicons
-              name="md-close"
-              size={24}
-              color="#3f6cb1"
-              style={GlobalStyle.ph15}
-              onPress={() => navigation.goBack()}
-            />
-          ),
-          headerStyle: { backgroundColor: '#fff', elevation: 0 },
-          headerRight: _props => <HeaderSaveButton navigation={navigation} />,
-        })}
-      />
-    </MeineAPAGGlobalNavigator.Navigator>
+        <MeineAPAGGlobalNavigator.Screen
+          name="EditPersonalInformation"
+          component={EditPersonalInformationScreen}
+          options={({navigation}) => ({
+            title: 'Meine APAG',
+            headerTitle: ' ',
+            headerLeft: () => (
+              <Ionicons
+                name="close"
+                size={24}
+                color="#3f6cb1"
+                style={GlobalStyle.ph15}
+                onPress={() => navigation.goBack()}
+              />
+            ),
+            headerStyle: {backgroundColor: '#fff', elevation: 0},
+            headerRight: _props => <HeaderSaveButton navigation={navigation} />,
+          })}
+        />
+        <MeineAPAGGlobalNavigator.Screen
+          name="EditPaymentInformation"
+          component={EditPaymentInformationScreen}
+          options={({navigation}) => ({
+            title: 'Meine APAG',
+            headerTitle: ' ',
+            headerLeft: () => (
+              <Ionicons
+                name="close"
+                size={24}
+                color="#3f6cb1"
+                style={GlobalStyle.ph15}
+                onPress={() => navigation.goBack()}
+              />
+            ),
+            headerStyle: {backgroundColor: '#fff', elevation: 0},
+            headerRight: _props => <HeaderSaveButton navigation={navigation} />,
+          })}
+        />
+        <MeineAPAGGlobalNavigator.Screen
+          name="EditSecurityInformation"
+          component={EditSecurityInformationScreen}
+          options={({navigation}) => ({
+            title: 'Meine APAG',
+            headerTitle: ' ',
+            headerLeft: () => (
+              <Ionicons
+                name="close"
+                size={24}
+                color="#3f6cb1"
+                style={GlobalStyle.ph15}
+                onPress={() => navigation.goBack()}
+              />
+            ),
+            headerStyle: {backgroundColor: '#fff', elevation: 0},
+            headerRight: _props => <HeaderSaveButton navigation={navigation} />,
+          })}
+        />
+      </MeineAPAGGlobalNavigator.Navigator>
+    </SafeAreaView>
   );
 
   // Combines all tabs and screen to a bottom navigation for the entire app
@@ -664,7 +676,7 @@ const AppNavigation = () => {
       {!consent.consent.filled && (
         <ConsentNavigatorStackFirst.Navigator
           initialRouteName={'Datenschutz'}
-          headerMode="none">
+          screenOptions={{headerShown: false}}>
           <ConsentNavigatorStack.Screen
             name={'Datenschutz'}
             component={LaunchPopper}
@@ -679,7 +691,7 @@ const AppNavigation = () => {
               ? 'LaunchPopup'
               : 'Main'
           }
-          headerMode="none">
+          screenOptions={{headerShown: false}}>
           <MainNavigatorStack.Screen
             name={'LaunchPopup'}
             component={LaunchLoginScreen}
@@ -695,15 +707,28 @@ const AppNavigation = () => {
             {() => (
               <BottomNavigator.Navigator
                 initialRouteName="Karte"
-                tabBarOptions={{
-                  activeTintColor: oldBlue,
-                  inactiveTintColor: primaryBlue,
-                  style: {
+                // tabBarOptions={{
+                //   activeTintColor: oldBlue,
+                //   inactiveTintColor: primaryBlue,
+                //   style: {
+                //     backgroundColor: white,
+                //     fontFamily: 'Roboto',
+                //     display: app.app.isInLaunchFlow ? 'none' : 'flex',
+                //     borderTopWidth: 0,
+                //     height: 90,
+                //     paddingVertical: 5,
+                //   },
+                // }}
+                screenOptions={{
+                  headerShown: false,
+                  tabBarActiveTintColor: oldBlue,
+                  tabBarInactiveTintColor: primaryBlue,
+                  tabBarStyle: {
                     backgroundColor: white,
                     fontFamily: 'Roboto',
                     display: app.app.isInLaunchFlow ? 'none' : 'flex',
                     borderTopWidth: 0,
-                    height: 90,
+                    // height: 90,
                     paddingVertical: 5,
                   },
                 }}>
@@ -711,7 +736,7 @@ const AppNavigation = () => {
                   name="Karte"
                   options={{
                     tabBarLabel: 'Karte',
-                    tabBarIcon: ({ color, size, focused }) =>
+                    tabBarIcon: ({color, size, focused}) =>
                       getTabIconAlt('map', color, size + 2, focused),
                   }}>
                   {() => ParkenKarte}
@@ -720,7 +745,7 @@ const AppNavigation = () => {
                   name="Parken"
                   options={{
                     tabBarLabel: 'Parken',
-                    tabBarIcon: ({ color, size, focused }) =>
+                    tabBarIcon: ({color, size, focused}) =>
                       getTabIcon('parking', color, size, focused),
                   }}>
                   {() => ParkenListe}
@@ -750,15 +775,16 @@ const AppNavigation = () => {
                 <BottomNavigator.Screen
                   name="Account"
                   options={{
-                    tabBarLabel: 'Account',
-                    tabBarIcon: ({ color, size, focused }) =>
+                    tabBarLabel: 'Meine APAG',
+                    headerTitle: 'Meine APAG',
+                    tabBarIcon: ({color, size, focused}) =>
                       getTabIcon('user', color, size, focused),
                   }}>
                   {() => MeineAPAG}
                 </BottomNavigator.Screen>
                 <BottomNavigator.Screen
                   name="Menü"
-                  listeners={({ navigation }) => ({
+                  listeners={({navigation}) => ({
                     tabPress: e => {
                       if (e && e.preventDefault) {
                         e.preventDefault();
@@ -773,8 +799,8 @@ const AppNavigation = () => {
                     },
                   })}
                   options={{
-                    tabBarLabel: 'Menü',
-                    tabBarIcon: ({ color, size }) =>
+                    tabBarLabel: 'Mehr',
+                    tabBarIcon: ({color, size}) =>
                       getTabIcon('bars', color, size),
                   }}>
                   {() => null}

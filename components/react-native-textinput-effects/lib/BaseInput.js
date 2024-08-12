@@ -1,7 +1,8 @@
-import { Component, createRef } from 'react';
+import {Component, createRef} from 'react';
 import PropTypes from 'prop-types';
 
-import { Animated, Text, View, ViewPropTypes } from 'react-native';
+import {Animated, Text, View} from 'react-native';
+import ViewPropTypes from 'deprecated-react-native-prop-types';
 
 export default class BaseInput extends Component {
   static propTypes = {
@@ -9,8 +10,8 @@ export default class BaseInput extends Component {
     value: PropTypes.string,
     defaultValue: PropTypes.string,
     style: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
-    inputStyle: Text.propTypes.style,
-    labelStyle: Text.propTypes.style,
+    inputStyle: Text.style,
+    labelStyle: Text.style,
     easing: PropTypes.func,
     animationDuration: PropTypes.number,
     useNativeDriver: PropTypes.bool,
@@ -99,7 +100,7 @@ export default class BaseInput extends Component {
   }
 
   _toggle(isActive) {
-    const { animationDuration, easing, useNativeDriver } = this.props;
+    const {animationDuration, easing, useNativeDriver} = this.props;
     this.isActive = isActive;
     Animated.timing(this.state.focusedAnim, {
       toValue: isActive ? 1 : 0,

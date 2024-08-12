@@ -1,0 +1,16 @@
+diff --git a/node_modules/react-native-maps-super-cluster/node_modules/supercluster/dist/supercluster.js b/node_modules/react-native-maps-super-cluster/node_modules/supercluster/dist/supercluster.js
+index f081c27..490302b 100644
+--- a/node_modules/react-native-maps-super-cluster/node_modules/supercluster/dist/supercluster.js
++++ b/node_modules/react-native-maps-super-cluster/node_modules/supercluster/dist/supercluster.js
+@@ -268,9 +268,9 @@ Supercluster.prototype.getClusters = function getClusters (bbox, zoom) {
+     }
+ 
+     var tree = this.trees[this._limitZoom(zoom)];
+-    var ids = tree.range(lngX(minLng), latY(maxLat), lngX(maxLng), latY(minLat));
++    var ids = tree?.range(lngX(minLng), latY(maxLat), lngX(maxLng), latY(minLat));
+     var clusters = [];
+-    for (var i = 0, list = ids; i < list.length; i += 1) {
++    for (var i = 0, list = ids; i < list?.length; i += 1) {
+         var id = list[i];
+ 
+             var c = tree.points[id];
