@@ -1,6 +1,6 @@
 ///@TODO2- few issue here
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Dimensions,
@@ -8,14 +8,32 @@ import {
   Platform,
   Text,
   ImageBackground,
+  TouchableOpacity,
+  StyleSheet,
+  Switch,
+  ScrollView,
 } from 'react-native';
-import {Marker} from 'react-native-maps';
+import { Marker } from 'react-native-maps';
 import MapView from 'react-native-maps-super-cluster';
-import GlobalStyle, {primaryBlue} from '../style';
+import GlobalStyle, {
+  black,
+  creamColor,
+  lightGrey,
+  lightGrey200,
+  placeholderColor,
+  primaryBlue,
+  white,
+} from '../style';
 import CustomMarker from './custommarker';
 import IconFontawesome5 from 'react-native-vector-icons/FontAwesome5';
-import {MapButton} from './mapButton';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { MapButton } from './mapButton';
 import Geolocation from '@react-native-community/geolocation';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import { Divider } from 'react-native-paper';
+import { placeholder } from 'deprecated-react-native-prop-types/DeprecatedTextInputPropTypes';
 
 const window = Dimensions.get('window');
 // Define some global settings for the map
@@ -25,6 +43,16 @@ const edgePadding = {
   right: 20,
   bottom: Platform.OS !== 'android' ? 10 : 0,
 };
+const parkingOptions = [
+  { id: 1, title: 'Parken', iconName: 'local-parking' },
+  { id: 2, title: 'Laden', iconName: 'charging-station' },
+  { id: 3, title: 'Bike-Stations', iconName: 'pedal-bike' },
+];
+const mapOptions = [
+  { id: 1, title: 'Reduziert' },
+  { id: 2, title: 'Normal' },
+  { id: 3, title: 'Satelit' },
+];
 /**
  * Renders a react-native-map with a marker for every parkhouse
  * Uses react-native-maps-super-cluster in order to group near by parkhouses together when zooming out
@@ -73,6 +101,14 @@ const HousesMap = ({
   // Only update the parkhouses and map center if the initial rendering is done on Android)
   const [isReady, setIsReady] = useState(true);
 
+  const parkObjectsSheetRef = useRef(null);
+  const [isParkObjectSheetVisible, setIsParkObjectSheetVisible] =
+    useState(false);
+  const [selectedParkingOption, setSelectedParkingOptions] = useState('Parken');
+  const [selectedMapOption, setSelectedMapOption] = useState('Normal');
+  const handleParkingOption = option => {
+    setSelectedParkingOptions(option);
+  };
   const requestLocationPermission = async () => {
     Geolocation.getCurrentPosition(
       pos => {
@@ -127,13 +163,13 @@ const HousesMap = ({
         coordinate={coordinate}
         onPress={onPress}
         key={clusterId}
-        anchor={Platform.OS === 'android' ? {x: 0.5, y: 1} : null}
+        anchor={Platform.OS === 'android' ? { x: 0.5, y: 1 } : null}
         tracksViewChanges={isReady}>
-        <View style={[GlobalStyle.centerContent, {height: 50}]}>
+        <View style={[GlobalStyle.centerContent, { height: 50 }]}>
           <Image
-            imageStyle={{resizeMode: 'contain'}}
+            imageStyle={{ resizeMode: 'contain' }}
             source={require('../assets/img/cluster.png')}
-            style={[GlobalStyle.pin, {position: 'absolute', top: 0, left: 0}]}
+            style={[GlobalStyle.pin, { position: 'absolute', top: 0, left: 0 }]}
           />
           <Text
             allowFontScaling={false}
@@ -158,11 +194,11 @@ const HousesMap = ({
         coordinate={coordinate}
         onPress={onPress}
         key={clusterId}
-        anchor={Platform.OS === 'android' ? {x: 0.5, y: 1} : null}
+        anchor={Platform.OS === 'android' ? { x: 0.5, y: 1 } : null}
         tracksViewChanges={isReady}>
         <View style={[GlobalStyle.centerContent]}>
           <ImageBackground
-            imageStyle={{resizeMode: 'contain'}}
+            imageStyle={{ resizeMode: 'contain' }}
             source={require('../assets/img/cluster.png')}
             style={GlobalStyle.pin}>
             <Text
@@ -210,10 +246,17 @@ const HousesMap = ({
 
   // Completely relies on the MapView
   // Renders target marker if passed (only used by LadenScreen)
+  // useEffect(() => {
+  //   parkObjectsSheetRef.current.open();
+  // }, []);
+  const [isSwitchOn, setIsSwitchOn] = useState(false);
+
+  const onToggleSwitch = () => setIsSwitchOn(previousState => !previousState);
+
   return (
     <View
       style={
-        typeof height !== typeof undefined ? {height} : GlobalStyle.container
+        typeof height !== typeof undefined ? { height } : GlobalStyle.container
       }>
       <View style={GlobalStyle.displayNone}>
         <Image source={image1} />
@@ -253,16 +296,303 @@ const HousesMap = ({
           <View />
         )}
       </MapView>
-      <View style={{top: 50, right: 15, position: 'absolute'}}>
+      <View style={{ top: 50, right: 15, position: 'absolute' }}>
         <MapButton onPress={requestLocationPermission}>
           <IconFontawesome5 name="crosshairs" size={22} color={primaryBlue} />
         </MapButton>
-        {/* <MapButton>
+        <MapButton onPress={() => parkObjectsSheetRef.current?.open()}>
           <IconFontawesome5 name="eye" size={22} color={primaryBlue} />
-        </MapButton> */}
+        </MapButton>
       </View>
+
+      <RBSheet
+        ref={parkObjectsSheetRef}
+        onOpen={() => setIsParkObjectSheetVisible(true)}
+        onClose={() => setIsParkObjectSheetVisible(false)}
+        closeOnPressBack
+        customStyles={{
+          wrapper: {
+            backgroundColor: 'transparent',
+          },
+          container: {
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+          },
+          draggableIcon: {
+            backgroundColor: '#000',
+          },
+        }}
+        customModalProps={{
+          animationType: 'slide',
+        }}>
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            top: 0,
+            alignSelf: 'center',
+            zIndex: 10000,
+            backgroundColor: 'white',
+            borderRadius: 25,
+            padding: 10,
+            elevation: 10, // Android shadow
+            shadowColor: '#000', // iOS shadow
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.4,
+            shadowRadius: 2,
+            marginBottom: 20,
+          }}
+          onPress={() => parkObjectsSheetRef.current.close()}>
+          <Ionicons name="close" size={24} color={primaryBlue} />
+        </TouchableOpacity>
+        {/* <View style={{ height: 28 }} /> */}
+
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+
+            marginTop: 16,
+          }}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{}}>
+            {parkingOptions.map(item => (
+              <View
+                key={item.id}
+                style={[
+                  selectedParkingOption === item.title
+                    ? styles.selectedParkingStyle
+                    : styles.parkingStyleContainer,
+                  selectedParkingOption === item.title
+                    ? styles.shadowStyle
+                    : {},
+                  { height: 120 },
+                ]}>
+                {item?.iconName === 'charging-station' ? (
+                  <FontAwesome5
+                    name="charging-station"
+                    size={24}
+                    color={
+                      selectedParkingOption === item.title
+                        ? white
+                        : placeholderColor
+                    }
+                  />
+                ) : (
+                  <MaterialIcon
+                    name={item.iconName}
+                    size={24}
+                    color={
+                      selectedParkingOption === item.title
+                        ? white
+                        : placeholderColor
+                    }
+                    style={
+                      item.iconName === 'local-parking'
+                        ? {
+                            borderWidth: 4,
+                            width: 36,
+                            height: 32,
+                            alignItems: 'center',
+
+                            // height: 44,
+                            // paddingVertical: 4,
+                            borderColor:
+                              selectedParkingOption === item.title
+                                ? white
+                                : placeholderColor,
+                            borderRadius: 4,
+                          }
+                        : {}
+                    }
+                  />
+                )}
+                <Text
+                  style={{
+                    color:
+                      selectedParkingOption === item.title ? white : lightGrey,
+                    marginTop: 12,
+                    paddingHorizontal: 16,
+                  }}>
+                  {item.title}{' '}
+                </Text>
+                <ToggleSwitch
+                  initialValue={item.title === selectedParkingOption}
+                  disabled={true}
+                  onToggle={() => {
+                    handleParkingOption(item?.title);
+                  }}
+                />
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginHorizontal: 12,
+            marginVertical: 8,
+            paddingRight: 8,
+          }}>
+          <View style={styles.borderStyle} />
+          <Text
+            style={{
+              paddingHorizontal: 6,
+              fontFamily: 'Roboto-Bold',
+              fontWeight: 'bold',
+              color: placeholderColor,
+            }}>
+            KARTE
+          </Text>
+          <View style={styles.borderStyle} />
+        </View>
+
+        <View
+          style={[
+            styles.shadowStyle,
+            {
+              backgroundColor: creamColor,
+              paddingVertical: 8,
+              marginHorizontal: '3%',
+              borderRadius: 12,
+              shadowOpacity: 0.2,
+            },
+          ]}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+            {mapOptions.map(item => (
+              <TouchableOpacity
+                key={item.id}
+                activeOpacity={0.9}
+                onPress={() => setSelectedMapOption(item.title)}>
+                <View
+                  style={[
+                    selectedMapOption === item.title
+                      ? {
+                          backgroundColor: primaryBlue,
+                          borderRadius: 8,
+                          alignItems: 'center',
+                          marginHorizontal: 10,
+                          shadowColor: primaryBlue,
+                        }
+                      : {},
+                    selectedMapOption === item.title ? styles.shadowStyle : {},
+                    {
+                      paddingVertical: 12,
+                      paddingHorizontal: 24,
+                      minWidth: '28%',
+                    },
+                  ]}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontFamily: 'Roboto-Bold',
+                      fontWeight: 'bold',
+                      color:
+                        selectedMapOption === item.title ? white : primaryBlue,
+                    }}>
+                    {item.title}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </RBSheet>
     </View>
   );
 };
+export const ToggleSwitch = ({ onToggle, initialValue = false, disabled }) => {
+  const [isOn, setIsOn] = useState(initialValue);
 
+  useEffect(() => {
+    setIsOn(initialValue);
+  }, [initialValue]);
+  return (
+    <TouchableOpacity
+      style={[styles.switch, isOn ? styles.on : styles.off]}
+      onPress={onToggle}>
+      <View
+        style={[
+          styles.circle,
+          isOn ? styles.circleOn : styles.circleOff,
+        ]}></View>
+    </TouchableOpacity>
+  );
+};
+
+const styles = StyleSheet.create({
+  switch: {
+    width: 44,
+    height: 24,
+    borderRadius: 15,
+    justifyContent: 'center',
+    padding: 4,
+    marginVertical: 8,
+  },
+  on: {
+    backgroundColor: white,
+  },
+  off: {
+    backgroundColor: placeholderColor,
+  },
+  circle: {
+    width: 16,
+    height: 16,
+    borderRadius: 14,
+    backgroundColor: primaryBlue,
+  },
+  circleOn: {
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  circleOff: {
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: white,
+  },
+  shadowStyle: {
+    elevation: 10, // Android shadow
+    shadowColor: '#000', // iOS shadow
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 2,
+  },
+  borderStyle: {
+    flex: 1,
+    height: 1,
+    backgroundColor: placeholderColor,
+  },
+  selectedParkingStyle: {
+    backgroundColor: primaryBlue,
+    borderRadius: 12,
+    marginHorizontal: 10,
+    paddingVertical: 12,
+    // alignSelf: 'flex-start',
+    alignItems: 'center',
+    minWidth: 100,
+    minHeight: 110,
+  },
+  parkingStyleContainer: {
+    backgroundColor: white,
+    borderRadius: 12,
+    marginHorizontal: 10,
+    paddingVertical: 12,
+    marginBottom: 8,
+    borderColor: '#E0E6EE',
+    borderWidth: 3,
+    // alignSelf: 'flex-start',
+    alignItems: 'center',
+    minWidth: 100,
+    minHeight: 110,
+  },
+});
 export default HousesMap;
