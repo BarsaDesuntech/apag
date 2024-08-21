@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -60,6 +66,15 @@ import {
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import { Button } from 'react-native-paper';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withDecay,
+  withDelay,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 // Import the logo and calculate the display width and height
 export const APAGImageSrc = require('../img/logo_apag_light_x2.png');
 // Define global image class to use anywhere where needed
@@ -71,7 +86,11 @@ const APAGImage = (
     fadeDuration={0}
   />
 );
-
+const rotationDuration = 1000;
+const easing = Easing.cubic;
+const AnimatedTouchableOpacity =
+  Animated.createAnimatedComponent(TouchableOpacity);
+const AnimatedIonicons = Animated.createAnimatedComponent(Ionicons);
 // Return an settings object for the navigation options based on some title and collor settings
 const getTabNavigationOptions = title => ({
   drawerLabel: title,
@@ -683,17 +702,55 @@ const AppNavigation = () => {
   const MainNavigatorStack = createStackNavigator();
   const ConsentNavigatorStackFirst = createStackNavigator();
   const searchBottomSheetRef = useRef(null);
+  let isModalOpening = false;
   const [isSearchBottomSheetVisible, setIsSearchBottomSheetVisible] =
     useState(false);
   const snapPoints = useMemo(() => ['25%', '80%'], []);
+  const rotateSv = useSharedValue(0);
+  const opacityIconContainer = useSharedValue(0);
 
   const handleSheetChanges = useCallback(index => {
     if (index === -1) {
-      setIsSearchBottomSheetVisible(false);
+      const timeOut = setTimeout(() => {
+        setIsSearchBottomSheetVisible(false);
+      }, 500);
+      clearTimeout(timeOut);
     } else {
       setIsSearchBottomSheetVisible(true);
     }
   }, []);
+  const handleOpenBottomSheet = useCallback(() => {
+    isModalOpening = true;
+    searchBottomSheetRef.current?.present();
+    opacityIconContainer.value = withDelay(
+      0 * 500,
+      withTiming(1, { duration: rotationDuration }),
+    );
+    rotateSv.value = withTiming(1, { duration: rotationDuration, easing });
+  }, []);
+  const handleCloseBottomSheet = useCallback(() => {
+    isModalOpening = false;
+    opacityIconContainer.value = withDelay(
+      0 * 500,
+      withTiming(0, { duration: rotationDuration }),
+    );
+    rotateSv.value = withTiming(0, { duration: rotationDuration, easing });
+
+    setTimeout(() => {
+      searchBottomSheetRef.current?.close();
+    }, 500);
+  }, []);
+
+  const animatedRotationStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        rotate: `${
+          isModalOpening ? -rotateSv.value * 180 : rotateSv.value * 180
+        }deg`,
+      },
+    ],
+  }));
+
   return (
     <NavigationContainer>
       <>
@@ -804,14 +861,14 @@ const AppNavigation = () => {
                           e.preventDefault();
                         }
                         setIsSearchBottomSheetVisible(true);
-                        searchBottomSheetRef.current?.present();
+                        handleOpenBottomSheet();
                       },
                       tabLongPress: e => {
                         if (e && e.preventDefault) {
                           e.preventDefault();
                         }
                         setIsSearchBottomSheetVisible(true);
-                        searchBottomSheetRef.current?.present();
+                        handleOpenBottomSheet();
                       },
                     })}
                     options={{
@@ -899,30 +956,20 @@ const AppNavigation = () => {
           </MainNavigatorStack.Navigator>
         )}
 
-        {/* Close Icon Positioned Absolutely */}
-
-        {/* RBSheet */}
         {isSearchBottomSheetVisible ? (
-          <TouchableOpacity
-            style={{
-              position: 'absolute',
-              // top: 0,
-              top: '18%', // Adjust this value as needed to align the icon with the top of the sheet
-              alignSelf: 'center',
-              zIndex: 20000,
-              backgroundColor: 'white',
-              justifyContent: 'center',
-              borderRadius: 24,
-              padding: 10,
-              elevation: 10, // Android shadow
-              shadowColor: '#000', // iOS shadow
-              shadowOffset: { width: 0, height: 6 },
-              shadowOpacity: 0.1,
-              shadowRadius: 2,
-            }}
-            onPress={() => searchBottomSheetRef.current.close()}>
-            <Ionicons name="close" size={24} color={primaryBlue} />
-          </TouchableOpacity>
+          <AnimatedTouchableOpacity
+            style={[
+              styles.closeIconContainer,
+              { opacity: opacityIconContainer },
+            ]}
+            onPress={() => handleCloseBottomSheet()}>
+            <AnimatedIonicons
+              style={animatedRotationStyle}
+              name="close"
+              size={24}
+              color={primaryBlue}
+            />
+          </AnimatedTouchableOpacity>
         ) : null}
         <BottomSheetModalProvider>
           <View>
@@ -931,9 +978,13 @@ const AppNavigation = () => {
               index={1}
               snapPoints={snapPoints}
               enableOverDrag={false}
-              enableDismissOnClose
-              enablePanDownToClose={true}
               handleComponent={() => null}
+              enableDismissOnClose={true}
+              animationConfigs={{
+                duration: 1200,
+                easing: Easing.out(Easing.exp),
+              }}
+              onDismiss={() => handleCloseBottomSheet()}
               onChange={handleSheetChanges}>
               <BottomSheetView style={{ flex: 1, paddingTop: 28 }}>
                 <View style={{ flex: 1, position: 'relative' }}>
@@ -948,4 +999,21 @@ const AppNavigation = () => {
   );
 };
 
+const styles = StyleSheet.create({
+  closeIconContainer: {
+    position: 'absolute',
+    top: '18%',
+    alignSelf: 'center',
+    zIndex: 20000,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    borderRadius: 24,
+    padding: 10,
+    elevation: 10, // Android shadow
+    shadowColor: '#000', // iOS shadow
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+});
 export default AppNavigation;
