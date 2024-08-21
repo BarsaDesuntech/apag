@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -11,6 +11,8 @@ import {
   Linking,
   SafeAreaView,
   Dimensions,
+  StyleSheet,
+  Text,
 } from 'react-native';
 import { logout } from '../store/actions/user';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -50,6 +52,14 @@ import Advantages from '../screens/advantages';
 import { getUser } from '../store/selectors/user';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { SearchScreen } from '../screens/SearchScreen';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetAndroid } from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/TransitionPresets';
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet';
+import { Button } from 'react-native-paper';
 // Import the logo and calculate the display width and height
 export const APAGImageSrc = require('../img/logo_apag_light_x2.png');
 // Define global image class to use anywhere where needed
@@ -675,7 +685,15 @@ const AppNavigation = () => {
   const searchBottomSheetRef = useRef(null);
   const [isSearchBottomSheetVisible, setIsSearchBottomSheetVisible] =
     useState(false);
+  const snapPoints = useMemo(() => ['25%', '80%'], []);
 
+  const handleSheetChanges = useCallback(index => {
+    if (index === -1) {
+      setIsSearchBottomSheetVisible(false);
+    } else {
+      setIsSearchBottomSheetVisible(true);
+    }
+  }, []);
   return (
     <NavigationContainer>
       <>
@@ -786,14 +804,14 @@ const AppNavigation = () => {
                           e.preventDefault();
                         }
                         setIsSearchBottomSheetVisible(true);
-                        searchBottomSheetRef.current?.open();
+                        searchBottomSheetRef.current?.present();
                       },
                       tabLongPress: e => {
                         if (e && e.preventDefault) {
                           e.preventDefault();
                         }
                         setIsSearchBottomSheetVisible(true);
-                        searchBottomSheetRef.current?.open();
+                        searchBottomSheetRef.current?.present();
                       },
                     })}
                     options={{
@@ -884,54 +902,47 @@ const AppNavigation = () => {
         {/* Close Icon Positioned Absolutely */}
 
         {/* RBSheet */}
-
-        <RBSheet
-          ref={searchBottomSheetRef}
-          closeOnPressBack
-          onClose={() => setIsSearchBottomSheetVisible(false)}
-          customStyles={{
-            wrapper: {
-              backgroundColor: 'transparent',
-            },
-            container: {
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              // flexGrow: 1,
-              // minHeight: '70%',
-              height: Dimensions.get('window').height * 0.89,
-            },
-            draggableIcon: {
-              backgroundColor: '#000',
-            },
-          }}
-          customModalProps={{
-            animationType: 'slide',
-            // statusBarTranslucent: true,
-          }}>
-          <View style={{ height: 28 }} />
-
+        {isSearchBottomSheetVisible ? (
           <TouchableOpacity
             style={{
               position: 'absolute',
-              top: 0,
-              // top: '45%', // Adjust this value as needed to align the icon with the top of the sheet
+              // top: 0,
+              top: '18%', // Adjust this value as needed to align the icon with the top of the sheet
               alignSelf: 'center',
-              zIndex: 10000,
+              zIndex: 20000,
               backgroundColor: 'white',
-              borderRadius: 25,
+              justifyContent: 'center',
+              borderRadius: 24,
               padding: 10,
               elevation: 10, // Android shadow
               shadowColor: '#000', // iOS shadow
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.4,
+              shadowOffset: { width: 0, height: 6 },
+              shadowOpacity: 0.1,
               shadowRadius: 2,
             }}
             onPress={() => searchBottomSheetRef.current.close()}>
             <Ionicons name="close" size={24} color={primaryBlue} />
           </TouchableOpacity>
-
-          <SearchScreen />
-        </RBSheet>
+        ) : null}
+        <BottomSheetModalProvider>
+          <View>
+            <BottomSheetModal
+              ref={searchBottomSheetRef}
+              index={1}
+              snapPoints={snapPoints}
+              enableOverDrag={false}
+              enableDismissOnClose
+              enablePanDownToClose={true}
+              handleComponent={() => null}
+              onChange={handleSheetChanges}>
+              <BottomSheetView style={{ flex: 1, paddingTop: 28 }}>
+                <View style={{ flex: 1, position: 'relative' }}>
+                  <SearchScreen />
+                </View>
+              </BottomSheetView>
+            </BottomSheetModal>
+          </View>
+        </BottomSheetModalProvider>
       </>
     </NavigationContainer>
   );

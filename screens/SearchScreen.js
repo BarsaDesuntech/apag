@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  FlatList,
   Platform,
   ScrollView,
   StyleSheet,
@@ -13,7 +12,6 @@ import {
   black,
   inputOutlineColor,
   lightGrey,
-  lightGrey200,
   oldBlue,
   placeholderColor,
   primaryBlue,
@@ -21,11 +19,10 @@ import {
   secondaryBlue,
 } from '../style';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SuchverlaufItems } from '../components/SearchScreen/SuchverlaufItems';
-import SwipeableFlatList from 'react-native-swipeable-list';
+import { FlatList } from 'react-native-gesture-handler';
+import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 
 const options = [
   {
@@ -74,7 +71,7 @@ export const SearchScreen = () => {
     'Theaterplatz  ',
     'Theresienstraße  ',
   ]);
-
+  const [swipedIndex, setSwipedIndex] = useState([]);
   // Filter suggestions based on query
   const filteredSuggestions = suggestions.filter(item =>
     item.toLowerCase().includes(searchValue.toLowerCase()),
@@ -83,6 +80,15 @@ export const SearchScreen = () => {
   const checkIsSearchOn = searchValue => {
     return searchValue?.length > 0;
   };
+
+  const handleSwipeComplete = (isSwiped, index) => {
+    if (isSwiped) {
+      setSwipedIndex(prev => [...prev, index]);
+    } else {
+      setSwipedIndex(prev => prev.filter(i => i !== index));
+    }
+  };
+
   // Render each item in the FlatList
   const renderSuggestionItem = ({ item, index }) => {
     const startIndex = item.toLowerCase().indexOf(searchValue.toLowerCase());
@@ -146,7 +152,7 @@ export const SearchScreen = () => {
   };
   return (
     <View style={styles.container}>
-      <FlatList
+      <BottomSheetFlatList
         showsVerticalScrollIndicator={false}
         data={[{ key: 'SearchData' }]}
         contentContainerStyle={{
@@ -197,7 +203,7 @@ export const SearchScreen = () => {
                     flex: 1,
                   },
                 ]}>
-                <FlatList
+                <BottomSheetFlatList
                   data={filteredSuggestions}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={renderSuggestionItem}
@@ -258,15 +264,28 @@ export const SearchScreen = () => {
               </Text>
             ) : null}
             {checkIsSearchOn(searchValue) ? null : (
-              <SwipeableFlatList
+              <FlatList
                 data={sucherLaufArray}
-                keyExtractor={(item, index) => item.id}
-                renderItem={({ item }) => <SuchverlaufItems item={item} />}
+                renderScrollComponent={ScrollView}
+                nestedScrollEnabled
+                keyExtractor={(item, index) => item.id.toString()}
+                renderItem={({ item, index }) => (
+                  <SuchverlaufItems
+                    item={item}
+                    onSwipeComplete={swiped =>
+                      handleSwipeComplete(swiped, index)
+                    }
+                    swipedIndexItem={swipedIndex}
+                    index={index}
+                    contentContainerStyle={{ marginVertical: 8 }}
+                  />
+                )}
               />
             )}
           </>
         )}
       />
+
       <View style={[styles.floatingButtonContainer, styles.shadowStyle]}>
         <Text
           style={{
