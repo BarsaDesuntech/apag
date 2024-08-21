@@ -1,18 +1,19 @@
-import React, {Component} from 'react';
-import {Provider} from 'react-redux';
-import {ActionSheetProvider} from '@expo/react-native-action-sheet'; // @TODO replace
-import {Provider as PaperProvider} from 'react-native-paper';
-import {StatusBar} from 'react-native';
+import React, { Component } from 'react';
+import { Provider } from 'react-redux';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet'; // @TODO replace
+import { Provider as PaperProvider } from 'react-native-paper';
+import { StatusBar } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
-import {PersistGate} from 'redux-persist/integration/react';
+import { PersistGate } from 'redux-persist/integration/react';
 import configureStore from './store/configureStore';
 import AppNavigation from './navigation';
 import SessionComponent from './components/sessionComponent';
 import NotificationService from './components/notificationService';
 import BugsnagService from './components/bugsnagService';
 import 'react-native-gesture-handler';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
-const {store, persistor} = configureStore();
+const { store, persistor } = configureStore();
 
 export default class Root extends Component {
   render() {
@@ -25,7 +26,9 @@ export default class Root extends Component {
           <NotificationService />
           <ActionSheetProvider useCustomActionSheet={true}>
             <PaperProvider>
-              <App />
+              <BottomSheetModalProvider>
+                <App />
+              </BottomSheetModalProvider>
             </PaperProvider>
           </ActionSheetProvider>
         </PersistGate>

@@ -1,6 +1,12 @@
 ///@TODO2- few issue here
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   View,
   Dimensions,
@@ -34,6 +40,18 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { Divider } from 'react-native-paper';
 import { placeholder } from 'deprecated-react-native-prop-types/DeprecatedTextInputPropTypes';
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet';
+import Animated, {
+  Easing,
+  FadeIn,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 const window = Dimensions.get('window');
 // Define some global settings for the map
@@ -53,6 +71,9 @@ const mapOptions = [
   { id: 2, title: 'Normal' },
   { id: 3, title: 'Satelit' },
 ];
+const AnimatedTouchableOpacity =
+  Animated.createAnimatedComponent(TouchableOpacity);
+const AnimatedIonicons = Animated.createAnimatedComponent(Ionicons);
 /**
  * Renders a react-native-map with a marker for every parkhouse
  * Uses react-native-maps-super-cluster in order to group near by parkhouses together when zooming out
@@ -104,6 +125,72 @@ const HousesMap = ({
   const parkObjectsSheetRef = useRef(null);
   const [isParkObjectSheetVisible, setIsParkObjectSheetVisible] =
     useState(false);
+  const snapPoints = useMemo(() => ['25%', '36%'], []);
+  const rotateSv = useSharedValue(0);
+  const opacity = useSharedValue(0);
+  const translateY = useSharedValue(-Dimensions.get('window').height * 0.5);
+  let isModalOpening = false;
+  const handleSheetChanges = useCallback(index => {
+    if (index === -1) {
+      const timeOut = setTimeout(() => {
+        setIsParkObjectSheetVisible(false);
+      }, 500);
+      clearTimeout(timeOut);
+      isModalOpening = false;
+      opacity.value = withTiming(0, {
+        duration: 1000,
+        easing: Easing.in(Easing.exp),
+      });
+      translateY.value = withTiming(-Dimensions.get('window').height * 0.5, {
+        duration: 1000,
+        easing: Easing.in(Easing.exp),
+      });
+    } else {
+      setIsParkObjectSheetVisible(true);
+    }
+  }, []);
+  const handleOpenBottomSheet = useCallback(() => {
+    isModalOpening = true;
+    parkObjectsSheetRef.current?.present();
+    opacity.value = withTiming(1, {
+      duration: 1000,
+      easing: Easing.out(Easing.exp),
+    });
+    translateY.value = withTiming(0, {
+      duration: 1000,
+      easing: Easing.out(Easing.exp),
+    });
+  }, []);
+  const handleCloseBottomSheet = useCallback(() => {
+    isModalOpening = false;
+    opacity.value = withTiming(0, {
+      duration: 1000,
+      easing: Easing.in(Easing.exp),
+    });
+    translateY.value = withTiming(-Dimensions.get('window').height * 0.5, {
+      duration: 1000,
+      easing: Easing.in(Easing.exp),
+    });
+
+    parkObjectsSheetRef.current?.close();
+  }, []);
+
+  const animatedRotationStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        rotate: `${
+          isModalOpening ? -rotateSv.value * 180 : rotateSv.value * 180
+        }deg`,
+      },
+    ],
+  }));
+
+  // Animated style for the opacity and position
+  const animatedStyleCrossFadeIn = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ translateY: translateY.value }],
+  }));
+
   const [selectedParkingOption, setSelectedParkingOptions] = useState('Parken');
   const [selectedMapOption, setSelectedMapOption] = useState('Normal');
   const handleParkingOption = option => {
@@ -300,211 +387,212 @@ const HousesMap = ({
         <MapButton onPress={requestLocationPermission}>
           <IconFontawesome5 name="crosshairs" size={22} color={primaryBlue} />
         </MapButton>
-        <MapButton onPress={() => parkObjectsSheetRef.current?.open()}>
+        <MapButton onPress={() => handleOpenBottomSheet()}>
           <IconFontawesome5 name="eye" size={22} color={primaryBlue} />
         </MapButton>
       </View>
-
-      <RBSheet
-        ref={parkObjectsSheetRef}
-        onOpen={() => setIsParkObjectSheetVisible(true)}
-        onClose={() => setIsParkObjectSheetVisible(false)}
-        closeOnPressBack
-        customStyles={{
-          wrapper: {
-            backgroundColor: 'transparent',
-          },
-          container: {
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-          },
-          draggableIcon: {
-            backgroundColor: '#000',
-          },
-        }}
-        customModalProps={{
-          animationType: 'slide',
-        }}>
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            top: 0,
-            alignSelf: 'center',
-            zIndex: 10000,
-            backgroundColor: 'white',
-            borderRadius: 25,
-            padding: 10,
-            elevation: 10, // Android shadow
-            shadowColor: '#000', // iOS shadow
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.4,
-            shadowRadius: 2,
-            marginBottom: 20,
+      {isParkObjectSheetVisible ? (
+        <Animated.View
+          style={[animatedStyleCrossFadeIn, styles.closeIconContainer]}>
+          <AnimatedTouchableOpacity
+            style={[{ flex: 1 }]}
+            entering={FadeIn.duration(400)}
+            onPress={() => handleCloseBottomSheet()}>
+            <AnimatedIonicons
+              style={animatedRotationStyle}
+              name="close"
+              size={24}
+              color={primaryBlue}
+            />
+          </AnimatedTouchableOpacity>
+        </Animated.View>
+      ) : null}
+      <View>
+        <BottomSheetModal
+          ref={parkObjectsSheetRef}
+          index={1}
+          snapPoints={snapPoints}
+          enableOverDrag={false}
+          handleComponent={() => null}
+          enableDismissOnClose={true}
+          animationConfigs={{
+            duration: 1200,
+            easing: Easing.out(Easing.exp),
           }}
-          onPress={() => parkObjectsSheetRef.current.close()}>
-          <Ionicons name="close" size={24} color={primaryBlue} />
-        </TouchableOpacity>
-        {/* <View style={{ height: 28 }} /> */}
-
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-
-            marginTop: 16,
-          }}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{}}>
-            {parkingOptions.map(item => (
+          onDismiss={() => handleCloseBottomSheet()}
+          onChange={handleSheetChanges}>
+          <BottomSheetView style={{ flex: 1, paddingTop: 28 }}>
+            <View style={{ flex: 1, position: 'relative' }}>
               <View
-                key={item.id}
-                style={[
-                  selectedParkingOption === item.title
-                    ? styles.selectedParkingStyle
-                    : styles.parkingStyleContainer,
-                  selectedParkingOption === item.title
-                    ? styles.shadowStyle
-                    : {},
-                  { height: 120 },
-                ]}>
-                {item?.iconName === 'charging-station' ? (
-                  <FontAwesome5
-                    name="charging-station"
-                    size={24}
-                    color={
-                      selectedParkingOption === item.title
-                        ? white
-                        : placeholderColor
-                    }
-                  />
-                ) : (
-                  <MaterialIcon
-                    name={item.iconName}
-                    size={24}
-                    color={
-                      selectedParkingOption === item.title
-                        ? white
-                        : placeholderColor
-                    }
-                    style={
-                      item.iconName === 'local-parking'
-                        ? {
-                            borderWidth: 4,
-                            width: 36,
-                            height: 32,
-                            alignItems: 'center',
-
-                            // height: 44,
-                            // paddingVertical: 4,
-                            borderColor:
-                              selectedParkingOption === item.title
-                                ? white
-                                : placeholderColor,
-                            borderRadius: 4,
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: 16,
+                }}>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{}}>
+                  {parkingOptions.map(item => (
+                    <View
+                      key={item.id}
+                      style={[
+                        selectedParkingOption === item.title
+                          ? styles.selectedParkingStyle
+                          : styles.parkingStyleContainer,
+                        selectedParkingOption === item.title
+                          ? styles.shadowStyle
+                          : {},
+                        { height: 120 },
+                      ]}>
+                      {item?.iconName === 'charging-station' ? (
+                        <FontAwesome5
+                          name="charging-station"
+                          size={24}
+                          color={
+                            selectedParkingOption === item.title
+                              ? white
+                              : placeholderColor
                           }
-                        : {}
-                    }
-                  />
-                )}
+                        />
+                      ) : (
+                        <MaterialIcon
+                          name={item.iconName}
+                          size={24}
+                          color={
+                            selectedParkingOption === item.title
+                              ? white
+                              : placeholderColor
+                          }
+                          style={
+                            item.iconName === 'local-parking'
+                              ? {
+                                  borderWidth: 4,
+                                  width: 36,
+                                  height: 32,
+                                  // alignItems: 'center',
+                                  paddingLeft:
+                                    Platform.OS === 'android' ? 4 : 0,
+                                  paddingTop: Platform.OS === 'android' ? 4 : 0,
+
+                                  // height: 44,
+                                  // paddingVertical: 4,
+                                  borderColor:
+                                    selectedParkingOption === item.title
+                                      ? white
+                                      : placeholderColor,
+                                  borderRadius: 4,
+                                }
+                              : {}
+                          }
+                        />
+                      )}
+                      <Text
+                        style={{
+                          color:
+                            selectedParkingOption === item.title
+                              ? white
+                              : lightGrey,
+                          marginTop: 12,
+                          paddingHorizontal: 16,
+                        }}>
+                        {item.title}{' '}
+                      </Text>
+                      <ToggleSwitch
+                        initialValue={item.title === selectedParkingOption}
+                        disabled={true}
+                        onToggle={() => {
+                          handleParkingOption(item?.title);
+                        }}
+                      />
+                    </View>
+                  ))}
+                </ScrollView>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginHorizontal: 12,
+                  marginVertical: 8,
+                  paddingRight: 8,
+                }}>
+                <View style={styles.borderStyle} />
                 <Text
                   style={{
-                    color:
-                      selectedParkingOption === item.title ? white : lightGrey,
-                    marginTop: 12,
-                    paddingHorizontal: 16,
+                    paddingHorizontal: 6,
+                    fontFamily: 'Roboto-Bold',
+                    fontWeight: 'bold',
+                    color: placeholderColor,
                   }}>
-                  {item.title}{' '}
+                  KARTE
                 </Text>
-                <ToggleSwitch
-                  initialValue={item.title === selectedParkingOption}
-                  disabled={true}
-                  onToggle={() => {
-                    handleParkingOption(item?.title);
-                  }}
-                />
+                <View style={styles.borderStyle} />
               </View>
-            ))}
-          </ScrollView>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginHorizontal: 12,
-            marginVertical: 8,
-            paddingRight: 8,
-          }}>
-          <View style={styles.borderStyle} />
-          <Text
-            style={{
-              paddingHorizontal: 6,
-              fontFamily: 'Roboto-Bold',
-              fontWeight: 'bold',
-              color: placeholderColor,
-            }}>
-            KARTE
-          </Text>
-          <View style={styles.borderStyle} />
-        </View>
 
-        <View
-          style={[
-            styles.shadowStyle,
-            {
-              backgroundColor: creamColor,
-              paddingVertical: 8,
-              marginHorizontal: '3%',
-              borderRadius: 12,
-              shadowOpacity: 0.2,
-            },
-          ]}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            {mapOptions.map(item => (
-              <TouchableOpacity
-                key={item.id}
-                activeOpacity={0.9}
-                onPress={() => setSelectedMapOption(item.title)}>
+              <View
+                style={[
+                  styles.shadowStyle,
+                  {
+                    backgroundColor: creamColor,
+                    paddingVertical: 8,
+                    marginHorizontal: '3%',
+                    borderRadius: 12,
+                    shadowOpacity: 0.2,
+                  },
+                ]}>
                 <View
-                  style={[
-                    selectedMapOption === item.title
-                      ? {
-                          backgroundColor: primaryBlue,
-                          borderRadius: 8,
-                          alignItems: 'center',
-                          marginHorizontal: 10,
-                          shadowColor: primaryBlue,
-                        }
-                      : {},
-                    selectedMapOption === item.title ? styles.shadowStyle : {},
-                    {
-                      paddingVertical: 12,
-                      paddingHorizontal: 24,
-                      minWidth: '28%',
-                    },
-                  ]}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontFamily: 'Roboto-Bold',
-                      fontWeight: 'bold',
-                      color:
-                        selectedMapOption === item.title ? white : primaryBlue,
-                    }}>
-                    {item.title}
-                  </Text>
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}>
+                  {mapOptions.map(item => (
+                    <TouchableOpacity
+                      key={item.id}
+                      activeOpacity={0.9}
+                      onPress={() => setSelectedMapOption(item.title)}>
+                      <View
+                        style={[
+                          selectedMapOption === item.title
+                            ? {
+                                backgroundColor: primaryBlue,
+                                borderRadius: 8,
+                                alignItems: 'center',
+                                marginHorizontal: 10,
+                                shadowColor: primaryBlue,
+                              }
+                            : {},
+                          selectedMapOption === item.title
+                            ? styles.shadowStyle
+                            : {},
+                          {
+                            paddingVertical: 12,
+                            paddingHorizontal: 24,
+                            minWidth: '28%',
+                          },
+                        ]}>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            fontFamily: 'Roboto-Bold',
+                            fontWeight: 'bold',
+                            color:
+                              selectedMapOption === item.title
+                                ? white
+                                : primaryBlue,
+                          }}>
+                          {item.title}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
                 </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      </RBSheet>
+              </View>
+            </View>
+          </BottomSheetView>
+        </BottomSheetModal>
+      </View>
     </View>
   );
 };
@@ -593,6 +681,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     minWidth: 100,
     minHeight: 110,
+  },
+  closeIconContainer: {
+    position: 'absolute',
+    top: '66%',
+    alignSelf: 'center',
+    zIndex: 1000,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    borderRadius: 24,
+    padding: 10,
+    elevation: 10, // Android shadow
+    shadowColor: '#000', // iOS shadow
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
 });
 export default HousesMap;
