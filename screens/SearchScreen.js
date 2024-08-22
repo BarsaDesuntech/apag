@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     paddingVertical: 12,
     paddingHorizontal: 10,
-    marginBottom: 30,
+    marginBottom: 40,
     borderRadius: 8,
   },
   suggestionList: {

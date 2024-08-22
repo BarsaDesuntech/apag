@@ -1,11 +1,13 @@
-import React, {Component} from 'react';
-import {View, Text, Switch, Linking, Platform} from 'react-native';
-import {connect} from 'react-redux';
-import GlobalStyle from '../style';
+import React, { Component } from 'react';
+import { View, Text, Switch, Linking, Platform } from 'react-native';
+import { connect } from 'react-redux';
+import GlobalStyle, { white } from '../style';
 import PropTypes from 'prop-types';
-import {saveConsentSettings} from '../store/actions/consent';
+import { saveConsentSettings } from '../store/actions/consent';
 import Notice from '../components/notice';
-
+import { tabBarRef } from '../navigation';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 class ConsentItem extends Component {
   static propTypes = {
     index: PropTypes.string.isRequired,
@@ -14,12 +16,12 @@ class ConsentItem extends Component {
   };
 
   render() {
-    const {text, index} = this.props;
+    const { text, index } = this.props;
     return (
       <View
         style={[
           GlobalStyle.consentItem,
-          Platform.OS === 'ios' ? {height: 40} : {},
+          Platform.OS === 'ios' ? { height: 40 } : {},
         ]}>
         <Text style={GlobalStyle.consentItemTitle}>{text}</Text>
         <Switch
@@ -44,8 +46,31 @@ class ConsentSettingsScreen extends Component {
     settings[index] = value;
     this.props.saveConsentSettings(settings);
   };
+  componentDidMount() {
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.handleTabBarVisibility();
+    });
+
+    this.blurListener = this.props.navigation.addListener('blur', () => {
+      this.handleTabBarVisibility();
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.focusListener) {
+      this.focusListener();
+    }
+    if (this.blurListener) {
+      this.blurListener();
+    }
+  }
+
+  handleTabBarVisibility = () => {
+    tabBarRef.current.setVisible(false);
+  };
   render() {
-    const {consent} = this.props.consent;
+    const { consent } = this.props.consent;
+
     return (
       <View style={[GlobalStyle.container, GlobalStyle.containerSmallPadding]}>
         <Notice

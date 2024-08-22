@@ -241,11 +241,12 @@ class HomeScreen extends Component {
               colors={['#3A5998']}
             />
           }
-          contentContainerStyle={
+          contentContainerStyle={[
             upperCaseCities.length === 0 && !isFetching
               ? GlobalStyle.container
-              : {}
-          }>
+              : {},
+            { paddingBottom: 60 },
+          ]}>
           {upperCaseCities.length === 0 && !isFetching && <ErrorScreen />}
           {cities?.map((city, index) => {
             return (

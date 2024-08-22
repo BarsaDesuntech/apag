@@ -1,11 +1,12 @@
 import React, {
+  createRef,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStackNavigator } from '@react-navigation/stack';
 import GlobalStyle, { oldBlue, primaryBlue, white } from '../style';
@@ -24,6 +25,7 @@ import { logout } from '../store/actions/user';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import IconFontawesome4 from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/home';
@@ -56,10 +58,8 @@ import CreditCard from '../screens/CreditCard';
 import AntragFlowStepper from '../components/AntragFlowStepper';
 import Advantages from '../screens/advantages';
 import { getUser } from '../store/selectors/user';
-import RBSheet from 'react-native-raw-bottom-sheet';
 import { SearchScreen } from '../screens/SearchScreen';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { BottomSheetAndroid } from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/TransitionPresets';
+import { CurvedBottomBar } from 'react-native-curved-bottom-bar';
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
@@ -75,6 +75,7 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
+
 // Import the logo and calculate the display width and height
 export const APAGImageSrc = require('../img/logo_apag_light_x2.png');
 // Define global image class to use anywhere where needed
@@ -115,6 +116,7 @@ const headerStyle = [
     elevation: 0,
   },
 ];
+export const tabBarRef = createRef();
 
 const headerOptions = {
   headerStyle,
@@ -157,6 +159,7 @@ const getTabIcon = (iconName, tintColor, size, solid = true) => {
   }
   return <Icon name={iconName} size={size} color={tintColor} light />;
 };
+
 const getTabIconAlt = (iconName, tintColor, size, solid = true) => {
   return (
     <Ionicons
@@ -185,7 +188,8 @@ const AppNavigation = () => {
   const consent = useSelector(({ consent: t }) => t);
   const app = useSelector(({ app: t }) => t);
   const logoutUser = () => dispatch(logout());
-  const showMenu = navigation => {
+  const navigation = useNavigation();
+  const showMenu = () => {
     const handleAction = index => {
       switch (index) {
         case 0:
@@ -242,7 +246,59 @@ const AppNavigation = () => {
       handleAction,
     );
   };
-
+  const renderTabBar = ({ routeName, selectedTab, navigate }) => {
+    let iconName;
+    let tabLabel;
+    switch (routeName) {
+      case 'Karte':
+        iconName = 'map';
+        tabLabel = 'Karte'; // Map icon
+        break;
+      case 'Parken':
+        iconName = 'parking';
+        tabLabel = 'Parken';
+        break;
+      case 'Account':
+        iconName = 'user';
+        tabLabel = 'Meine APAG';
+        break;
+      case 'Menü':
+        iconName = 'bars';
+        tabLabel = 'Mehr';
+        break;
+      default:
+        iconName = 'circle'; // Default icon (optional)
+        tabLabel = '';
+        break;
+    }
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          if (routeName === 'Menü') {
+            showMenu(navigate);
+          } else navigate(routeName);
+        }}
+        style={styles.tabbarItem}>
+        {iconName === 'map'
+          ? getTabIconAlt(
+              iconName,
+              routeName === selectedTab ? oldBlue : primaryBlue,
+              26,
+              routeName === selectedTab,
+            )
+          : getTabIcon(
+              iconName,
+              routeName === selectedTab ? oldBlue : primaryBlue,
+              26,
+              routeName === selectedTab,
+            )}
+        <Text
+          style={{ color: routeName === selectedTab ? oldBlue : primaryBlue }}>
+          {tabLabel}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
   // Stack Navigator for the Parken Tab
   const ParkenListeStackNavigator = createStackNavigator();
   const ParkenListe = (
@@ -752,26 +808,22 @@ const AppNavigation = () => {
   }));
 
   return (
-    <NavigationContainer>
-      <>
-        {!consent.consent.filled && (
-          <ConsentNavigatorStackFirst.Navigator
-            initialRouteName={'Datenschutz'}
-            screenOptions={{ headerShown: false }}>
-            <ConsentNavigatorStack.Screen
-              name={'Datenschutz'}
-              component={LaunchPopper}
-            />
-          </ConsentNavigatorStackFirst.Navigator>
-        )}
-        {consent.consent.filled && (
+    <>
+      {!consent.consent.filled && (
+        <ConsentNavigatorStackFirst.Navigator
+          initialRouteName={'Datenschutz'}
+          screenOptions={{ headerShown: false }}>
+          <ConsentNavigatorStack.Screen
+            name={'Datenschutz'}
+            component={LaunchPopper}
+          />
+        </ConsentNavigatorStackFirst.Navigator>
+      )}
+      {consent.consent.filled &&
+        (consent.consent.filled && !app.app.hasSeenLaunchLoginScreen ? (
           <MainNavigatorStack.Navigator
             gestureEnabled={true}
-            initialRouteName={
-              consent.consent.filled && !app.app.hasSeenLaunchLoginScreen
-                ? 'LaunchPopup'
-                : 'Main'
-            }
+            initialRouteName={'LaunchPopup'}
             screenOptions={{ headerShown: false }}>
             <MainNavigatorStack.Screen
               name={'LaunchPopup'}
@@ -784,138 +836,7 @@ const AppNavigation = () => {
               }}>
               {() => AntragFlow}
             </MainNavigatorStack.Screen>
-            <MainNavigatorStack.Screen name="Main">
-              {() => (
-                <BottomNavigator.Navigator
-                  initialRouteName="Karte"
-                  // tabBarOptions={{
-                  //   activeTintColor: oldBlue,
-                  //   inactiveTintColor: primaryBlue,
-                  //   style: {
-                  //     backgroundColor: white,
-                  //     fontFamily: 'Roboto',
-                  //     display: app.app.isInLaunchFlow ? 'none' : 'flex',
-                  //     borderTopWidth: 0,
-                  //     height: 90,
-                  //     paddingVertical: 5,
-                  //   },
-                  // }}
-                  screenOptions={{
-                    headerShown: false,
-                    tabBarActiveTintColor: oldBlue,
-                    tabBarInactiveTintColor: primaryBlue,
-                    tabBarStyle: {
-                      backgroundColor: white,
-                      fontFamily: 'Roboto',
-                      display: app.app.isInLaunchFlow ? 'none' : 'flex',
-                      borderTopWidth: 0,
-                      // height: 90,
-                      paddingVertical: 5,
-                    },
-                  }}>
-                  <BottomNavigator.Screen
-                    name="Karte"
-                    options={{
-                      tabBarLabel: 'Karte',
-                      tabBarIcon: ({ color, size, focused }) =>
-                        getTabIconAlt('map', color, size + 2, focused),
-                    }}>
-                    {() => ParkenKarte}
-                  </BottomNavigator.Screen>
-                  <BottomNavigator.Screen
-                    name="Parken"
-                    options={{
-                      tabBarLabel: 'Parken',
-                      tabBarIcon: ({ color, size, focused }) =>
-                        getTabIcon('parking', color, size, focused),
-                    }}>
-                    {() => ParkenListe}
-                  </BottomNavigator.Screen>
-                  {/* <BottomNavigator.Screen
-                  name="Home"
-                  options={{
-                    tabBarButton: props => (
-                      <TouchableOpacity {...props}>
-                        <View
-                          style={{
-                            height: 60,
-                            backgroundColor: primaryBlue,
-                            justifyContent: 'center',
-                            width: 60,
-                            alignItems: 'center',
-                            borderRadius: 50,
-                          }}>
-                          {getTabIconAlt('search', white, 35, false)}
-                        </View>
-                        <View style={{ height: 30, backgroundColor: white }} />
-                      </TouchableOpacity>
-                    ),
-                  }}>
-                  {() => ParkenListe}
-                </BottomNavigator.Screen> */}
-                  <BottomNavigator.Screen
-                    name="Search"
-                    listeners={({ navigation }) => ({
-                      tabPress: e => {
-                        if (e && e.preventDefault) {
-                          e.preventDefault();
-                        }
-                        setIsSearchBottomSheetVisible(true);
-                        handleOpenBottomSheet();
-                      },
-                      tabLongPress: e => {
-                        if (e && e.preventDefault) {
-                          e.preventDefault();
-                        }
-                        setIsSearchBottomSheetVisible(true);
-                        handleOpenBottomSheet();
-                      },
-                    })}
-                    options={{
-                      tabBarLabel: 'Search',
-                      headerTitle: 'Search',
-                      tabBarIcon: ({ color, size, focused }) =>
-                        getTabIcon('user', color, size, focused),
-                    }}>
-                    {() => null}
-                  </BottomNavigator.Screen>
-                  <BottomNavigator.Screen
-                    name="Account"
-                    options={{
-                      tabBarLabel: 'Meine APAG',
-                      headerTitle: 'Meine APAG',
-                      tabBarIcon: ({ color, size, focused }) =>
-                        getTabIcon('user', color, size, focused),
-                    }}>
-                    {() => MeineAPAG}
-                  </BottomNavigator.Screen>
-                  <BottomNavigator.Screen
-                    name="Menü"
-                    listeners={({ navigation }) => ({
-                      tabPress: e => {
-                        if (e && e.preventDefault) {
-                          e.preventDefault();
-                        }
 
-                        showMenu(navigation);
-                      },
-                      tabLongPress: e => {
-                        if (e && e.preventDefault) {
-                          e.preventDefault();
-                        }
-                        showMenu(navigation);
-                      },
-                    })}
-                    options={{
-                      tabBarLabel: 'Mehr',
-                      tabBarIcon: ({ color, size }) =>
-                        getTabIcon('bars', color, size),
-                    }}>
-                    {() => null}
-                  </BottomNavigator.Screen>
-                </BottomNavigator.Navigator>
-              )}
-            </MainNavigatorStack.Screen>
             <MainNavigatorStack.Screen name="GDPR">
               {() => (
                 <ConsentNavigatorStack.Navigator initialRouteName="GDPRSettings">
@@ -937,6 +858,7 @@ const AppNavigation = () => {
                       headerTitleStyle: headerStyle,
                       headerTintColor: '#fff',
                       headerBackTitle: ' ',
+
                       headerRight: _props => (
                         <View
                           // eslint-disable-next-line react-native/no-inline-styles
@@ -954,48 +876,177 @@ const AppNavigation = () => {
               )}
             </MainNavigatorStack.Screen>
           </MainNavigatorStack.Navigator>
-        )}
-
-        {isSearchBottomSheetVisible ? (
-          <AnimatedTouchableOpacity
-            style={[
-              styles.closeIconContainer,
-              { opacity: opacityIconContainer },
-            ]}
-            onPress={() => handleCloseBottomSheet()}>
-            <AnimatedIonicons
-              style={animatedRotationStyle}
-              name="close"
-              size={24}
-              color={primaryBlue}
-            />
-          </AnimatedTouchableOpacity>
-        ) : null}
-        <BottomSheetModalProvider>
-          <View>
-            <BottomSheetModal
-              ref={searchBottomSheetRef}
-              index={1}
-              snapPoints={snapPoints}
-              enableOverDrag={false}
-              handleComponent={() => null}
-              enableDismissOnClose={true}
-              animationConfigs={{
-                duration: 1200,
-                easing: Easing.out(Easing.exp),
+        ) : (
+          <>
+            <CurvedBottomBar.Navigator
+              initialRouteName={'Karte'}
+              ref={tabBarRef}
+              type="DOWN"
+              bgColor={white}
+              style={styles.bottomBar}
+              shadowStyle={styles.shawdow}
+              height={55}
+              circleWidth={50}
+              screenOptions={{
+                headerShown: false,
+                tabBarActiveTintColor: oldBlue,
+                tabBarInactiveTintColor: primaryBlue,
+                tabBarStyle: {
+                  backgroundColor: white,
+                  fontFamily: 'Roboto',
+                  display: app.app.isInLaunchFlow ? 'none' : 'flex',
+                  borderTopWidth: 0,
+                  // height: 90,
+                  paddingVertical: 5,
+                },
               }}
-              onDismiss={() => handleCloseBottomSheet()}
-              onChange={handleSheetChanges}>
-              <BottomSheetView style={{ flex: 1, paddingTop: 28 }}>
-                <View style={{ flex: 1, position: 'relative' }}>
-                  <SearchScreen />
-                </View>
-              </BottomSheetView>
-            </BottomSheetModal>
-          </View>
-        </BottomSheetModalProvider>
-      </>
-    </NavigationContainer>
+              renderCircle={({ selectedTab, navigate }) => (
+                <Animated.View style={styles.btnCircleUp}>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => {
+                      setIsSearchBottomSheetVisible(true),
+                        handleOpenBottomSheet();
+                    }}>
+                    <Ionicons name={'search'} color={white} size={25} />
+                  </TouchableOpacity>
+                </Animated.View>
+              )}
+              tabBar={renderTabBar}>
+              <CurvedBottomBar.Screen
+                name="Karte"
+                position="LEFT"
+                options={{
+                  tabBarLabel: 'Karte',
+                  tabBarIcon: ({ color, size, focused }) =>
+                    getTabIconAlt('map', color, size + 2, focused),
+                }}
+                component={() => ParkenKarte}
+              />
+
+              <CurvedBottomBar.Screen
+                name="Parken"
+                position="LEFT"
+                options={{
+                  tabBarLabel: 'Parken',
+                  tabBarIcon: ({ color, size, focused }) =>
+                    getTabIcon('parking', color, size, focused),
+                }}
+                component={() => ParkenListe}
+              />
+              <CurvedBottomBar.Screen
+                name="Account"
+                position="RIGHT"
+                options={{
+                  tabBarLabel: 'Meine APAG',
+                  headerTitle: 'Meine APAG',
+                }}
+                component={() => MeineAPAG}
+              />
+
+              <CurvedBottomBar.Screen
+                name="Menü"
+                position="RIGHT"
+                options={{
+                  tabBarLabel: 'Mehr',
+                }}
+                component={() => null}
+              />
+
+              <MainNavigatorStack.Screen
+                name="GDPR"
+                component={() => (
+                  <ConsentNavigatorStack.Navigator initialRouteName="GDPRSettings">
+                    <ConsentNavigatorStack.Screen
+                      name="GDPRSettings"
+                      options={{
+                        headerTitle: 'Datenschutzeinstellungen',
+                        headerStyle: [
+                          GlobalStyle.primaryBackgroundColor,
+                          {
+                            shadowOpacity: 0,
+                            shadowOffset: {
+                              height: 0,
+                            },
+                            shadowRadius: 0,
+                            elevation: 0,
+                          },
+                        ],
+                        headerTitleStyle: headerStyle,
+                        headerTintColor: '#fff',
+                        headerBackTitle: ' ',
+                        headerLeft: _props => (
+                          <View>
+                            <MaterialIcon
+                              name={'chevron-left'}
+                              size={30}
+                              color={white}
+                              onPress={() => {
+                                navigation.navigate('Karte');
+                                setTimeout(() => {
+                                  tabBarRef.current.setVisible(true);
+                                }, 500);
+                              }}
+                            />
+                          </View>
+                        ),
+                        headerRight: _props => (
+                          <View
+                            // eslint-disable-next-line react-native/no-inline-styles
+                            style={{
+                              height: '100%',
+                              paddingVertical: Platform.OS === 'ios' ? 8 : 12,
+                            }}>
+                            {APAGImage}
+                          </View>
+                        ),
+                      }}
+                      component={ConsentSettingsScreen}
+                    />
+                  </ConsentNavigatorStack.Navigator>
+                )}
+              />
+            </CurvedBottomBar.Navigator>
+            <SafeAreaView style={{ flex: 0, backgroundColor: '#fff' }} />
+          </>
+        ))}
+
+      {isSearchBottomSheetVisible ? (
+        <AnimatedTouchableOpacity
+          style={[styles.closeIconContainer, { opacity: opacityIconContainer }]}
+          onPress={() => handleCloseBottomSheet()}>
+          <AnimatedIonicons
+            style={animatedRotationStyle}
+            name="close"
+            size={24}
+            color={primaryBlue}
+          />
+        </AnimatedTouchableOpacity>
+      ) : null}
+      <BottomSheetModalProvider>
+        <View>
+          <BottomSheetModal
+            ref={searchBottomSheetRef}
+            index={1}
+            snapPoints={snapPoints}
+            enableOverDrag={false}
+            handleComponent={() => null}
+            enableDismissOnClose={true}
+            animationConfigs={{
+              duration: 1200,
+              easing: Easing.out(Easing.exp),
+            }}
+            onDismiss={() => handleCloseBottomSheet()}
+            onChange={handleSheetChanges}>
+            <BottomSheetView style={{ flex: 1, paddingTop: 28 }}>
+              <View style={{ flex: 1, position: 'relative' }}>
+                <SearchScreen />
+              </View>
+            </BottomSheetView>
+          </BottomSheetModal>
+        </View>
+      </BottomSheetModalProvider>
+    </>
   );
 };
 
@@ -1014,6 +1065,52 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+  },
+  shawdow: {
+    shadowColor: '#DDDDDD',
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 5,
+  },
+  btnCircleUp: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: primaryBlue,
+    bottom: 30,
+    shadowColor: primaryBlue,
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowOpacity: 4,
+    shadowRadius: 8,
+    elevation: 1000,
+  },
+  imgCircle: {
+    width: 30,
+    height: 30,
+    tintColor: 'gray',
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  tabbarItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    paddingTop: 20,
+  },
+  img: {
+    width: 30,
+    height: 30,
   },
 });
 export default AppNavigation;
