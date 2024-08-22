@@ -30,7 +30,6 @@ export const SuchverlaufItems = ({
   const [isFavorite, setIsFavorite] = useState(false);
   const X = useSharedValue(0);
   const [swiped, setSwiped] = React.useState(false);
-  console.log('index === swipedIndexItem', index, swipedIndexItem);
 
   const handleComplete = isSwiped => {
     if (isSwiped !== swiped) {
