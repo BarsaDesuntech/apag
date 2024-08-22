@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'; // @TODO replace
 import { Provider as PaperProvider } from 'react-native-paper';
-import { StatusBar } from 'react-native';
+import { SafeAreaView, StatusBar } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import { PersistGate } from 'redux-persist/integration/react';
 import configureStore from './store/configureStore';
@@ -12,6 +12,7 @@ import NotificationService from './components/notificationService';
 import BugsnagService from './components/bugsnagService';
 import 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { NavigationContainer } from '@react-navigation/native';
 
 const { store, persistor } = configureStore();
 
@@ -27,7 +28,9 @@ export default class Root extends Component {
           <ActionSheetProvider useCustomActionSheet={true}>
             <PaperProvider>
               <BottomSheetModalProvider>
-                <App />
+                <NavigationContainer>
+                  <App />
+                </NavigationContainer>
               </BottomSheetModalProvider>
             </PaperProvider>
           </ActionSheetProvider>
