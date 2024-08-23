@@ -1,6 +1,6 @@
 #import "AppDelegate.h"
 #import <Firebase.h>
-
+#import <GoogleMaps/GoogleMaps.h>
 #import <Bugsnag/Bugsnag.h>
 #import <React/RCTBundleURLProvider.h>
 
@@ -14,7 +14,8 @@
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
-
+  // this api key is taken from the android manifest file.
+  [GMSServices provideAPIKey:@"AIzaSyBiMgSxTybwwiO33ra7kkYTDhQYDVRJA-k"];
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 

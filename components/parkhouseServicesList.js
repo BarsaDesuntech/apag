@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import React, { Component } from 'react';
+import { Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
 import GlobalStyle from '../style';
-import {AllHtmlEntities} from 'html-entities';
+import { AllHtmlEntities } from 'html-entities';
 const entities = new AllHtmlEntities();
 
 /**
@@ -19,8 +19,8 @@ export default class ParkhouseServicesList extends Component {
   };
 
   render() {
-    const {services} = this.props;
-    const keys = Object.keys(services);
+    const { services } = this.props;
+    const keys = services ? Object.keys(services) : [];
     return (
       <View>
         {keys?.map(key => (

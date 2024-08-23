@@ -58,8 +58,8 @@ const formatDate = function (date) {
  */
 const sortParkhouses = function (parkhouses) {
   return parkhouses.sort(function (a, b) {
-    const titleA = a.title.toLowerCase();
-    const titleB = b.title.toLowerCase();
+    const titleA = a?.title?.toLowerCase();
+    const titleB = b?.title?.toLowerCase();
     if (titleA < titleB) {
       return -1;
     }
@@ -259,9 +259,9 @@ const calcDim = function (imageWidth, imageHeight, maxHeight, maxWidth) {
  */
 const getCityList = function (parkhouses) {
   let cities = [];
-  for (var i = 0; i < parkhouses.length; i++) {
-    if (cities.indexOf(parkhouses[i].site.toUpperCase()) === -1) {
-      cities.push(parkhouses[i].site.toUpperCase());
+  for (var i = 0; i < parkhouses?.length; i++) {
+    if (cities.indexOf(parkhouses[i].site?.toUpperCase()) === -1) {
+      cities.push(parkhouses[i]?.site?.toUpperCase());
     }
   }
   return cities.sort(function (a, b) {

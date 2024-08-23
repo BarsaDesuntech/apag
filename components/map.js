@@ -66,9 +66,9 @@ const parkingOptions = [
   { id: 3, title: 'Bike-Stations', iconName: 'pedal-bike' },
 ];
 const mapOptions = [
-  { id: 1, title: 'Reduziert' },
-  { id: 2, title: 'Normal' },
-  { id: 3, title: 'Satelit' },
+  { id: 1, title: 'Reduziert', value: 'reduced' },
+  { id: 2, title: 'Normal', value: 'standard' },
+  { id: 3, title: 'Satelit', value: 'hybrid' },
 ];
 const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity);
@@ -124,7 +124,8 @@ const HousesMap = ({
   const parkObjectsSheetRef = useRef(null);
   const [isParkObjectSheetVisible, setIsParkObjectSheetVisible] =
     useState(false);
-  const snapPoints = useMemo(() => ['25%', '36%'], []);
+
+  const snapPoints = useMemo(() => ['25%', '44%'], []);
   const rotateSv = useSharedValue(0);
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(-Dimensions.get('window').height * 0.5);
@@ -195,7 +196,7 @@ const HousesMap = ({
   }));
 
   const [selectedParkingOption, setSelectedParkingOptions] = useState('Parken');
-  const [selectedMapOption, setSelectedMapOption] = useState('Normal');
+  const [selectedMapOption, setSelectedMapOption] = useState('reduced');
   const handleParkingOption = option => {
     setSelectedParkingOptions(option);
   };
@@ -354,38 +355,43 @@ const HousesMap = ({
         <Image source={image3} />
         <Image source={image4} />
       </View>
-      <MapView
-        radius={window.height * 0.04}
-        style={GlobalStyle.container}
-        ref={mapRef}
-        showsUserLocation
-        showsMyLocationButton
-        userLocationAnnotationTitle={'Aktueller Standort'}
-        clusteringEnabled={clustering}
-        renderMarker={renderMarker}
-        edgePadding={edgePadding}
-        renderCluster={renderCluster}
-        data={preprocessData(parkobjects)}
-        initialRegion={{
-          latitude: LATITUDE,
-          longitude: LONGITUDE,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA,
-        }}
-        onMapReady={ready}>
-        {target != null && typeof target !== typeof undefined ? (
-          <Marker
-            identifier={target.place_id}
-            key={target.place_id}
-            coordinate={{
-              latitude: parseFloat(target.geometry.location.lat),
-              longitude: parseFloat(target.geometry.location.lng),
-            }}
-          />
-        ) : (
-          <View />
-        )}
-      </MapView>
+      <View style={{ ...StyleSheet.absoluteFillObject }}>
+        <MapView
+          radius={window.height * 0.04}
+          style={GlobalStyle.container}
+          ref={mapRef}
+          showsUserLocation
+          showsMyLocationButton
+          userLocationAnnotationTitle={'Aktueller Standort'}
+          clusteringEnabled={clustering}
+          renderMarker={renderMarker}
+          edgePadding={edgePadding}
+          renderCluster={renderCluster}
+          mapType={
+            selectedMapOption === 'reduced' ? 'standard' : selectedMapOption
+          }
+          data={preprocessData(parkobjects)}
+          initialRegion={{
+            latitude: LATITUDE,
+            longitude: LONGITUDE,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
+          }}
+          onMapReady={ready}>
+          {target != null && typeof target !== typeof undefined ? (
+            <Marker
+              identifier={target.place_id}
+              key={target.place_id}
+              coordinate={{
+                latitude: parseFloat(target.geometry.location.lat),
+                longitude: parseFloat(target.geometry.location.lng),
+              }}
+            />
+          ) : (
+            <View />
+          )}
+        </MapView>
+      </View>
       <View style={{ top: 50, right: 15, position: 'absolute' }}>
         <MapButton onPress={requestLocationPermission}>
           <IconFontawesome5 name="crosshairs" size={22} color={primaryBlue} />
@@ -410,201 +416,201 @@ const HousesMap = ({
           </AnimatedTouchableOpacity>
         </Animated.View>
       ) : null}
-
-      {/* <BottomSheetModalProvider> */}
-      <View>
-        <BottomSheetModal
-          ref={parkObjectsSheetRef}
-          index={1}
-          snapPoints={snapPoints}
-          enableOverDrag={false}
-          handleComponent={() => null}
-          enableDismissOnClose={true}
-          animationConfigs={{
-            duration: 1200,
-            easing: Easing.out(Easing.exp),
-          }}
-          style={{ zIndex: 1 }}
-          onDismiss={() => handleCloseBottomSheet()}
-          onChange={handleSheetChanges}>
-          <BottomSheetView
-            style={{
-              flex: 1,
-              paddingTop: 28,
-              zIndex: 1,
-            }}>
-            <View style={{ flex: 1, position: 'relative' }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginTop: 16,
-                }}>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{}}>
-                  {parkingOptions.map(item => (
-                    <View
-                      key={item.id}
-                      style={[
-                        selectedParkingOption === item.title
-                          ? styles.selectedParkingStyle
-                          : styles.parkingStyleContainer,
-                        selectedParkingOption === item.title
-                          ? styles.shadowStyle
-                          : {},
-                        { height: 120 },
-                      ]}>
-                      {item?.iconName === 'charging-station' ? (
-                        <FontAwesome5
-                          name="charging-station"
-                          size={24}
-                          color={
-                            selectedParkingOption === item.title
-                              ? white
-                              : placeholderColor
-                          }
-                        />
-                      ) : (
-                        <MaterialIcon
-                          name={item.iconName}
-                          size={24}
-                          color={
-                            selectedParkingOption === item.title
-                              ? white
-                              : placeholderColor
-                          }
-                          style={
-                            item.iconName === 'local-parking'
-                              ? {
-                                  borderWidth: 4,
-                                  width: 36,
-                                  height: 32,
-                                  // alignItems: 'center',
-                                  paddingLeft:
-                                    Platform.OS === 'android' ? 4 : 0,
-                                  paddingTop: Platform.OS === 'android' ? 4 : 0,
-
-                                  // height: 44,
-                                  // paddingVertical: 4,
-                                  borderColor:
-                                    selectedParkingOption === item.title
-                                      ? white
-                                      : placeholderColor,
-                                  borderRadius: 4,
-                                }
-                              : {}
-                          }
-                        />
-                      )}
-                      <Text
-                        style={{
-                          color:
-                            selectedParkingOption === item.title
-                              ? white
-                              : lightGrey,
-                          marginTop: 12,
-                          paddingHorizontal: 16,
-                        }}>
-                        {item.title}{' '}
-                      </Text>
-                      <ToggleSwitch
-                        initialValue={item.title === selectedParkingOption}
-                        disabled={true}
-                        onToggle={() => {
-                          handleParkingOption(item?.title);
-                        }}
-                      />
-                    </View>
-                  ))}
-                </ScrollView>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginHorizontal: 12,
-                  marginVertical: 8,
-                  paddingRight: 8,
-                }}>
-                <View style={styles.borderStyle} />
-                <Text
-                  style={{
-                    paddingHorizontal: 6,
-                    fontFamily: 'Roboto-Bold',
-                    fontWeight: 'bold',
-                    color: placeholderColor,
-                  }}>
-                  KARTE
-                </Text>
-                <View style={styles.borderStyle} />
-              </View>
-
-              <View
-                style={[
-                  styles.shadowStyle,
-                  {
-                    backgroundColor: creamColor,
-                    paddingVertical: 8,
-                    marginHorizontal: '3%',
-                    borderRadius: 12,
-                    shadowOpacity: 0.2,
-                  },
-                ]}>
+      <BottomSheetModalProvider>
+        <View>
+          <BottomSheetModal
+            ref={parkObjectsSheetRef}
+            index={1}
+            snapPoints={snapPoints}
+            enableOverDrag={false}
+            handleComponent={() => null}
+            enableDismissOnClose={true}
+            animationConfigs={{
+              duration: 1200,
+              easing: Easing.out(Easing.exp),
+            }}
+            style={{ zIndex: 1 }}
+            onDismiss={() => handleCloseBottomSheet()}
+            onChange={handleSheetChanges}>
+            <BottomSheetView
+              style={{
+                flex: 1,
+                paddingTop: 28,
+                zIndex: 1,
+              }}>
+              <View style={{ flex: 1, position: 'relative' }}>
                 <View
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
+                    marginTop: 16,
                   }}>
-                  {mapOptions.map(item => (
-                    <TouchableOpacity
-                      key={item.id}
-                      activeOpacity={0.9}
-                      onPress={() => setSelectedMapOption(item.title)}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{}}>
+                    {parkingOptions.map(item => (
                       <View
+                        key={item.id}
                         style={[
-                          selectedMapOption === item.title
-                            ? {
-                                backgroundColor: primaryBlue,
-                                borderRadius: 8,
-                                alignItems: 'center',
-                                marginHorizontal: 10,
-                                shadowColor: primaryBlue,
-                              }
-                            : {},
-                          selectedMapOption === item.title
+                          selectedParkingOption === item.title
+                            ? styles.selectedParkingStyle
+                            : styles.parkingStyleContainer,
+                          selectedParkingOption === item.title
                             ? styles.shadowStyle
                             : {},
-                          {
-                            paddingVertical: 12,
-                            paddingHorizontal: 24,
-                            minWidth: '28%',
-                          },
+                          { height: 120 },
                         ]}>
+                        {item?.iconName === 'charging-station' ? (
+                          <FontAwesome5
+                            name="charging-station"
+                            size={24}
+                            color={
+                              selectedParkingOption === item.title
+                                ? white
+                                : placeholderColor
+                            }
+                          />
+                        ) : (
+                          <MaterialIcon
+                            name={item.iconName}
+                            size={24}
+                            color={
+                              selectedParkingOption === item.title
+                                ? white
+                                : placeholderColor
+                            }
+                            style={
+                              item.iconName === 'local-parking'
+                                ? {
+                                    borderWidth: 4,
+                                    width: 36,
+                                    height: 32,
+                                    // alignItems: 'center',
+                                    paddingLeft:
+                                      Platform.OS === 'android' ? 4 : 0,
+                                    paddingTop:
+                                      Platform.OS === 'android' ? 4 : 0,
+
+                                    // height: 44,
+                                    // paddingVertical: 4,
+                                    borderColor:
+                                      selectedParkingOption === item.title
+                                        ? white
+                                        : placeholderColor,
+                                    borderRadius: 4,
+                                  }
+                                : {}
+                            }
+                          />
+                        )}
                         <Text
                           style={{
-                            fontSize: 16,
-                            fontFamily: 'Roboto-Bold',
-                            fontWeight: 'bold',
                             color:
-                              selectedMapOption === item.title
+                              selectedParkingOption === item.title
                                 ? white
-                                : primaryBlue,
+                                : lightGrey,
+                            marginTop: 12,
+                            paddingHorizontal: 16,
                           }}>
-                          {item.title}
+                          {item.title}{' '}
                         </Text>
+                        <ToggleSwitch
+                          initialValue={item.title === selectedParkingOption}
+                          disabled={true}
+                          onToggle={() => {
+                            handleParkingOption(item?.title);
+                          }}
+                        />
                       </View>
-                    </TouchableOpacity>
-                  ))}
+                    ))}
+                  </ScrollView>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginHorizontal: 12,
+                    marginVertical: 8,
+                    paddingRight: 8,
+                  }}>
+                  <View style={styles.borderStyle} />
+                  <Text
+                    style={{
+                      paddingHorizontal: 6,
+                      fontFamily: 'Roboto-Bold',
+                      fontWeight: 'bold',
+                      color: placeholderColor,
+                    }}>
+                    KARTE
+                  </Text>
+                  <View style={styles.borderStyle} />
+                </View>
+
+                <View
+                  style={[
+                    styles.shadowStyle,
+                    {
+                      backgroundColor: creamColor,
+                      paddingVertical: 8,
+                      marginHorizontal: '3%',
+                      borderRadius: 12,
+                      shadowOpacity: 0.2,
+                    },
+                  ]}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    {mapOptions.map(item => (
+                      <TouchableOpacity
+                        key={item.id}
+                        activeOpacity={0.9}
+                        onPress={() => setSelectedMapOption(item.value)}>
+                        <View
+                          style={[
+                            selectedMapOption === item.value
+                              ? {
+                                  backgroundColor: primaryBlue,
+                                  borderRadius: 8,
+                                  alignItems: 'center',
+                                  marginHorizontal: 10,
+                                  shadowColor: primaryBlue,
+                                }
+                              : {},
+                            selectedMapOption === item.value
+                              ? styles.shadowStyle
+                              : {},
+                            {
+                              paddingVertical: 12,
+                              paddingHorizontal: 24,
+                              minWidth: '28%',
+                            },
+                          ]}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontFamily: 'Roboto-Bold',
+                              fontWeight: 'bold',
+                              color:
+                                selectedMapOption === item.value
+                                  ? white
+                                  : primaryBlue,
+                            }}>
+                            {item.title}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
                 </View>
               </View>
-            </View>
-          </BottomSheetView>
-        </BottomSheetModal>
-      </View>
-      {/* </BottomSheetModalProvider> */}
+            </BottomSheetView>
+          </BottomSheetModal>
+        </View>
+      </BottomSheetModalProvider>
     </View>
   );
 };
@@ -696,7 +702,7 @@ const styles = StyleSheet.create({
   },
   closeIconContainer: {
     position: 'absolute',
-    top: '58%',
+    top: '53%',
     alignSelf: 'center',
     zIndex: 1000,
     backgroundColor: white,
