@@ -218,22 +218,29 @@ class HomeScreen extends Component {
     // Each parkhouse is of class ListItem
     // @todo replace SegmentedControlTab with createMaterialTopTabNavigator from react-navigation and remove the react-native-segmented-control-tab package
 
-    console.log('uppercase cities', upperCaseCities);
+    // console.log('uppercase cities', upperCaseCities);
 
     return (
       <View style={[GlobalStyle.wrapper, GlobalStyle.container]}>
         {upperCaseCities.length > 0 && (
-          <SegmentedControlTab
-            values={['ALLE', ...upperCaseCities]}
-            selectedIndex={this.state.selectedIndex}
-            onTabPress={this.handleIndexChange}
-            allowFontScaling={false}
-            tabsContainerStyle={GlobalStyle.segmentedControlTab}
-            tabStyle={GlobalStyle.tabStyle}
-            activeTabStyle={GlobalStyle.activeTabStyle}
-            tabTextStyle={GlobalStyle.primaryTextColor}
-            activeTabTextStyle={GlobalStyle.primaryTextColor}
-          />
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            nestedScrollEnabled={false}
+            horizontal
+            style={{ maxHeight: 50 }}>
+            <SegmentedControlTab
+              values={['ALLE', ...upperCaseCities]}
+              selectedIndex={this.state.selectedIndex}
+              onTabPress={this.handleIndexChange}
+              allowFontScaling={false}
+              tabsContainerStyle={GlobalStyle.segmentedControlTab}
+              tabStyle={[GlobalStyle.tabStyle, { paddingHorizontal: 8 }]}
+              activeTabStyle={GlobalStyle.activeTabStyle}
+              tabTextStyle={GlobalStyle.primaryTextColor}
+              activeTabTextStyle={GlobalStyle.primaryTextColor}
+            />
+          </ScrollView>
         )}
         <ScrollView
           refreshControl={
