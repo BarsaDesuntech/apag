@@ -517,7 +517,8 @@ const HousesMap = ({
           provider={PROVIDER_GOOGLE}
           ref={mapRef}
           showsUserLocation
-          showsMyLocationButton
+          showsBuildings={selectedMapOption !== 'reduced'}
+          showsMyLocationButton={false}
           customMapStyle={
             selectedMapOption === 'reduced' ? mapStyleReduced : mapStyleNormal
           }

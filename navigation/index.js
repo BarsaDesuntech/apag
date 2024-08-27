@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStackNavigator } from '@react-navigation/stack';
 import GlobalStyle, { oldBlue, primaryBlue, white } from '../style';
@@ -75,6 +75,7 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
+import { Shadow } from 'react-native-shadow-2';
 
 // Import the logo and calculate the display width and height
 export const APAGImageSrc = require('../img/logo_apag_light_x2.png');
@@ -901,16 +902,17 @@ const AppNavigation = () => {
                 },
               }}
               renderCircle={({ selectedTab, navigate }) => (
-                <Animated.View style={styles.btnCircleUp}>
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => {
-                      setIsSearchBottomSheetVisible(true),
-                        handleOpenBottomSheet();
-                    }}>
+                <TouchableOpacity
+                  style={styles.button}
+                  activeOpacity={1}
+                  onPress={() => {
+                    setIsSearchBottomSheetVisible(true),
+                      handleOpenBottomSheet();
+                  }}>
+                  <Animated.View style={styles.btnCircleUp}>
                     <Ionicons name={'search'} color={white} size={25} />
-                  </TouchableOpacity>
-                </Animated.View>
+                  </Animated.View>
+                </TouchableOpacity>
               )}
               tabBar={renderTabBar}>
               <CurvedBottomBar.Screen
@@ -1090,7 +1092,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 4,
     shadowRadius: 8,
-    elevation: 1000,
+    elevation: 14,
   },
   imgCircle: {
     width: 30,
