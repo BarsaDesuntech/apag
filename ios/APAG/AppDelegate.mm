@@ -15,7 +15,7 @@
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
   // this api key is taken from the android manifest file.
-  [GMSServices provideAPIKey:@"AIzaSyBiMgSxTybwwiO33ra7kkYTDhQYDVRJA-k"];
+  [GMSServices provideAPIKey:@"AIzaSyCad5V-LZuNFzKWl25jHfypuyUpvtAHxuE"];
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
