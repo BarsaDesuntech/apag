@@ -94,12 +94,11 @@ const sortParkhousesByCity = function (parkhouses) {
  */
 const groupParkhousesByCity = function (parkhouses) {
   let cities = {};
-
   for (var i = 0; i < parkhouses.length; i++) {
-    if (typeof cities[parkhouses[i].site] === typeof undefined) {
-      cities[parkhouses[i].site] = [];
+    if (typeof cities[parkhouses[i].name] === typeof undefined) {
+      cities[parkhouses[i].name] = [];
     }
-    cities[parkhouses[i].site].push(parkhouses[i]);
+    cities[parkhouses[i].name].push(parkhouses[i]);
   }
 
   return cities;

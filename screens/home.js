@@ -176,11 +176,11 @@ class HomeScreen extends Component {
     const { parkhouses } = this.props;
     const parkobjects = parkhouses.parkhouses;
     let parkFiltered = [];
-    let filterKey = 'Aachen';
+    let filterKey = 'Bike-Station Bahnhof Schanz';
     if (i > 0) {
       filterKey = allCities[i];
       for (var k = 0; k < parkobjects.length; k++) {
-        if (parkobjects[k].site === filterKey) {
+        if (parkobjects[k].name === filterKey) {
           parkFiltered.push(parkobjects[k]);
         }
       }
@@ -217,6 +217,9 @@ class HomeScreen extends Component {
     // Inside is a normal ScrollView with a refresh control to update the current numbers of the parkhouses
     // Each parkhouse is of class ListItem
     // @todo replace SegmentedControlTab with createMaterialTopTabNavigator from react-navigation and remove the react-native-segmented-control-tab package
+
+    console.log('uppercase cities', upperCaseCities);
+
     return (
       <View style={[GlobalStyle.wrapper, GlobalStyle.container]}>
         {upperCaseCities.length > 0 && (
@@ -254,6 +257,7 @@ class HomeScreen extends Component {
                 {cities.length > 1 && (
                   <Text style={GlobalStyle.cityListItemText}>{city}</Text>
                 )}
+
                 {parkobjects[city]?.map((item, step) => (
                   <ListItem
                     parkobjects={parkobjects[city]}

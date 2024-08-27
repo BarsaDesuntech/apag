@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
 import ListNumbers from '../components/listNumbers';
 import GlobalStyle from '../style';
-import {withParkhouse, calcDim} from '../helpers';
+import { withParkhouse, calcDim } from '../helpers';
 
 /**
  * Displays a parkhouse in a list
@@ -39,7 +39,7 @@ class ListItem extends Component {
    * @memberof ListItem
    */
   showParkhouse = () => {
-    const {parkhouse, navigation} = this.props;
+    const { parkhouse, navigation } = this.props;
     navigation.navigate('Parkhouse', {
       phid: parkhouse.id,
       item: parkhouse,
@@ -52,7 +52,7 @@ class ListItem extends Component {
    * @memberof ListItem
    */
   bookParkhousePlace = () => {
-    const {parkhouse, navigation, startDate, endDate, lp} = this.props;
+    const { parkhouse, navigation, startDate, endDate, lp } = this.props;
     navigation.navigate('Book', {
       startDate,
       endDate,
@@ -63,12 +63,12 @@ class ListItem extends Component {
   };
 
   render() {
-    const {parkhouse, callMapFunc, showNumbers, bookings, index} = this.props;
+    const { parkhouse, callMapFunc, showNumbers, bookings, index } = this.props;
     // Preload the pin image which is required for the LadenScreen
     const icon = require('../assets/img/pin_blanko_s.png');
     const iconSize = Image.resolveAssetSource(icon);
     // Calculate the correct image size while keeping the aspect ratio
-    const {imageWidth, imageHeight} = calcDim(
+    const { imageWidth, imageHeight } = calcDim(
       iconSize.width,
       iconSize.height,
       34,
@@ -76,7 +76,7 @@ class ListItem extends Component {
     );
     // Check if the free parking lot numbers should be shown or not and define inline style for that
     const styling = !showNumbers
-      ? {borderColor: '#EDEDED', borderBottomWidth: 0.5}
+      ? { borderColor: '#EDEDED', borderBottomWidth: 0.5 }
       : {};
     // Renders a simple TouchableHighlight where inside the different components are shown based on the current screen and parkhouse
     return (
@@ -89,7 +89,7 @@ class ListItem extends Component {
             <View
               style={[
                 GlobalStyle.listItemImage,
-                {height: imageHeight, width: imageWidth + 4},
+                { height: imageHeight, width: imageWidth + 4 },
               ]}>
               <ImageBackground
                 source={icon}
@@ -97,7 +97,7 @@ class ListItem extends Component {
                   callMapFunc('fitToSuppliedMarkers', [parkhouse.id])
                 }
                 resizeMode={'contain'}
-                style={{height: '100%', width: '100%'}}>
+                style={{ height: '100%', width: '100%' }}>
                 <Text
                   style={[
                     GlobalStyle.parkobjectListItemNumber,
@@ -124,7 +124,7 @@ class ListItem extends Component {
             </Text>
             {typeof parkhouse.distance === typeof undefined && showNumbers && (
               <Text style={GlobalStyle.parkobjectListItemSubText}>
-                {parkhouse.type + ' in ' + parkhouse.site}
+                {parkhouse.type + ' in ' + parkhouse.name}
               </Text>
             )}
             {typeof parkhouse.distance === typeof undefined && !showNumbers && (
