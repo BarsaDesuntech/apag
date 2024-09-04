@@ -16,7 +16,8 @@ export const lightGrey200 = '#E0E6ED';
 export const placeholderColor = '#92a0b6';
 export const InputColor = '#324B72';
 export const creamColor = '#F6F7FA';
-export const redColor = '#ff6f61';
+export const redColor = '#FF7886';
+export const darkBlue = '#154898';
 
 const ratio = PixelRatio.getFontScale();
 var correctFontScale = 1 + (1 - ratio);

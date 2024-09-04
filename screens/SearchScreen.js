@@ -10,6 +10,7 @@ import {
 import { TextInput } from 'react-native-paper';
 import {
   black,
+  darkBlue,
   inputOutlineColor,
   lightGrey,
   oldBlue,
@@ -28,7 +29,7 @@ const options = [
   {
     id: 1,
     title: 'Parkmoglichkeiten',
-    titleDes: 'in der Nahe',
+    titleDes: 'in der Nähe',
     des: 'Anzeigen',
     backgroundColor: primaryBlue,
     iconName: 'parking',
@@ -36,7 +37,7 @@ const options = [
   {
     id: 2,
     title: 'E-Ladeplatze',
-    titleDes: 'in der Nahe',
+    titleDes: 'in der Nähe',
     des: 'Anzeigen',
     backgroundColor: primaryGreen,
     iconName: 'charging-station',
@@ -44,16 +45,16 @@ const options = [
   {
     id: 3,
     title: 'Bike-Stations',
-    titleDes: 'in der Nahe',
+    titleDes: 'in der Nähe',
     des: 'Anzeigen',
-    backgroundColor: oldBlue,
+    backgroundColor: darkBlue,
     iconName: 'pedal-bike',
   },
 ];
 
 const sucherLaufArray = [
-  { id: 1, title: 'Wirichbongar', des: 'Aachen' },
-  { id: 2, title: 'TheaterstraBe33', des: 'Aachen' },
+  { id: 1, title: 'WirichbongardstraBe 1', des: 'Aachen' },
+  { id: 2, title: 'TheaterstraBe 33', des: 'Aachen' },
   { id: 3, title: 'Wirichbongar', des: 'Aachen' },
   { id: 4, title: 'Adalbersteingweg 123', des: 'Aachen' },
   { id: 5, title: 'FranzstraBe 24', des: 'Aachen' },
@@ -187,6 +188,7 @@ export const SearchScreen = () => {
               backgroundColor: '#fff',
               marginVertical: 10,
               marginHorizontal: 10,
+              height: 44,
             }}
             outlineStyle={{ borderWidth: 3, borderRadius: 12 }}
             placeholderTextColor={placeholderColor}
@@ -257,7 +259,7 @@ export const SearchScreen = () => {
                   fontFamily: 'Roboto-Bold',
                   fontWeight: '700',
                   color: placeholderColor,
-                  paddingLeft: 10,
+                  paddingLeft: 14,
                   marginVertical: 8,
                 }}>
                 Suchverlauf
@@ -325,9 +327,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginHorizontal: 10,
     paddingHorizontal: 12,
-    paddingVertical: 12,
+    paddingVertical: 14,
     borderRadius: 8 + 4,
-    marginBottom: 8,
+    marginBottom: 9,
     // Shadow for iOS
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 }, // Shadow at the bottom

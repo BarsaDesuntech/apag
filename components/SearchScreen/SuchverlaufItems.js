@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
 import Animated, {
   useSharedValue,
@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'; // Import the icon c
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { black, white, primaryBlue, redColor } from '../../style';
+import { black, white, primaryBlue, redColor, InputColor } from '../../style';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 const ITEM_HEIGHT = 80;
 const BUTTON_WIDTH = 350;
@@ -120,7 +120,7 @@ export const SuchverlaufItems = ({
               justifyContent: 'space-between',
               flexDirection: 'row',
               alignItems: 'center',
-              marginHorizontal: 8,
+              marginHorizontal: 14,
               // marginVertical: 8,
               zIndex: swipedIndexItem?.includes(index) ? 0 : 4,
             },
@@ -131,22 +131,24 @@ export const SuchverlaufItems = ({
               flexDirection: 'row',
               alignItems: 'center',
             }}>
-            <FontAwesome5 name="clock" color={primaryBlue} size={24} />
-            <Animated.View style={{ marginLeft: 12 }}>
-              <Animated.Text
+            <FontAwesome5 name="clock" color={primaryBlue} size={20} />
+            <Animated.View style={{ marginLeft: 14 }}>
+              <Text
                 style={{
                   fontFamily: 'roboto-medium',
-                  fontWeight: '400',
+
+                  color: InputColor,
                   fontSize: 16,
                 }}>
                 {item?.title}
-              </Animated.Text>
+              </Text>
               <Animated.Text
                 style={{
                   fontFamily: 'roboto-medium',
                   fontWeight: '400',
-
+                  color: InputColor,
                   fontSize: 12,
+                  marginTop: 2,
                 }}>
                 {item?.des}
               </Animated.Text>

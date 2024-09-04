@@ -195,11 +195,29 @@ const HousesMap = ({
     transform: [{ translateY: translateY.value }],
   }));
 
-  const [selectedParkingOption, setSelectedParkingOptions] = useState('Parken');
+  // const [selectedParkingOption, setSelectedParkingOptions] = useState('Parken');
+  const [selectedParkingOption, setSelectedParkingOptions] = useState([
+    'Parken',
+    'Laden',
+    'Bike-Stations',
+  ]);
+
   const [selectedMapOption, setSelectedMapOption] = useState('reduced');
+  // const handleParkingOption = option => {
+  //   setSelectedParkingOptions(option);
+  // };
   const handleParkingOption = option => {
-    setSelectedParkingOptions(option);
+    setSelectedParkingOptions(prevSelected => {
+      if (prevSelected.includes(option)) {
+        // Remove option if it is already selected
+        return prevSelected.filter(selectedOption => selectedOption !== option);
+      } else {
+        // Add option if it is not selected
+        return [...prevSelected, option];
+      }
+    });
   };
+
   const requestLocationPermission = async () => {
     Geolocation.getCurrentPosition(
       pos => {
@@ -612,11 +630,20 @@ const HousesMap = ({
                     {parkingOptions.map(item => (
                       <View
                         key={item.id}
+                        // style={[
+                        //   selectedParkingOption === item.title
+                        //     ? styles.selectedParkingStyle
+                        //     : styles.parkingStyleContainer,
+                        //   selectedParkingOption === item.title
+                        //     ? styles.shadowStyle
+                        //     : {},
+                        //   { height: 120 },
+                        // ]}
                         style={[
-                          selectedParkingOption === item.title
+                          selectedParkingOption.includes(item.title)
                             ? styles.selectedParkingStyle
                             : styles.parkingStyleContainer,
-                          selectedParkingOption === item.title
+                          selectedParkingOption.includes(item.title)
                             ? styles.shadowStyle
                             : {},
                           { height: 120 },
@@ -626,7 +653,7 @@ const HousesMap = ({
                             name="charging-station"
                             size={24}
                             color={
-                              selectedParkingOption === item.title
+                              selectedParkingOption.includes(item.title)
                                 ? white
                                 : placeholderColor
                             }
@@ -636,7 +663,7 @@ const HousesMap = ({
                             name={item.iconName}
                             size={24}
                             color={
-                              selectedParkingOption === item.title
+                              selectedParkingOption.includes(item.title)
                                 ? white
                                 : placeholderColor
                             }
@@ -644,20 +671,20 @@ const HousesMap = ({
                               item.iconName === 'local-parking'
                                 ? {
                                     borderWidth: 4,
-                                    width: 36,
+                                    // width: 36,
                                     height: 32,
                                     // alignItems: 'center',
                                     paddingLeft:
                                       Platform.OS === 'android' ? 4 : 0,
                                     paddingTop:
                                       Platform.OS === 'android' ? 4 : 0,
-
                                     // height: 44,
                                     // paddingVertical: 4,
-                                    borderColor:
-                                      selectedParkingOption === item.title
-                                        ? white
-                                        : placeholderColor,
+                                    borderColor: selectedParkingOption.includes(
+                                      item.title,
+                                    )
+                                      ? white
+                                      : placeholderColor,
                                     borderRadius: 4,
                                   }
                                 : {}
@@ -666,17 +693,18 @@ const HousesMap = ({
                         )}
                         <Text
                           style={{
-                            color:
-                              selectedParkingOption === item.title
-                                ? white
-                                : lightGrey,
+                            color: selectedParkingOption.includes(item.title)
+                              ? white
+                              : lightGrey,
                             marginTop: 12,
                             paddingHorizontal: 16,
                           }}>
                           {item.title}{' '}
                         </Text>
                         <ToggleSwitch
-                          initialValue={item.title === selectedParkingOption}
+                          initialValue={selectedParkingOption.includes(
+                            item.title,
+                          )}
                           disabled={true}
                           onToggle={() => {
                             handleParkingOption(item?.title);
@@ -706,7 +734,6 @@ const HousesMap = ({
                   </Text>
                   <View style={styles.borderStyle} />
                 </View>
-
                 <View
                   style={[
                     styles.shadowStyle,

@@ -762,7 +762,7 @@ const AppNavigation = () => {
   let isModalOpening = false;
   const [isSearchBottomSheetVisible, setIsSearchBottomSheetVisible] =
     useState(false);
-  const snapPoints = useMemo(() => ['25%', '80%'], []);
+  const snapPoints = useMemo(() => ['25%', '85%'], []);
   const rotateSv = useSharedValue(0);
   const opacityIconContainer = useSharedValue(0);
 
@@ -910,7 +910,7 @@ const AppNavigation = () => {
                       handleOpenBottomSheet();
                   }}>
                   <Animated.View style={styles.btnCircleUp}>
-                    <Ionicons name={'search'} color={white} size={25} />
+                    <Ionicons name={'search'} color={white} size={32} />
                   </Animated.View>
                 </TouchableOpacity>
               )}
@@ -1020,7 +1020,7 @@ const AppNavigation = () => {
           <AnimatedIonicons
             style={animatedRotationStyle}
             name="close"
-            size={24}
+            size={30}
             color={primaryBlue}
           />
         </AnimatedTouchableOpacity>
@@ -1055,7 +1055,7 @@ const AppNavigation = () => {
 const styles = StyleSheet.create({
   closeIconContainer: {
     position: 'absolute',
-    top: '18%',
+    top: '12%',
     alignSelf: 'center',
     zIndex: 20000,
     backgroundColor: 'white',
@@ -1066,7 +1066,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000', // iOS shadow
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowRadius: 8,
   },
   shawdow: {
     shadowColor: '#DDDDDD',
@@ -1114,5 +1114,6 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
+  bottomBar: {},
 });
 export default AppNavigation;
