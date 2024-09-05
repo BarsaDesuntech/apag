@@ -56,8 +56,6 @@ export function fetchParkhouses(params) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log('resonse houses', responseJson);
-
         if (typeof responseJson.code === typeof undefined) {
           return dispatch(
             getParkhousesSuccess(Object.values(responseJson?.data)),
@@ -103,8 +101,7 @@ export function fetchParkhouse(params) {
           return dispatch(getParkhouseFailure());
         }
       })
-      .catch(err => {
-        console.log('response josn', err, 'params', params);
+      .catch(() => {
         return dispatch(getParkhouseFailure());
       });
   };
