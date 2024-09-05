@@ -27,39 +27,14 @@ export function getParkhousesFailure() {
   };
 }
 
-export function fetchParkhouses(params) {
-  return (dispatch, getState) => {
-    dispatch(getParkhouses());
-    return fetch(api + 'parkobjekte')
-      .then(response => response.json())
-      .then(responseJson => {
-        if (typeof responseJson.code === typeof undefined) {
-          return dispatch(getParkhousesSuccess(Object.values(responseJson)));
-        } else {
-          return dispatch(getParkhousesFailure());
-        }
-      })
-      .catch(() => {
-        return dispatch(getParkhousesFailure());
-      });
-  };
-}
-
 // export function fetchParkhouses(params) {
 //   return (dispatch, getState) => {
 //     dispatch(getParkhouses());
-//     return fetch(pmsapi + '/api/v1/parkobjects/usage', {
-//       headers: {
-//         Authorization:
-//           'Bearer SFMyNTY.g2gDbQAAAAExbgYAIrQzaY0BYiWYBgA.2B29Ge7e9zVzty_mBR_ZcEujJlFnOgF60GV5QOKKsc4',
-//       },
-//     })
+//     return fetch(api + 'parkobjekte')
 //       .then(response => response.json())
 //       .then(responseJson => {
 //         if (typeof responseJson.code === typeof undefined) {
-//           return dispatch(
-//             getParkhousesSuccess(Object.values(responseJson?.data)),
-//           );
+//           return dispatch(getParkhousesSuccess(Object.values(responseJson)));
 //         } else {
 //           return dispatch(getParkhousesFailure());
 //         }
@@ -69,6 +44,33 @@ export function fetchParkhouses(params) {
 //       });
 //   };
 // }
+
+export function fetchParkhouses(params) {
+  return (dispatch, getState) => {
+    dispatch(getParkhouses());
+    return fetch(pmsapi + '/api/v1/parkobjects/usage', {
+      headers: {
+        Authorization:
+          'Bearer SFMyNTY.g2gDbQAAAAExbgYAIrQzaY0BYiWYBgA.2B29Ge7e9zVzty_mBR_ZcEujJlFnOgF60GV5QOKKsc4',
+      },
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log('resonse houses', responseJson);
+
+        if (typeof responseJson.code === typeof undefined) {
+          return dispatch(
+            getParkhousesSuccess(Object.values(responseJson?.data)),
+          );
+        } else {
+          return dispatch(getParkhousesFailure());
+        }
+      })
+      .catch(() => {
+        return dispatch(getParkhousesFailure());
+      });
+  };
+}
 
 export function getParkhouse(params) {
   return {
@@ -89,32 +91,10 @@ export function getParkhouseFailure() {
   };
 }
 
-// export function fetchParkhouse(params) {
-//   return (dispatch, getState) => {
-//     dispatch(getParkhouse());
-//     return fetch(api + 'parkobjekt/' + params.phid)
-//       .then(response => response.json())
-//       .then(responseJson => {
-//         if (typeof responseJson.code === typeof undefined) {
-//           return dispatch(getParkhouseSuccess(responseJson));
-//         } else {
-//           return dispatch(getParkhouseFailure());
-//         }
-//       })
-//       .catch(() => {
-//         return dispatch(getParkhouseFailure());
-//       });
-//   };
-// }
 export function fetchParkhouse(params) {
   return (dispatch, getState) => {
     dispatch(getParkhouse());
-    return fetch(pmsapi + 'api/v1/parkobjects/usage/' + params.phid, {
-      headers: {
-        Authorization:
-          'Bearer SFMyNTY.g2gDbQAAAAExbgYAIrQzaY0BYiWYBgA.2B29Ge7e9zVzty_mBR_ZcEujJlFnOgF60GV5QOKKsc4',
-      },
-    })
+    return fetch(api + 'parkobjekt/' + params?.phid)
       .then(response => response.json())
       .then(responseJson => {
         if (typeof responseJson.code === typeof undefined) {
@@ -123,8 +103,35 @@ export function fetchParkhouse(params) {
           return dispatch(getParkhouseFailure());
         }
       })
-      .catch(() => {
+      .catch(err => {
+        console.log('response josn', err, 'params', params);
         return dispatch(getParkhouseFailure());
       });
   };
 }
+// export function fetchParkhouse(params) {
+//   return (dispatch, getState) => {
+//     dispatch(getParkhouse());
+//     return fetch(pmsapi + 'api/v1/parkobjects/usage/' + params, {
+//       headers: {
+//         Authorization:
+//           'Bearer SFMyNTY.g2gDbQAAAAExbgYAIrQzaY0BYiWYBgA.2B29Ge7e9zVzty_mBR_ZcEujJlFnOgF60GV5QOKKsc4',
+//       },
+//     })
+//       .then(response => response.json())
+//       .then(responseJson => {
+//         console.log('response single api...,', responseJson);
+
+//         if (typeof responseJson.code === typeof undefined) {
+//           return dispatch(getParkhouseSuccess(responseJson));
+//         } else {
+//           return dispatch(getParkhouseFailure());
+//         }
+//       })
+//       .catch(err => {
+//         console.log('response single api...,', err);
+
+//         return dispatch(getParkhouseFailure());
+//       });
+//   };
+// }
