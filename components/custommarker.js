@@ -29,14 +29,8 @@ export default class CustomMarker extends Component {
   }
 
   render() {
-    const {
-      showCallouts,
-      navigation,
-      include,
-      hasLocation,
-      numbered,
-      item,
-    } = this.props;
+    const { showCallouts, navigation, include, hasLocation, numbered, item } =
+      this.props;
     const { isReady } = this.state;
     // If instead of the parkhouse icon numbers should be shown (is the case for the charging station map)
     if (numbered === true) {
@@ -142,8 +136,10 @@ export default class CustomMarker extends Component {
         include.indexOf(item.id) !== -1
       ) {
         // Preload the image because otherwise there are some rendering issues with react-native-maps
-        if (item.type === 'Parkhaus') {
+        if (item.type === 'car') {
           var image = require('../assets/img/pin.png');
+        } else if (item.type === 'bike') {
+          var image = require('../assets/img/pedal_bike.png');
         } else {
           var image = require('../assets/img/pin_pp.png');
         }

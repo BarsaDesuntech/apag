@@ -27,14 +27,43 @@ export function getParkhousesFailure() {
   };
 }
 
+export function fetchParkhouses(params) {
+  return (dispatch, getState) => {
+    dispatch(getParkhouses());
+    return fetch(api + 'parkobjekte')
+      .then(response => response.json())
+      .then(responseJson => {
+
+        if (typeof responseJson.code === typeof undefined) {
+          return dispatch(getParkhousesSuccess(Object.values(responseJson)));
+        } else {
+          return dispatch(getParkhousesFailure());
+        }
+      })
+      .catch(err => {
+        console.log('response json ....', err);
+        return dispatch(getParkhousesFailure());
+      });
+  };
+}
+
 // export function fetchParkhouses(params) {
 //   return (dispatch, getState) => {
 //     dispatch(getParkhouses());
-//     return fetch(api + 'parkobjekte')
+//     return fetch(pmsapi + '/api/v1/parkobjects/usage', {
+//       headers: {
+//         Authorization:
+//           'Bearer SFMyNTY.g2gDbQAAAAExbgYAIrQzaY0BYiWYBgA.2B29Ge7e9zVzty_mBR_ZcEujJlFnOgF60GV5QOKKsc4',
+//       },
+//     })
 //       .then(response => response.json())
 //       .then(responseJson => {
+//         console.log('parkhouses====>', responseJson);
+
 //         if (typeof responseJson.code === typeof undefined) {
-//           return dispatch(getParkhousesSuccess(Object.values(responseJson)));
+//           return dispatch(
+//             getParkhousesSuccess(Object.values(responseJson?.data)),
+//           );
 //         } else {
 //           return dispatch(getParkhousesFailure());
 //         }
@@ -44,31 +73,6 @@ export function getParkhousesFailure() {
 //       });
 //   };
 // }
-
-export function fetchParkhouses(params) {
-  return (dispatch, getState) => {
-    dispatch(getParkhouses());
-    return fetch(pmsapi + '/api/v1/parkobjects/usage', {
-      headers: {
-        Authorization:
-          'Bearer SFMyNTY.g2gDbQAAAAExbgYAIrQzaY0BYiWYBgA.2B29Ge7e9zVzty_mBR_ZcEujJlFnOgF60GV5QOKKsc4',
-      },
-    })
-      .then(response => response.json())
-      .then(responseJson => {
-        if (typeof responseJson.code === typeof undefined) {
-          return dispatch(
-            getParkhousesSuccess(Object.values(responseJson?.data)),
-          );
-        } else {
-          return dispatch(getParkhousesFailure());
-        }
-      })
-      .catch(() => {
-        return dispatch(getParkhousesFailure());
-      });
-  };
-}
 
 export function getParkhouse(params) {
   return {
