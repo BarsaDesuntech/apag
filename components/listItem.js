@@ -124,8 +124,8 @@ class ListItem extends Component {
             </Text>
             {typeof parkhouse.distance === typeof undefined && showNumbers && (
               <Text style={GlobalStyle.parkobjectListItemSubText}>
-                {parkhouse.type + ' in ' + parkhouse.site}
-                {/* {parkhouse.type + ' in ' + parkhouse.name} */}
+                {/* {parkhouse.type + ' in ' + parkhouse.site} */}
+                {parkhouse.type + ' in ' + parkhouse.name}
               </Text>
             )}
             {typeof parkhouse.distance === typeof undefined && !showNumbers && (

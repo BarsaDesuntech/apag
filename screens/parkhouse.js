@@ -99,8 +99,9 @@ class ParkhouseScreen extends Component {
     if (!mounting && mounted) {
       this.setState({ interval: true });
     }
-    const { phid } = route.params;
-    const fetching = this.props.fetchParkhouse({ phid });
+    const { phid, item } = route.params;
+
+    const fetching = this.props.fetchParkhouse(item?.legacy_id);
     if (mounting) {
       fetching.then(() => {
         that.setState({ mounted: true, manual: false });
@@ -191,7 +192,8 @@ class ParkhouseScreen extends Component {
   render() {
     const { parkhouse } = this.props;
     const { manual, marginBottom } = this.state;
-    const item = parkhouse;
+    const { singleParkObject } = this.props;
+    const item = singleParkObject;
 
     // Render the screen when the parkhouse is inside the Redux store. It will naturally rerender when the fetch is through. We do not need to wait for isFetching.
     if (item == null) {
@@ -199,11 +201,13 @@ class ParkhouseScreen extends Component {
     }
     // Define and extract some default variables to render
     const { parkhouses } = this.props;
+
     const { isFetching } = parkhouses;
     const { auslastung, auslastungTimes } = this.formatData(
       item.history,
       'auslastung',
     );
+
     const { prognose, prognoseTimes } = this.formatData(
       item.predict,
       'prognose',
@@ -251,7 +255,8 @@ class ParkhouseScreen extends Component {
           }}
           contentOffset={{
             y: -HEADER_MAX_HEIGHT,
-          }}>
+          }}
+          contentContainerStyle={{ paddingBottom: 70 }}>
           <View
             // eslint-disable-next-line react-native/no-inline-styles
             style={{
@@ -463,6 +468,7 @@ class ParkhouseScreen extends Component {
 function mapStateToProps(state) {
   return {
     parkhouses: state.parkhouses,
+    singleParkObject: state.parkhouses.singleParkObject,
   };
 }
 

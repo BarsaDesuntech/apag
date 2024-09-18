@@ -17,6 +17,7 @@ const initialState = {
   parkhouses: [],
   isFetching: false,
   error: false,
+  singleParkObject: {},
 };
 
 function parkhouses(state = initialState, action) {
@@ -45,16 +46,18 @@ function parkhouses(state = initialState, action) {
         isFetching: true,
       };
     case FETCHING_PARKHOUSE_SUCCESS:
-      let found = false;
-      for (var i = 0; i < state.parkhouses.length; i++) {
-        if (state.parkhouses[i].id === action.parkhouse.id) {
-          state.parkhouses[i] = action.parkhouse;
-          found = true;
-        }
-      }
-      if (!found) {
-        state.parkhouses.push(action.parkhouse);
-      }
+      // let found = false;
+      // for (var i = 0; i < state.parkhouses.length; i++) {
+      //   if (state.parkhouses[i].id === action.parkhouse.id) {
+      //     state.parkhouses[i] = action.parkhouse;
+      //     found = true;
+      //   }
+      // }
+      state.singleParkObject = action.parkhouse;
+
+      // if (!found) {
+      //   state.parkhouses.push(action.parkhouse);
+      // }
       return {
         ...state,
         error: false,

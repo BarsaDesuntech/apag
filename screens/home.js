@@ -175,18 +175,19 @@ class HomeScreen extends Component {
     ];
     const { parkhouses } = this.props;
     const parkobjects = parkhouses.parkhouses;
+
     let parkFiltered = [];
-    let filterKey = 'Aachen';
-    // let filterKey = 'Bike-Station Bahnhof Schanz';
+    // let filterKey = 'Aachen';
+    let filterKey = 'Bike-Station Bahnhof Schanz';
     if (i > 0) {
       filterKey = allCities[i];
       for (var k = 0; k < parkobjects.length; k++) {
-        if (parkobjects[k].site === filterKey) {
-          parkFiltered.push(parkobjects[k]);
-        }
-        // if (parkobjects[k].name === filterKey) {
+        // if (parkobjects[k].site === filterKey) {
         //   parkFiltered.push(parkobjects[k]);
         // }
+        if (parkobjects[k].name === filterKey) {
+          parkFiltered.push(parkobjects[k]);
+        }
       }
     } else {
       parkFiltered = parkobjects;
@@ -196,8 +197,10 @@ class HomeScreen extends Component {
 
   render() {
     const { parkhouses, navigation } = this.props;
-    const { parkobjects, mounted, selectedIndex } = this.state;
+    const { parkobjects, mounted, selectedIndex, singleParkObject } =
+      this.state;
     const { isFetching } = parkhouses;
+
     // We do not need to wait for the fetch (isFetching) to complete if we have got the parkhouses in the Redux store.
     if (
       typeof parkobjects.Aachen !== typeof undefined &&
@@ -227,17 +230,27 @@ class HomeScreen extends Component {
     return (
       <View style={[GlobalStyle.wrapper, GlobalStyle.container]}>
         {upperCaseCities.length > 0 && (
-          <SegmentedControlTab
-            values={['ALLE', ...upperCaseCities]}
-            selectedIndex={this.state.selectedIndex}
-            onTabPress={this.handleIndexChange}
-            allowFontScaling={false}
-            tabsContainerStyle={GlobalStyle.segmentedControlTab}
-            tabStyle={[GlobalStyle.tabStyle, { paddingHorizontal: 8 }]}
-            activeTabStyle={GlobalStyle.activeTabStyle}
-            tabTextStyle={GlobalStyle.primaryTextColor}
-            activeTabTextStyle={GlobalStyle.primaryTextColor}
-          />
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ width: 200 }}
+            nestedScrollEnabled={false}
+            horizontal
+            style={{ maxHeight: 50 }}>
+            <View>
+              <SegmentedControlTab
+                values={['ALLE', ...upperCaseCities]}
+                selectedIndex={this.state.selectedIndex}
+                onTabPress={this.handleIndexChange}
+                allowFontScaling={false}
+                tabsContainerStyle={GlobalStyle.segmentedControlTab}
+                tabStyle={[GlobalStyle.tabStyle, { paddingHorizontal: 8 }]}
+                activeTabStyle={GlobalStyle.activeTabStyle}
+                tabTextStyle={GlobalStyle.primaryTextColor}
+                activeTabTextStyle={GlobalStyle.primaryTextColor}
+              />
+            </View>
+          </ScrollView>
         )}
         <ScrollView
           refreshControl={
