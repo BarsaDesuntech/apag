@@ -57,8 +57,6 @@ export function fetchParkhouses(params) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log('parkhouses====>', responseJson);
-
         if (typeof responseJson.code === typeof undefined) {
           return dispatch(
             getParkhousesSuccess(Object.values(responseJson?.data)),

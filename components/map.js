@@ -51,6 +51,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { useDispatch, useSelector } from 'react-redux';
 
 const window = Dimensions.get('window');
 // Define some global settings for the map
@@ -117,9 +118,11 @@ const HousesMap = ({
   hasLocation,
   numbered,
 }) => {
+  const dispatch = useDispatch();
   const mapRef = useRef(null);
   // Only update the parkhouses and map center if the initial rendering is done on Android)
   const [isReady, setIsReady] = useState(true);
+  const { selectedOption } = useSelector(state => state.mapParkSelect);
 
   const parkObjectsSheetRef = useRef(null);
   const [isParkObjectSheetVisible, setIsParkObjectSheetVisible] =
@@ -194,29 +197,43 @@ const HousesMap = ({
     opacity: opacity.value,
     transform: [{ translateY: translateY.value }],
   }));
-
-  // const [selectedParkingOption, setSelectedParkingOptions] = useState('Parken');
   const [selectedParkingOption, setSelectedParkingOptions] = useState([
-    'Parken',
-    'Laden',
-    'Bike-Stations',
+    { key: 'car', value: 'Parken' },
+    { key: 'Charging-Stations', value: 'Laden' },
+    { key: 'bike', value: 'Bike-Stations' },
   ]);
 
   const [selectedMapOption, setSelectedMapOption] = useState('reduced');
-  // const handleParkingOption = option => {
-  //   setSelectedParkingOptions(option);
-  // };
-  const handleParkingOption = option => {
-    setSelectedParkingOptions(prevSelected => {
-      if (prevSelected.includes(option)) {
-        // Remove option if it is already selected
-        return prevSelected.filter(selectedOption => selectedOption !== option);
-      } else {
-        // Add option if it is not selected
-        return [...prevSelected, option];
-      }
-    });
+
+  const handleParkingOption = optionKey => {
+    const optionExists = selectedParkingOption.some(
+      selectedOption => selectedOption.value === optionKey,
+    );
+
+    if (optionExists) {
+      const updatedOptions = selectedParkingOption.filter(
+        selectedOption => selectedOption.value !== optionKey,
+      );
+      setSelectedParkingOptions(updatedOptions);
+    } else {
+      const updatedOptions = [
+        ...selectedParkingOption,
+        {
+          key:
+            optionKey === 'Parken'
+              ? 'car'
+              : optionKey === 'Bike-Stations'
+              ? 'bike'
+              : optionKey,
+          value: optionKey,
+        },
+      ];
+      setSelectedParkingOptions(updatedOptions);
+    }
   };
+  useEffect(() => {
+    dispatch({ type: 'SET_SELECTED_OPTION', payload: selectedParkingOption });
+  }, [selectedParkingOption]);
 
   const requestLocationPermission = async () => {
     Geolocation.getCurrentPosition(
@@ -640,10 +657,16 @@ const HousesMap = ({
                         //   { height: 120 },
                         // ]}
                         style={[
-                          selectedParkingOption.includes(item.title)
+                          selectedParkingOption.some(
+                            selectedOption =>
+                              selectedOption.value === item.title,
+                          )
                             ? styles.selectedParkingStyle
                             : styles.parkingStyleContainer,
-                          selectedParkingOption.includes(item.title)
+                          selectedParkingOption.some(
+                            selectedOption =>
+                              selectedOption.value === item.title,
+                          )
                             ? styles.shadowStyle
                             : {},
                           { height: 120 },
@@ -653,7 +676,10 @@ const HousesMap = ({
                             name="charging-station"
                             size={24}
                             color={
-                              selectedParkingOption.includes(item.title)
+                              selectedParkingOption.some(
+                                selectedOption =>
+                                  selectedOption.value === item.title,
+                              )
                                 ? white
                                 : placeholderColor
                             }
@@ -663,7 +689,10 @@ const HousesMap = ({
                             name={item.iconName}
                             size={24}
                             color={
-                              selectedParkingOption.includes(item.title)
+                              selectedParkingOption.some(
+                                selectedOption =>
+                                  selectedOption.value === item.title,
+                              )
                                 ? white
                                 : placeholderColor
                             }
@@ -680,8 +709,9 @@ const HousesMap = ({
                                       Platform.OS === 'android' ? 4 : 0,
                                     // height: 44,
                                     // paddingVertical: 4,
-                                    borderColor: selectedParkingOption.includes(
-                                      item.title,
+                                    borderColor: selectedParkingOption.some(
+                                      selectedOption =>
+                                        selectedOption.value === item.title,
                                     )
                                       ? white
                                       : placeholderColor,
@@ -693,7 +723,10 @@ const HousesMap = ({
                         )}
                         <Text
                           style={{
-                            color: selectedParkingOption.includes(item.title)
+                            color: selectedParkingOption.some(
+                              selectedOption =>
+                                selectedOption.value === item.title,
+                            )
                               ? white
                               : lightGrey,
                             marginTop: 12,
@@ -702,8 +735,9 @@ const HousesMap = ({
                           {item.title}{' '}
                         </Text>
                         <ToggleSwitch
-                          initialValue={selectedParkingOption.includes(
-                            item.title,
+                          initialValue={selectedParkingOption.some(
+                            selectedOption =>
+                              selectedOption.value === item.title,
                           )}
                           disabled={true}
                           onToggle={() => {

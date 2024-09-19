@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Image, Platform, Text, ImageBackground } from 'react-native';
 import { Marker } from 'react-native-maps';
-import GlobalStyle from '../style';
+import GlobalStyle, { primaryBlue } from '../style';
 import MapCallout from './mapcallout';
 
 // Globally defined variables on import which handle the counting for the charging places map
@@ -154,7 +154,17 @@ export default class CustomMarker extends Component {
               longitude: parseFloat(item.longitude),
             }}
             tracksViewChanges={isReady}>
-            <Image source={image} style={GlobalStyle.pin} />
+            <Image
+              source={image}
+              style={[
+                GlobalStyle.pin,
+                item?.type === 'bike' && {
+                  tintColor: primaryBlue,
+                  width: 40,
+                  height: 40,
+                },
+              ]}
+            />
             {showCallouts && <MapCallout item={item} navigation={navigation} />}
           </Marker>
         );

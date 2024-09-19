@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
-import {StatusBar, View} from 'react-native';
-import {connect} from 'react-redux';
-import GlobalStyle, {white} from '../style';
+import React, { Component, useMemo } from 'react';
+import { StatusBar, View } from 'react-native';
+import { connect } from 'react-redux';
+import GlobalStyle, { white } from '../style';
 import HousesMap from '../components/map';
 import LoadingScreen from '../screens/loading';
-import {getCityList, calcCenterCoordinate} from '../helpers';
-import {fetchParkhouses} from '../store/actions/parkhouses';
+import { getCityList, calcCenterCoordinate } from '../helpers';
+import { fetchParkhouses } from '../store/actions/parkhouses';
 import ErrorScreen from '../screens/error';
 import ConsentMissing from '../components/consentMissing';
 
@@ -22,6 +22,7 @@ class HousesMapScreen extends Component {
     // Calculate the center of the map based on the city Aachen and all parkobjects as default start center for the map
     this.state = {
       ...calcCenterCoordinate(this.props.parkhouses.parkhouses, 'Aachen'),
+      filteredParkObjectsOnOptions: [],
     };
   }
 
@@ -48,8 +49,8 @@ class HousesMapScreen extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const {parkhouses} = this.props;
-    const {isFetching} = parkhouses;
+    const { parkhouses } = this.props;
+    const { isFetching } = parkhouses;
 
     // If isFetching is true and there are parkhouses in the props calculate the center for Aachen and check those coordinates are not equal to the coordinates inside state
     // @todo do we really need this => seems like redundant rendering
@@ -68,15 +69,32 @@ class HousesMapScreen extends Component {
         this.setState(() => coordinates);
       }
     }
+    if (prevProps.selectedOption !== this.props.selectedOption) {
+      this.updateFilteredParkObjects();
+    }
   }
+  updateFilteredParkObjects = () => {
+    const { parkhouses, selectedOption } = this.props;
+
+    // Filter park objects based on selected options
+    const filteredParkObjects = parkhouses.parkhouses.filter(parkobject =>
+      selectedOption?.selectedOption?.some(
+        option => option.key?.toLowerCase() === parkobject.type?.toLowerCase(),
+      ),
+    );
+
+    // Update state with the filtered park objects
+    this.setState({ filteredParkObjectsOnOptions: filteredParkObjects });
+  };
 
   render() {
-    const {parkhouses, navigation, consent} = this.props;
+    const { parkhouses, navigation, consent } = this.props;
+    const { filteredParkObjectsOnOptions } = this.state;
     const parkobjects = parkhouses.parkhouses;
-    const {isFetching} = parkhouses;
+    const { isFetching } = parkhouses;
 
     // Extract coordinates from state
-    const {LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA} = this.state;
+    const { LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA } = this.state;
 
     // If consent is not given for Google/Apple Maps do not display maps
     if (!consent.consent.settings.maps) {
@@ -101,10 +119,11 @@ class HousesMapScreen extends Component {
     if (upperCaseCities.length === 0 && !isFetching) {
       return <ErrorScreen />;
     }
+
     // Screen split by SegmentedControlTab package into multiple fileted subscreens
     // The segments do not filter the parkhouses instead the map scrolls to the location of the center of the parkobjects of the city
     return (
-      <View style={[GlobalStyle.container, {backgroundColor: white}]}>
+      <View style={[GlobalStyle.container, { backgroundColor: white }]}>
         <View
           style={[
             GlobalStyle.container,
@@ -115,7 +134,7 @@ class HousesMapScreen extends Component {
             },
           ]}>
           <HousesMap
-            parkobjects={parkobjects}
+            parkobjects={filteredParkObjectsOnOptions}
             clustering={true}
             navigation={navigation}
             ref={ref => (this.housesMap = ref)}
@@ -135,6 +154,7 @@ function mapStateToProps(state) {
   return {
     parkhouses: state.parkhouses,
     consent: state.consent,
+    selectedOption: state.mapParkSelect,
   };
 }
 

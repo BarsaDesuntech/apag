@@ -48,7 +48,7 @@ const migrations = {
         isInLaunchFlow: false,
       },
     };
-  }
+  },
 };
 
 // Combines all reducers to one redux store which handle the interaction
@@ -60,6 +60,7 @@ const reducer = {
   consent: require('./consent'),
   app: require('./app'),
   registration: require('./registration'),
+  mapParkSelect: require('./mapParkSelectSlice'),
 };
 
 // Export the persisted and combined Redux reducers
