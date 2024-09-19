@@ -233,23 +233,23 @@ class HomeScreen extends Component {
           <ScrollView
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ width: 200 }}
             nestedScrollEnabled={false}
             horizontal
             style={{ maxHeight: 50 }}>
-            <View>
-              <SegmentedControlTab
-                values={['ALLE', ...upperCaseCities]}
-                selectedIndex={this.state.selectedIndex}
-                onTabPress={this.handleIndexChange}
-                allowFontScaling={false}
-                tabsContainerStyle={GlobalStyle.segmentedControlTab}
-                tabStyle={[GlobalStyle.tabStyle, { paddingHorizontal: 8 }]}
-                activeTabStyle={GlobalStyle.activeTabStyle}
-                tabTextStyle={GlobalStyle.primaryTextColor}
-                activeTabTextStyle={GlobalStyle.primaryTextColor}
-              />
-            </View>
+            <SegmentedControlTab
+              values={['ALLE', ...upperCaseCities]}
+              selectedIndex={this.state.selectedIndex}
+              onTabPress={this.handleIndexChange}
+              allowFontScaling={false}
+              tabsContainerStyle={[
+                GlobalStyle.segmentedControlTab,
+                { paddingVertical: 10 },
+              ]}
+              tabStyle={[GlobalStyle.tabStyle, { paddingHorizontal: 8 }]}
+              activeTabStyle={GlobalStyle.activeTabStyle}
+              tabTextStyle={GlobalStyle.primaryTextColor}
+              activeTabTextStyle={GlobalStyle.primaryTextColor}
+            />
           </ScrollView>
         )}
         <ScrollView
