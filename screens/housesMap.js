@@ -77,16 +77,39 @@ class HousesMapScreen extends Component {
     const { parkhouses, selectedOption } = this.props;
 
     // Filter park objects based on selected options
-    const filteredParkObjects = parkhouses.parkhouses.filter(parkobject =>
-      selectedOption?.selectedOption?.some(
-        option => option.key?.toLowerCase() === parkobject.type?.toLowerCase(),
-      ),
-    );
+    const filteredParkObjects = parkhouses.parkhouses.filter(parkobject => {
+      // Check if the park object matches any of the selected options based on type
+      const matchesSelectedOption = selectedOption?.selectedOption?.some(
+        option =>
+          option.key?.toLowerCase() === parkobject.type?.toLowerCase() ||
+          (option.key?.toLowerCase() === 'laden' && parkobject.type === 'car'),
+      );
+
+      // If it matches, check for the additional "Charging-Stations" logic for car type
+      if (matchesSelectedOption && parkobject.type === 'car') {
+        const chargingStationsOptionSelected =
+          selectedOption?.selectedOption?.some(
+            option => option.key?.toLowerCase() === 'laden',
+          );
+
+        // If "Charging-Stations" is selected, only include cars with charging stations
+        if (chargingStationsOptionSelected) {
+          return (
+            parkobject.charging_stations &&
+            parkobject.charging_stations.length > 0
+          );
+        } else {
+          return parkobject.charging_stations.length === 0;
+        }
+      }
+
+      // For non-car types or when no "Charging-Stations" filter applies, include as per the original logic
+      return matchesSelectedOption;
+    });
 
     // Update state with the filtered park objects
     this.setState({ filteredParkObjectsOnOptions: filteredParkObjects });
   };
-
   render() {
     const { parkhouses, navigation, consent } = this.props;
     const { filteredParkObjectsOnOptions } = this.state;

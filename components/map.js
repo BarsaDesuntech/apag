@@ -199,7 +199,7 @@ const HousesMap = ({
   }));
   const [selectedParkingOption, setSelectedParkingOptions] = useState([
     { key: 'car', value: 'Parken' },
-    { key: 'Charging-Stations', value: 'Laden' },
+    { key: 'laden', value: 'Laden' },
     { key: 'bike', value: 'Bike-Stations' },
   ]);
 
@@ -224,7 +224,7 @@ const HousesMap = ({
               ? 'car'
               : optionKey === 'Bike-Stations'
               ? 'bike'
-              : optionKey,
+              : 'laden',
           value: optionKey,
         },
       ];

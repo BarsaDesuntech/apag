@@ -1,7 +1,7 @@
 const initialState = {
   selectedOption: [
     { key: 'car', value: 'Parken' },
-    { key: 'Charging-Stations', value: 'Laden' },
+    { key: 'laden', value: 'Laden' },
     { key: 'bike', value: 'Bike-Stations' },
   ],
 };
