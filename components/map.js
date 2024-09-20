@@ -527,13 +527,6 @@ const HousesMap = ({
 
   // Completely relies on the MapView
   // Renders target marker if passed (only used by LadenScreen)
-  // useEffect(() => {
-  //   parkObjectsSheetRef.current.open();
-  // }, []);
-  const [isSwitchOn, setIsSwitchOn] = useState(false);
-
-  const onToggleSwitch = () => setIsSwitchOn(previousState => !previousState);
-
   return (
     <View
       style={
@@ -631,50 +624,36 @@ const HousesMap = ({
               style={{
                 flex: 1,
                 paddingTop: 28,
-                zIndex: 1,
               }}>
-              <View style={{ flex: 1, position: 'relative' }}>
+              <View style={{ flex: 1 }}>
                 <View
                   style={{
                     flexDirection: 'row',
-                    alignItems: 'center',
                     marginTop: 16,
+                    gap: 12,
+                    marginHorizontal: 18,
                   }}>
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{}}>
-                    {parkingOptions.map(item => (
-                      <View
-                        key={item.id}
-                        // style={[
-                        //   selectedParkingOption === item.title
-                        //     ? styles.selectedParkingStyle
-                        //     : styles.parkingStyleContainer,
-                        //   selectedParkingOption === item.title
-                        //     ? styles.shadowStyle
-                        //     : {},
-                        //   { height: 120 },
-                        // ]}
-                        style={[
-                          selectedParkingOption.some(
-                            selectedOption =>
-                              selectedOption.value === item.title,
-                          )
-                            ? styles.selectedParkingStyle
-                            : styles.parkingStyleContainer,
-                          selectedParkingOption.some(
-                            selectedOption =>
-                              selectedOption.value === item.title,
-                          )
-                            ? styles.shadowStyle
-                            : {},
-                          { height: 120 },
-                        ]}>
+                  {parkingOptions.map(item => (
+                    <View
+                      key={item.id}
+                      style={[
+                        selectedParkingOption.some(
+                          selectedOption => selectedOption.value === item.title,
+                        )
+                          ? styles.selectedParkingStyle
+                          : styles.parkingStyleContainer,
+                        selectedParkingOption.some(
+                          selectedOption => selectedOption.value === item.title,
+                        )
+                          ? styles.shadowStyle
+                          : {},
+                        { height: 120, flex: 1 },
+                      ]}>
+                      <View style={{ flex: 1, justifyContent: 'center' }}>
                         {item?.iconName === 'charging-station' ? (
                           <FontAwesome5
                             name="charging-station"
-                            size={24}
+                            size={28}
                             color={
                               selectedParkingOption.some(
                                 selectedOption =>
@@ -687,7 +666,7 @@ const HousesMap = ({
                         ) : (
                           <MaterialIcon
                             name={item.iconName}
-                            size={24}
+                            size={item.iconName === 'pedal-bike' ? 34 : 24}
                             color={
                               selectedParkingOption.some(
                                 selectedOption =>
@@ -700,15 +679,7 @@ const HousesMap = ({
                               item.iconName === 'local-parking'
                                 ? {
                                     borderWidth: 4,
-                                    // width: 36,
-                                    height: 32,
-                                    // alignItems: 'center',
-                                    paddingLeft:
-                                      Platform.OS === 'android' ? 4 : 0,
-                                    paddingTop:
-                                      Platform.OS === 'android' ? 4 : 0,
-                                    // height: 44,
-                                    // paddingVertical: 4,
+
                                     borderColor: selectedParkingOption.some(
                                       selectedOption =>
                                         selectedOption.value === item.title,
@@ -721,6 +692,13 @@ const HousesMap = ({
                             }
                           />
                         )}
+                      </View>
+                      <View
+                        style={{
+                          alignItems: 'center',
+                          flex: 1,
+                          justifyContent: 'center',
+                        }}>
                         <Text
                           style={{
                             color: selectedParkingOption.some(
@@ -731,6 +709,7 @@ const HousesMap = ({
                               : lightGrey,
                             marginTop: 12,
                             paddingHorizontal: 16,
+                            fontSize: 10,
                           }}>
                           {item.title}{' '}
                         </Text>
@@ -745,86 +724,89 @@ const HousesMap = ({
                           }}
                         />
                       </View>
-                    ))}
-                  </ScrollView>
+                    </View>
+                  ))}
                 </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginHorizontal: 12,
-                    marginVertical: 8,
-                    paddingRight: 8,
-                  }}>
-                  <View style={styles.borderStyle} />
-                  <Text
-                    style={{
-                      paddingHorizontal: 6,
-                      fontFamily: 'Roboto-Bold',
-                      fontWeight: 'bold',
-                      color: placeholderColor,
-                    }}>
-                    KARTE
-                  </Text>
-                  <View style={styles.borderStyle} />
-                </View>
-                <View
-                  style={[
-                    styles.shadowStyle,
-                    {
-                      backgroundColor: creamColor,
-                      paddingVertical: 8,
-                      marginHorizontal: '3%',
-                      borderRadius: 12,
-                      shadowOpacity: 0.2,
-                    },
-                  ]}>
+
+                <View style={{}}>
                   <View
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
-                      justifyContent: 'space-between',
+                      marginHorizontal: 18,
+                      marginVertical: 12,
+                      paddingRight: 8,
                     }}>
-                    {mapOptions.map(item => (
-                      <TouchableOpacity
-                        key={item.id}
-                        activeOpacity={0.9}
-                        onPress={() => setSelectedMapOption(item.value)}>
-                        <View
-                          style={[
-                            selectedMapOption === item.value
-                              ? {
-                                  backgroundColor: primaryBlue,
-                                  borderRadius: 8,
-                                  alignItems: 'center',
-                                  marginHorizontal: 10,
-                                  shadowColor: primaryBlue,
-                                }
-                              : {},
-                            selectedMapOption === item.value
-                              ? styles.shadowStyle
-                              : {},
-                            {
-                              paddingVertical: 12,
-                              paddingHorizontal: 24,
-                              minWidth: '28%',
-                            },
-                          ]}>
-                          <Text
-                            style={{
-                              fontSize: 16,
-                              fontFamily: 'Roboto-Bold',
-                              fontWeight: 'bold',
-                              color:
-                                selectedMapOption === item.value
-                                  ? white
-                                  : primaryBlue,
-                            }}>
-                            {item.title}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    ))}
+                    <View style={styles.borderStyle} />
+                    <Text
+                      style={{
+                        paddingHorizontal: 6,
+                        fontFamily: 'Roboto-Bold',
+                        fontWeight: 'bold',
+                        color: placeholderColor,
+                      }}>
+                      KARTE
+                    </Text>
+                    <View style={styles.borderStyle} />
+                  </View>
+                  <View
+                    style={[
+                      styles.shadowStyle,
+                      {
+                        backgroundColor: creamColor,
+                        paddingVertical: 8,
+                        marginHorizontal: 18,
+                        borderRadius: 12,
+                        shadowOpacity: 0.2,
+                      },
+                    ]}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      }}>
+                      {mapOptions.map(item => (
+                        <TouchableOpacity
+                          key={item.id}
+                          activeOpacity={0.9}
+                          onPress={() => setSelectedMapOption(item.value)}>
+                          <View
+                            style={[
+                              selectedMapOption === item.value
+                                ? {
+                                    backgroundColor: primaryBlue,
+                                    borderRadius: 8,
+                                    alignItems: 'center',
+                                    marginHorizontal: 10,
+                                    shadowColor: primaryBlue,
+                                  }
+                                : {},
+                              selectedMapOption === item.value
+                                ? [styles.shadowStyle]
+                                : {},
+                              {
+                                paddingVertical: 12,
+                                paddingHorizontal: 24,
+                                minWidth: '28%',
+                              },
+                            ]}>
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                fontFamily: 'Roboto-Bold',
+                                fontWeight: 'bold',
+                                color:
+                                  selectedMapOption === item.value
+                                    ? white
+                                    : primaryBlue,
+                              }}>
+                              {item.title}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
                   </View>
                 </View>
               </View>
@@ -856,7 +838,7 @@ export const ToggleSwitch = ({ onToggle, initialValue = false, disabled }) => {
 
 const styles = StyleSheet.create({
   switch: {
-    width: 44,
+    width: 36,
     height: 24,
     borderRadius: 15,
     justifyContent: 'center',
@@ -901,25 +883,18 @@ const styles = StyleSheet.create({
   selectedParkingStyle: {
     backgroundColor: primaryBlue,
     borderRadius: 12,
-    marginHorizontal: 10,
     paddingVertical: 12,
-    // alignSelf: 'flex-start',
+    borderWidth: 3,
+    borderColor: primaryBlue,
     alignItems: 'center',
-    minWidth: 100,
-    minHeight: 110,
   },
   parkingStyleContainer: {
     backgroundColor: white,
     borderRadius: 12,
-    marginHorizontal: 10,
     paddingVertical: 12,
-    marginBottom: 8,
     borderColor: '#E0E6EE',
     borderWidth: 3,
-    // alignSelf: 'flex-start',
     alignItems: 'center',
-    minWidth: 100,
-    minHeight: 110,
   },
   closeIconContainer: {
     position: 'absolute',
