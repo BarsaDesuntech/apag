@@ -1,5 +1,5 @@
 import React, { Component, useMemo } from 'react';
-import { StatusBar, View } from 'react-native';
+import { SafeAreaView, StatusBar, View } from 'react-native';
 import { connect } from 'react-redux';
 import GlobalStyle, { white } from '../style';
 import HousesMap from '../components/map';
@@ -146,7 +146,11 @@ class HousesMapScreen extends Component {
     // Screen split by SegmentedControlTab package into multiple fileted subscreens
     // The segments do not filter the parkhouses instead the map scrolls to the location of the center of the parkobjects of the city
     return (
-      <View style={[GlobalStyle.container, { backgroundColor: white }]}>
+      <View
+        style={[
+          GlobalStyle.container,
+          { backgroundColor: white, paddingBottom: 55 },
+        ]}>
         <View
           style={[
             GlobalStyle.container,

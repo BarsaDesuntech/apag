@@ -237,7 +237,7 @@ export const SearchScreen = () => {
                           size={26}
                         />
                       )}
-                      <Text style={styles.titleStyle}>
+                      <Text style={[styles.titleStyle, { fontWeight: '500' }]}>
                         {item.title}{' '}
                         <Text style={[styles.textWhite, { fontWeight: '400' }]}>
                           {item.titleDes}

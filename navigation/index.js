@@ -903,7 +903,6 @@ const AppNavigation = () => {
               }}
               renderCircle={({ selectedTab, navigate }) => (
                 <TouchableOpacity
-                  style={styles.button}
                   activeOpacity={1}
                   onPress={() => {
                     setIsSearchBottomSheetVisible(true),
