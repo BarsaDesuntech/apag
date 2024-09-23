@@ -13,7 +13,6 @@ import {
   darkBlue,
   inputOutlineColor,
   lightGrey,
-  oldBlue,
   placeholderColor,
   primaryBlue,
   primaryGreen,
@@ -24,7 +23,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SuchverlaufItems } from '../components/SearchScreen/SuchverlaufItems';
 import { FlatList } from 'react-native-gesture-handler';
 import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
-
+import { useSelector, useDispatch } from 'react-redux';
+import searchPark from '../store/reducers/searchPark';
 const options = [
   {
     id: 1,
@@ -33,6 +33,7 @@ const options = [
     des: 'Anzeigen',
     backgroundColor: primaryBlue,
     iconName: 'parking',
+    type: 'car',
   },
   {
     id: 2,
@@ -41,6 +42,7 @@ const options = [
     des: 'Anzeigen',
     backgroundColor: primaryGreen,
     iconName: 'charging-station',
+    type: 'station',
   },
   {
     id: 3,
@@ -49,33 +51,22 @@ const options = [
     des: 'Anzeigen',
     backgroundColor: darkBlue,
     iconName: 'pedal-bike',
+    type: 'bike',
   },
 ];
 
-const sucherLaufArray = [
-  { id: 1, title: 'WirichbongardstraBe 1', des: 'Aachen' },
-  { id: 2, title: 'TheaterstraBe 33', des: 'Aachen' },
-  { id: 3, title: 'Wirichbongar', des: 'Aachen' },
-  { id: 4, title: 'Adalbersteingweg 123', des: 'Aachen' },
-  { id: 5, title: 'FranzstraBe 24', des: 'Aachen' },
-];
-const searchSuggestion = [
-  { id: 1, title: 'TheaterstraBe Aachen  ' },
-  { id: 2, title: 'Theaterplatz Aachen' },
-  { id: 3, title: 'TheresienstraBe Aachen' },
-];
 export const SearchScreen = () => {
+  const dispatch = useDispatch();
+  const { parkhouses } = useSelector(state => state.parkhouses);
+  const { recentSearches } = useSelector(state => state.searchPark);
+
   const [searchValue, setSearchValue] = useState('');
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [suggestions, setSuggestions] = useState([
-    'Theaterstraße  ',
-    'Theaterplatz  ',
-    'Theresienstraße  ',
-  ]);
+  const [suggestions, setSuggestions] = useState(parkhouses ?? []);
+  const [visibleItems, setVisibleItems] = useState(5);
   const [swipedIndex, setSwipedIndex] = useState([]);
   // Filter suggestions based on query
   const filteredSuggestions = suggestions.filter(item =>
-    item.toLowerCase().includes(searchValue.toLowerCase()),
+    item?.name?.toLowerCase().includes(searchValue.toLowerCase()),
   );
 
   const checkIsSearchOn = searchValue => {
@@ -89,19 +80,67 @@ export const SearchScreen = () => {
       setSwipedIndex(prev => prev.filter(i => i !== index));
     }
   };
+  const handlePressSearchParkName = item => {
+    const newRecentSearchObj = {
+      id: item?.id,
+      legacy_id: item?.legacy_id,
+      name: item?.name,
+    };
+    const existingIndex = recentSearches.findIndex(
+      search => search?.id === item?.id,
+    );
 
+    let updatedSearches;
+    if (existingIndex >= 0) {
+      // Page already exists, update it and move to top
+      updatedSearches = [
+        newRecentSearchObj,
+        ...recentSearches.filter(search => search.id !== item?.id),
+      ];
+    } else {
+      // Add new search to the top
+      updatedSearches = [newRecentSearchObj, ...recentSearches];
+    }
+    console.log('updated search length', updatedSearches.length);
+
+    // Limit the array to MAX_RECENT_SEARCHES
+    // if (updatedSearches.length > 5) {
+    //   updatedSearches = updatedSearches.slice(0, 5);
+    // }
+    dispatch({
+      type: 'SET_RECENT_SEARCH',
+      payload: updatedSearches,
+    });
+  };
+  const handleDeleteRecentSearch = id => {
+    const updatedSearches = recentSearches.filter(search => search.id !== id);
+    dispatch({
+      type: 'SET_RECENT_SEARCH',
+      payload: updatedSearches, // Send the updated list of recent searches
+    });
+  };
+  const loadMoreItems = () => {
+    if (visibleItems <= recentSearches.length) {
+      setVisibleItems(prev => prev + 5); // Load 5 more items
+    }
+  };
   // Render each item in the FlatList
   const renderSuggestionItem = ({ item, index }) => {
-    const startIndex = item.toLowerCase().indexOf(searchValue.toLowerCase());
+    const startIndex = item?.name
+      ?.toLowerCase()
+      .indexOf(searchValue.toLowerCase());
     const endIndex = startIndex + searchValue.length;
 
     // Bold matching text
-    const beforeMatch = item.slice(0, startIndex);
-    const matchText = item.slice(startIndex, endIndex);
-    const afterMatch = item.slice(endIndex);
+    const beforeMatch = item?.name?.slice(0, startIndex);
+    const matchText = item?.name?.slice(startIndex, endIndex);
+    const afterMatch = item?.name?.slice(endIndex);
 
     return (
-      <TouchableOpacity activeOpacity={1} style={{ flex: 1 }}>
+      <TouchableOpacity
+        activeOpacity={1}
+        style={{ flex: 1 }}
+        onPress={() => handlePressSearchParkName(item)}>
         <View
           style={[
             {
@@ -137,7 +176,7 @@ export const SearchScreen = () => {
                 {beforeMatch}
                 <Text style={styles.boldText}>{matchText}</Text>
                 {afterMatch}
-                <Text style={{ color: lightGrey }}>Aachen</Text>
+                <Text style={{ color: lightGrey }}> Aachen</Text>
               </Text>
             </View>
             <FontAwesome5
@@ -151,6 +190,7 @@ export const SearchScreen = () => {
       </TouchableOpacity>
     );
   };
+
   return (
     <View style={styles.container}>
       <BottomSheetFlatList
@@ -161,6 +201,7 @@ export const SearchScreen = () => {
           paddingBottom: 20,
           backgroundColor: '#fff',
         }}
+        nestedScrollEnabled={true}
         stickyHeaderIndices={[0]}
         ListHeaderComponentStyle={{ backgroundColor: '#fff' }}
         ListHeaderComponent={
@@ -190,13 +231,14 @@ export const SearchScreen = () => {
               marginHorizontal: 10,
               height: 44,
             }}
-            outlineStyle={{ borderWidth: 3, borderRadius: 12 }}
+            outlineStyle={{ borderWidth: 1, borderRadius: 12 }}
             placeholderTextColor={placeholderColor}
             onChangeText={text => setSearchValue(text)}
           />
         }
         renderItem={() => (
-          <>
+          <View style={{ flex: 1 }}>
+            {/* Suggestion */}
             {checkIsSearchOn(searchValue) ? (
               <View
                 style={[
@@ -205,53 +247,74 @@ export const SearchScreen = () => {
                     flex: 1,
                   },
                 ]}>
-                <BottomSheetFlatList
+                <FlatList
                   data={filteredSuggestions}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={renderSuggestionItem}
                   style={styles.suggestionList}
+                  ListEmptyComponent={
+                    <View style={{ height: 300, justifyContent: 'center' }}>
+                      <Text style={{ textAlign: 'center' }}>No Data.</Text>
+                    </View>
+                  }
+                  nestedScrollEnabled
                 />
               </View>
             ) : null}
+            {/* Near By filter */}
             {checkIsSearchOn(searchValue)
               ? null
               : options.map(item => (
-                  <View
+                  <TouchableOpacity
                     key={item.id}
-                    style={[
-                      styles.listContainer,
-                      { backgroundColor: item.backgroundColor },
-                    ]}>
+                    onPress={() => {
+                      dispatch({
+                        type: 'SET_NEAR_BY_PARK',
+                        payload: item?.type,
+                      });
+                      dispatch({
+                        type: 'SET_VISIBLE_SEARCH_BOTTOM_SHEET',
+                        payload: false,
+                      });
+                    }}>
                     <View
-                      style={{ flexDirection: 'row', alignItems: 'center' }}>
-                      {item.iconName === 'pedal-bike' ? (
-                        <MaterialIcons
-                          name={item.iconName}
-                          color={'#fff'}
-                          size={26}
-                        />
-                      ) : (
-                        <FontAwesome5
-                          name={item.iconName}
-                          color={'#fff'}
-                          size={26}
-                        />
-                      )}
-                      <Text style={[styles.titleStyle, { fontWeight: '500' }]}>
-                        {item.title}{' '}
-                        <Text style={[styles.textWhite, { fontWeight: '400' }]}>
-                          {item.titleDes}
+                      style={[
+                        styles.listContainer,
+                        { backgroundColor: item.backgroundColor },
+                      ]}>
+                      <View
+                        style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        {item.iconName === 'pedal-bike' ? (
+                          <MaterialIcons
+                            name={item.iconName}
+                            color={'#fff'}
+                            size={26}
+                          />
+                        ) : (
+                          <FontAwesome5
+                            name={item.iconName}
+                            color={'#fff'}
+                            size={26}
+                          />
+                        )}
+                        <Text
+                          style={[styles.titleStyle, { fontWeight: '500' }]}>
+                          {item.title}{' '}
+                          <Text
+                            style={[styles.textWhite, { fontWeight: '400' }]}>
+                            {item.titleDes}
+                          </Text>
                         </Text>
+                      </View>
+                      <Text
+                        style={[
+                          styles.titleStyle,
+                          { paddingRight: 4, fontWeight: '600' },
+                        ]}>
+                        {item.des}
                       </Text>
                     </View>
-                    <Text
-                      style={[
-                        styles.titleStyle,
-                        { paddingRight: 4, fontWeight: '600' },
-                      ]}>
-                      {item.des}
-                    </Text>
-                  </View>
+                  </TouchableOpacity>
                 ))}
             {!checkIsSearchOn(searchValue) ? (
               <Text
@@ -266,11 +329,15 @@ export const SearchScreen = () => {
               </Text>
             ) : null}
             {checkIsSearchOn(searchValue) ? null : (
-              <FlatList
-                data={sucherLaufArray}
-                renderScrollComponent={ScrollView}
+              <BottomSheetFlatList
+                data={recentSearches.slice(0, visibleItems)}
                 nestedScrollEnabled
                 keyExtractor={(item, index) => item.id.toString()}
+                ListEmptyComponent={
+                  <View style={{ height: 200, justifyContent: 'center' }}>
+                    <Text style={{ textAlign: 'center' }}>No Data.</Text>
+                  </View>
+                }
                 renderItem={({ item, index }) => (
                   <SuchverlaufItems
                     item={item}
@@ -279,26 +346,41 @@ export const SearchScreen = () => {
                     }
                     swipedIndexItem={swipedIndex}
                     index={index}
+                    handleDeleteRecentSearch={() =>
+                      handleDeleteRecentSearch(item?.id)
+                    }
                     contentContainerStyle={{ marginVertical: 8 }}
                   />
                 )}
+                ListFooterComponent={
+                  <>
+                    {recentSearches.length > 0 &&
+                      visibleItems < recentSearches.length && (
+                        <TouchableOpacity onPress={loadMoreItems}>
+                          <View
+                            style={[
+                              styles.floatingButtonContainer,
+                              styles.shadowStyle,
+                            ]}>
+                            <Text
+                              style={{
+                                color: primaryBlue,
+                                fontWeight: '700',
+                                fontFamily: 'Roboto-Bold',
+                                fontSize: 16,
+                              }}>
+                              Mehr anzeigen
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      )}
+                  </>
+                }
               />
             )}
-          </>
+          </View>
         )}
       />
-
-      <View style={[styles.floatingButtonContainer, styles.shadowStyle]}>
-        <Text
-          style={{
-            color: primaryBlue,
-            fontWeight: '700',
-            fontFamily: 'Roboto-Bold',
-            fontSize: 16,
-          }}>
-          Mehr anzeigen
-        </Text>
-      </View>
     </View>
   );
 };

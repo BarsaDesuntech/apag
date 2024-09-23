@@ -26,6 +26,7 @@ export const SuchverlaufItems = ({
   onSwipeComplete,
   swipedIndexItem,
   index,
+  handleDeleteRecentSearch,
 }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const X = useSharedValue(0);
@@ -132,7 +133,7 @@ export const SuchverlaufItems = ({
               alignItems: 'center',
             }}>
             <FontAwesome5 name="clock" color={primaryBlue} size={20} />
-            <Animated.View style={{ marginLeft: 14 }}>
+            <Animated.View style={{ marginLeft: 14, flex: 1, maxWidth: '80%' }}>
               <Text
                 style={{
                   fontFamily: 'roboto-medium',
@@ -140,7 +141,7 @@ export const SuchverlaufItems = ({
                   color: InputColor,
                   fontSize: 16,
                 }}>
-                {item?.title}
+                {item?.name}
               </Text>
               <Animated.Text
                 style={{
@@ -150,7 +151,7 @@ export const SuchverlaufItems = ({
                   fontSize: 12,
                   marginTop: 2,
                 }}>
-                {item?.des}
+                {item?.des}Aachen
               </Animated.Text>
             </Animated.View>
           </Animated.View>
@@ -199,7 +200,7 @@ export const SuchverlaufItems = ({
               name="delete-outline"
               size={24}
               color={white}
-              onPress={() => console.log('press on delete')}
+              onPress={handleDeleteRecentSearch}
             />
           </Animated.View>
         </Animated.View>

@@ -188,6 +188,9 @@ const AppNavigation = () => {
   const user = useSelector(getUser);
   const consent = useSelector(({ consent: t }) => t);
   const app = useSelector(({ app: t }) => t);
+  const isBottomSheetVisibleSearch = useSelector(
+    ({ searchPark: t }) => t.isBottomSheetVisibleSearch,
+  );
   const logoutUser = () => dispatch(logout());
   const navigation = useNavigation();
   const showMenu = () => {
@@ -771,11 +774,18 @@ const AppNavigation = () => {
       const timeOut = setTimeout(() => {
         setIsSearchBottomSheetVisible(false);
       }, 500);
+      dispatch({ type: 'SET_VISIBLE_SEARCH_BOTTOM_SHEET', payload: false });
       clearTimeout(timeOut);
     } else {
       setIsSearchBottomSheetVisible(true);
+      dispatch({ type: 'SET_VISIBLE_SEARCH_BOTTOM_SHEET', payload: true });
     }
   }, []);
+  useEffect(() => {
+    if (!isBottomSheetVisibleSearch) {
+      handleCloseBottomSheet();
+    }
+  }, [isBottomSheetVisibleSearch]);
   const handleOpenBottomSheet = useCallback(() => {
     isModalOpening = true;
     searchBottomSheetRef.current?.present();
@@ -792,7 +802,7 @@ const AppNavigation = () => {
       withTiming(0, { duration: rotationDuration }),
     );
     rotateSv.value = withTiming(0, { duration: rotationDuration, easing });
-
+    dispatch({ type: 'SET_VISIBLE_SEARCH_BOTTOM_SHEET', payload: false });
     setTimeout(() => {
       searchBottomSheetRef.current?.close();
     }, 500);

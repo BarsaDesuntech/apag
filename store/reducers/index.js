@@ -61,6 +61,7 @@ const reducer = {
   app: require('./app'),
   registration: require('./registration'),
   mapParkSelect: require('./mapParkSelectSlice'),
+  searchPark: require('./searchPark'),
 };
 
 // Export the persisted and combined Redux reducers
