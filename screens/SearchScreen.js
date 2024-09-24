@@ -25,6 +25,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { useSelector, useDispatch } from 'react-redux';
 import searchPark from '../store/reducers/searchPark';
+import { useNavigation } from '@react-navigation/native';
 const options = [
   {
     id: 1,
@@ -57,6 +58,7 @@ const options = [
 
 export const SearchScreen = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const { parkhouses } = useSelector(state => state.parkhouses);
   const { recentSearches } = useSelector(state => state.searchPark);
 
@@ -101,7 +103,6 @@ export const SearchScreen = () => {
       // Add new search to the top
       updatedSearches = [newRecentSearchObj, ...recentSearches];
     }
-    console.log('updated search length', updatedSearches.length);
 
     // Limit the array to MAX_RECENT_SEARCHES
     // if (updatedSearches.length > 5) {
@@ -111,9 +112,36 @@ export const SearchScreen = () => {
       type: 'SET_RECENT_SEARCH',
       payload: updatedSearches,
     });
+    dispatch({
+      type: 'SET_VISIBLE_SEARCH_BOTTOM_SHEET',
+      payload: false,
+    });
+    navigation.navigate('Parkhouse', {
+      phid: item.id,
+      item: item,
+    });
   };
   const handleDeleteRecentSearch = id => {
     const updatedSearches = recentSearches.filter(search => search.id !== id);
+    dispatch({
+      type: 'SET_RECENT_SEARCH',
+      payload: updatedSearches, // Send the updated list of recent searches
+    });
+  };
+  const handlePressOnRecentItem = item => {
+    dispatch({
+      type: 'SET_VISIBLE_SEARCH_BOTTOM_SHEET',
+      payload: false,
+    });
+    navigation.navigate('Parkhouse', {
+      phid: item.id,
+      item: item,
+    });
+  };
+  const handleFavoriteMark = (favorite, id) => {
+    const updatedSearches = recentSearches.map(item =>
+      item.id === id ? { ...item, isFavorite: favorite } : item,
+    );
     dispatch({
       type: 'SET_RECENT_SEARCH',
       payload: updatedSearches, // Send the updated list of recent searches
@@ -350,6 +378,8 @@ export const SearchScreen = () => {
                       handleDeleteRecentSearch(item?.id)
                     }
                     contentContainerStyle={{ marginVertical: 8 }}
+                    onPressItem={() => handlePressOnRecentItem(item)}
+                    handleFavoriteMark={handleFavoriteMark}
                   />
                 )}
                 ListFooterComponent={

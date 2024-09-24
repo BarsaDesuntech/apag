@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import Animated, {
   useSharedValue,
@@ -23,15 +23,20 @@ const H_SWIPE_RANGE = BUTTON_WIDTH - ITEM_HEIGHT;
 const data = Array.from({ length: 10 }, (_, i) => `Item ${i + 1}`);
 export const SuchverlaufItems = ({
   item,
+  onPressItem,
   onSwipeComplete,
   swipedIndexItem,
   index,
   handleDeleteRecentSearch,
+  handleFavoriteMark,
 }) => {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(item?.isFavorite ?? false);
   const X = useSharedValue(0);
   const [swiped, setSwiped] = React.useState(false);
 
+  useEffect(() => {
+    handleFavoriteMark(isFavorite, item?.id);
+  }, [isFavorite]);
   const handleComplete = isSwiped => {
     if (isSwiped !== swiped) {
       setSwiped(isSwiped);
@@ -113,99 +118,102 @@ export const SuchverlaufItems = ({
   });
 
   return (
-    <PanGestureHandler onGestureEvent={animatedGestureHandler}>
-      <Animated.View style={[styles.itemContainer, animatedStyle]}>
-        <Animated.View
-          style={[
-            {
-              justifyContent: 'space-between',
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginHorizontal: 14,
-              // marginVertical: 8,
-              zIndex: swipedIndexItem?.includes(index) ? 0 : 4,
-            },
-            textOpacityStyle,
-          ]}>
+    <TouchableOpacity onPress={onPressItem}>
+      <PanGestureHandler onGestureEvent={animatedGestureHandler}>
+        <Animated.View style={[styles.itemContainer, animatedStyle]}>
           <Animated.View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <FontAwesome5 name="clock" color={primaryBlue} size={20} />
-            <Animated.View style={{ marginLeft: 14, flex: 1, maxWidth: '80%' }}>
-              <Text
-                style={{
-                  fontFamily: 'roboto-medium',
+            style={[
+              {
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginHorizontal: 14,
+                // marginVertical: 8,
+                zIndex: swipedIndexItem?.includes(index) ? 0 : 4,
+              },
+              textOpacityStyle,
+            ]}>
+            <Animated.View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <FontAwesome5 name="clock" color={primaryBlue} size={20} />
+              <Animated.View
+                style={{ marginLeft: 14, flex: 1, maxWidth: '80%' }}>
+                <Text
+                  style={{
+                    fontFamily: 'roboto-medium',
 
-                  color: InputColor,
-                  fontSize: 16,
-                }}>
-                {item?.name}
-              </Text>
-              <Animated.Text
-                style={{
-                  fontFamily: 'roboto-medium',
-                  fontWeight: '400',
-                  color: InputColor,
-                  fontSize: 12,
-                  marginTop: 2,
-                }}>
-                {item?.des}Aachen
-              </Animated.Text>
+                    color: InputColor,
+                    fontSize: 16,
+                  }}>
+                  {item?.name}
+                </Text>
+                <Animated.Text
+                  style={{
+                    fontFamily: 'roboto-medium',
+                    fontWeight: '400',
+                    color: InputColor,
+                    fontSize: 12,
+                    marginTop: 2,
+                  }}>
+                  {item?.des}Aachen
+                </Animated.Text>
+              </Animated.View>
+            </Animated.View>
+            <Animated.View style={{ zIndex: 4 }}>
+              <FontAwesome
+                name={isFavorite ? 'heart' : 'heart-o'}
+                size={24}
+                color={isFavorite ? redColor : primaryBlue}
+                key={item.id}
+                onPress={() => setIsFavorite(!isFavorite)}
+              />
             </Animated.View>
           </Animated.View>
-          <Animated.View style={{ zIndex: 4 }}>
-            <FontAwesome
-              name={isFavorite ? 'heart' : 'heart-o'}
-              size={24}
-              color={isFavorite ? redColor : primaryBlue}
-              key={item.id}
-              onPress={() => setIsFavorite(!isFavorite)}
-            />
-          </Animated.View>
-        </Animated.View>
 
-        <Animated.View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            position: 'absolute',
-            top: 12,
-          }}>
           <Animated.View
-            key={item}
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'center',
-              flex: 1,
+              justifyContent: 'space-between',
+              position: 'absolute',
+              top: 12,
             }}>
-            {[1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4].map(item => (
-              <Animated.View
-                key={item}
-                style={[styles.leftArrowIcon, arrowIconStyle]}>
-                <Icon
-                  name="chevron-left"
-                  size={24}
-                  color={white}
-                  style={{ opacity: item }}
-                />
-              </Animated.View>
-            ))}
-          </Animated.View>
-          <Animated.View style={[iconStyle, { zIndex: 6 }]}>
-            <Icon
-              name="delete-outline"
-              size={24}
-              color={white}
-              onPress={handleDeleteRecentSearch}
-            />
+            <Animated.View
+              key={item}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+              }}>
+              {[1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4].map(item => (
+                <Animated.View
+                  key={item}
+                  style={[styles.leftArrowIcon, arrowIconStyle]}>
+                  <Icon
+                    name="chevron-left"
+                    size={24}
+                    color={white}
+                    style={{ opacity: item }}
+                  />
+                </Animated.View>
+              ))}
+            </Animated.View>
+            <Animated.View style={[iconStyle, { zIndex: 6 }]}>
+              <Icon
+                name="delete-outline"
+                size={24}
+                color={white}
+                onPress={handleDeleteRecentSearch}
+              />
+            </Animated.View>
           </Animated.View>
         </Animated.View>
-      </Animated.View>
-    </PanGestureHandler>
+      </PanGestureHandler>
+    </TouchableOpacity>
   );
 };
 
