@@ -8,6 +8,7 @@ import { getCityList, calcCenterCoordinate } from '../helpers';
 import { fetchParkhouses } from '../store/actions/parkhouses';
 import ErrorScreen from '../screens/error';
 import ConsentMissing from '../components/consentMissing';
+import Geolocation from '@react-native-community/geolocation';
 
 /**
  * Renders all parkhouses on a map filterable by city.
@@ -72,7 +73,14 @@ class HousesMapScreen extends Component {
     if (prevProps.selectedOption !== this.props.selectedOption) {
       this.updateFilteredParkObjects();
     }
+    if (
+      prevProps.nearByPark !== this.props.nearByPark &&
+      parkhouses.parkhouses.length
+    ) {
+      this.filterNearbyStations();
+    }
   }
+
   updateFilteredParkObjects = () => {
     const { parkhouses, selectedOption } = this.props;
 
@@ -110,8 +118,68 @@ class HousesMapScreen extends Component {
     // Update state with the filtered park objects
     this.setState({ filteredParkObjectsOnOptions: filteredParkObjects });
   };
+  // Method to convert degrees to radians
+  deg2rad = deg => {
+    return deg * (Math.PI / 180);
+  };
+
+  // Method to calculate the distance between two latitude and longitude points
+  getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = this.deg2rad(lat2 - lat1);
+    const dLon = this.deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.deg2rad(lat1)) *
+        Math.cos(this.deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance;
+  };
+  filterNearbyStations = () => {
+    const { parkhouses, nearByPark } = this.props;
+
+    const radiusInKm = 5; // Set the desired radius in kilometers
+    Geolocation.getCurrentPosition(pos => {
+      const userLat = pos.coords?.latitude;
+      const userLong = pos.coords?.longitude;
+
+      const filteredStations = parkhouses?.parkhouses?.filter(station => {
+        const distance = this.getDistanceFromLatLonInKm(
+          userLat,
+          userLong,
+          station?.latitude ?? station?.location?.latitude,
+          station?.longitude ?? station?.location?.longitude,
+        );
+
+        if (distance > radiusInKm) {
+          return false; // Skip if the station is outside the radius
+        }
+
+        // Filter based on nearByPark
+        if (nearByPark?.nearByPark === 'car') {
+          // Return car type parkhouses
+          return station?.type === 'car';
+        } else if (nearByPark?.nearByPark === 'bike') {
+          // Return bike type parkhouses
+          return station?.type === 'bike';
+        } else if (nearByPark?.nearByPark === 'station') {
+          // Return only car type parkhouses that have charging stations
+          return (
+            station?.type === 'car' && station?.charging_stations?.length > 0
+          );
+        }
+
+        return false; // Default fallback, exclude the station if no conditions are met
+      });
+
+      this.setState({ filteredParkObjectsOnOptions: filteredStations });
+    });
+  };
   render() {
-    const { parkhouses, navigation, consent } = this.props;
+    const { parkhouses, navigation, consent, nearByPark } = this.props;
     const { filteredParkObjectsOnOptions } = this.state;
     const parkobjects = parkhouses.parkhouses;
     const { isFetching } = parkhouses;
@@ -182,6 +250,7 @@ function mapStateToProps(state) {
     parkhouses: state.parkhouses,
     consent: state.consent,
     selectedOption: state.mapParkSelect,
+    nearByPark: state.searchPark,
   };
 }
 
