@@ -895,9 +895,9 @@ const AppNavigation = () => {
               type="DOWN"
               bgColor={white}
               style={styles.bottomBar}
-              shadowStyle={styles.shawdow}
+              // shadowStyle={styles.shawdow}
               height={55}
-              circleWidth={50}
+              circleWidth={60}
               screenOptions={{
                 headerShown: false,
                 tabBarActiveTintColor: oldBlue,
@@ -1087,8 +1087,8 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
   },
   btnCircleUp: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
