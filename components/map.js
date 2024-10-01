@@ -16,16 +16,12 @@ import {
   ImageBackground,
   TouchableOpacity,
   StyleSheet,
-  Switch,
-  ScrollView,
 } from 'react-native';
-import { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
+import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import MapView from 'react-native-maps-super-cluster';
 import GlobalStyle, {
-  black,
   creamColor,
   lightGrey,
-  lightGrey200,
   placeholderColor,
   primaryBlue,
   white,
@@ -37,8 +33,7 @@ import { MapButton } from './mapButton';
 import Geolocation from '@react-native-community/geolocation';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import { Divider } from 'react-native-paper';
-import { placeholder } from 'deprecated-react-native-prop-types/DeprecatedTextInputPropTypes';
+
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
@@ -52,6 +47,8 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
+import { mapStyleNormal, mapStyleReduced } from '../helpers/constant';
+import { SET_SELECTED_OPTION } from '../store/actions/constants';
 
 const window = Dimensions.get('window');
 // Define some global settings for the map
@@ -120,19 +117,43 @@ const HousesMap = ({
 }) => {
   const dispatch = useDispatch();
   const mapRef = useRef(null);
-  // Only update the parkhouses and map center if the initial rendering is done on Android)
-  const [isReady, setIsReady] = useState(true);
-  const { selectedOption } = useSelector(state => state.mapParkSelect);
-
   const parkObjectsSheetRef = useRef(null);
-  const [isParkObjectSheetVisible, setIsParkObjectSheetVisible] =
-    useState(false);
-
+  let isModalOpening = false;
   const snapPoints = useMemo(() => ['25%', '44%'], []);
   const rotateSv = useSharedValue(0);
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(-Dimensions.get('window').height * 0.5);
-  let isModalOpening = false;
+
+  const { selectedOption } = useSelector(state => state.mapParkSelect);
+
+  // Only update the parkhouses and map center if the initial rendering is done on Android)
+  const [isReady, setIsReady] = useState(true);
+
+  const [selectedMapOption, setSelectedMapOption] = useState('reduced');
+  const [isParkObjectSheetVisible, setIsParkObjectSheetVisible] =
+    useState(false);
+  const [selectedParkingOption, setSelectedParkingOptions] = useState([
+    { key: 'car', value: 'Parken' },
+    { key: 'laden', value: 'Laden' },
+    { key: 'bike', value: 'Bike-Stations' },
+  ]);
+
+  const animatedRotationStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        rotate: `${
+          isModalOpening ? -rotateSv.value * 180 : rotateSv.value * 180
+        }deg`,
+      },
+    ],
+  }));
+
+  // Animated style for the opacity and position
+  const animatedStyleCrossFadeIn = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ translateY: translateY.value }],
+  }));
+
   const handleSheetChanges = useCallback(index => {
     if (index === -1) {
       isModalOpening = false;
@@ -153,6 +174,7 @@ const HousesMap = ({
       setIsParkObjectSheetVisible(true);
     }
   }, []);
+
   const handleOpenBottomSheet = useCallback(() => {
     isModalOpening = true;
     parkObjectsSheetRef.current?.present();
@@ -165,6 +187,7 @@ const HousesMap = ({
       easing: Easing.out(Easing.exp),
     });
   }, []);
+
   const handleCloseBottomSheet = useCallback(() => {
     isModalOpening = false;
     opacity.value = withTiming(0, {
@@ -177,33 +200,7 @@ const HousesMap = ({
     });
 
     parkObjectsSheetRef.current?.close();
-    // setTimeout(() => {
-    //   setIsParkObjectSheetVisible(false);
-    // }, 1000);
   }, []);
-
-  const animatedRotationStyle = useAnimatedStyle(() => ({
-    transform: [
-      {
-        rotate: `${
-          isModalOpening ? -rotateSv.value * 180 : rotateSv.value * 180
-        }deg`,
-      },
-    ],
-  }));
-
-  // Animated style for the opacity and position
-  const animatedStyleCrossFadeIn = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    transform: [{ translateY: translateY.value }],
-  }));
-  const [selectedParkingOption, setSelectedParkingOptions] = useState([
-    { key: 'car', value: 'Parken' },
-    { key: 'laden', value: 'Laden' },
-    { key: 'bike', value: 'Bike-Stations' },
-  ]);
-
-  const [selectedMapOption, setSelectedMapOption] = useState('reduced');
 
   const handleParkingOption = optionKey => {
     const optionExists = selectedParkingOption.some(
@@ -231,9 +228,6 @@ const HousesMap = ({
       setSelectedParkingOptions(updatedOptions);
     }
   };
-  useEffect(() => {
-    dispatch({ type: 'SET_SELECTED_OPTION', payload: selectedParkingOption });
-  }, [selectedParkingOption]);
 
   const requestLocationPermission = async () => {
     Geolocation.getCurrentPosition(
@@ -252,165 +246,14 @@ const HousesMap = ({
   };
 
   useEffect(() => {
+    dispatch({ type: SET_SELECTED_OPTION, payload: selectedParkingOption });
+  }, [selectedParkingOption]);
+
+  useEffect(() => {
     requestLocationPermission();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  var mapStyleNormal = [
-    {
-      featureType: 'administrative',
-      stylers: [
-        {
-          visibility: 'off',
-        },
-      ],
-    },
-    {
-      featureType: 'landscape.man_made',
-      elementType: 'labels.text',
-      stylers: [
-        {
-          visibility: 'off',
-        },
-      ],
-    },
-    {
-      featureType: 'poi',
-      stylers: [
-        {
-          visibility: 'off',
-        },
-      ],
-    },
-    {
-      featureType: 'road',
-      elementType: 'geometry',
-      stylers: [
-        {
-          color: '#ffffff',
-        },
-      ],
-    },
-    {
-      featureType: 'road',
-      elementType: 'geometry.stroke',
-      stylers: [
-        {
-          color: '#bdbdbd',
-        },
-        {
-          visibility: 'on',
-        },
-      ],
-    },
-    {
-      featureType: 'road',
-      elementType: 'labels.text',
-      stylers: [
-        {
-          visibility: 'simplified',
-        },
-      ],
-    },
-    {
-      featureType: 'road',
-      elementType: 'labels.text.fill',
-      stylers: [
-        {
-          color: '#878c8c',
-        },
-      ],
-    },
-  ];
-  var mapStyleReduced = [
-    {
-      elementType: 'geometry',
-      stylers: [
-        {
-          color: '#eff3fb',
-        },
-      ],
-    },
-    {
-      elementType: 'labels.icon',
-      stylers: [
-        {
-          visibility: 'off',
-        },
-      ],
-    },
-    {
-      elementType: 'labels.text.fill',
-      stylers: [
-        {
-          color: '#616161',
-        },
-      ],
-    },
-    {
-      elementType: 'labels.text.stroke',
-      stylers: [
-        {
-          color: '#f5f5f5',
-        },
-      ],
-    },
-    {
-      featureType: 'administrative',
-      stylers: [
-        {
-          visibility: 'off',
-        },
-      ],
-    },
-    {
-      featureType: 'poi',
-      elementType: 'geometry',
-      stylers: [
-        {
-          visibility: 'off',
-        },
-      ],
-    },
-    {
-      featureType: 'poi',
-      elementType: 'labels.text',
-      stylers: [
-        {
-          visibility: 'off',
-        },
-      ],
-    },
-    {
-      featureType: 'road',
-      elementType: 'geometry',
-      stylers: [
-        {
-          color: '#ffffff',
-        },
-      ],
-    },
-    {
-      featureType: 'road',
-      elementType: 'geometry.stroke',
-      stylers: [
-        {
-          color: '#bdbdbd',
-        },
-        {
-          visibility: 'off',
-        },
-      ],
-    },
-    {
-      featureType: 'road',
-      elementType: 'labels.text.fill',
-      stylers: [
-        {
-          color: '#9e9e9e',
-        },
-      ],
-    },
-  ];
+
   useEffect(() => {
     mapRef?.current?.mapview.animateToRegion(
       {
@@ -524,6 +367,9 @@ const HousesMap = ({
   const ready = () => {
     setIsReady(false);
   };
+  console.log('selectedMapOption', selectedMapOption);
+  console.log('selectedParkingOption', selectedParkingOption);
+  console.log('selectedOption redux', selectedOption);
 
   // Completely relies on the MapView
   // Renders target marker if passed (only used by LadenScreen)
@@ -817,7 +663,7 @@ const HousesMap = ({
     </View>
   );
 };
-export const ToggleSwitch = ({ onToggle, initialValue = false, disabled }) => {
+export const ToggleSwitch = ({ onToggle, initialValue = false }) => {
   const [isOn, setIsOn] = useState(initialValue);
 
   useEffect(() => {

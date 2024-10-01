@@ -138,11 +138,7 @@ export default class CustomMarker extends Component {
         // Preload the image because otherwise there are some rendering issues with react-native-maps
         if (item.type === 'car') {
           var image = require('../assets/img/pin.png');
-        }
-        // else if (item.type === 'bike') {
-        //   var image = require('../assets/img/pedal_bike.png');
-        // }
-        else {
+        } else {
           var image = require('../assets/img/pin_pp.png');
         }
         // Render a normal react-native-maps marker
@@ -156,17 +152,7 @@ export default class CustomMarker extends Component {
               longitude: parseFloat(item.longitude),
             }}
             tracksViewChanges={isReady}>
-            <Image
-              source={image}
-              style={[
-                GlobalStyle.pin,
-                // item?.type === 'bike' && {
-                //   tintColor: primaryBlue,
-                //   width: 40,
-                //   height: 40,
-                // },
-              ]}
-            />
+            <Image source={image} style={GlobalStyle.pin} />
             {showCallouts && <MapCallout item={item} navigation={navigation} />}
           </Marker>
         );

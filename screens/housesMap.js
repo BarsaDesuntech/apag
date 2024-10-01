@@ -155,31 +155,26 @@ class HousesMapScreen extends Component {
         );
 
         if (distance > radiusInKm) {
-          return false; // Skip if the station is outside the radius
+          return false;
         }
-
-        // Filter based on nearByPark
         if (nearByPark?.nearByPark === 'car') {
-          // Return car type parkhouses
           return station?.type === 'car';
         } else if (nearByPark?.nearByPark === 'bike') {
-          // Return bike type parkhouses
           return station?.type === 'bike';
         } else if (nearByPark?.nearByPark === 'station') {
-          // Return only car type parkhouses that have charging stations
           return (
             station?.type === 'car' && station?.charging_stations?.length > 0
           );
         }
 
-        return false; // Default fallback, exclude the station if no conditions are met
+        return false;
       });
 
       this.setState({ filteredParkObjectsOnOptions: filteredStations });
     });
   };
   render() {
-    const { parkhouses, navigation, consent, nearByPark } = this.props;
+    const { parkhouses, navigation, consent } = this.props;
     const { filteredParkObjectsOnOptions } = this.state;
     const parkobjects = parkhouses.parkhouses;
     const { isFetching } = parkhouses;

@@ -1,3 +1,5 @@
+const { SET_SELECTED_OPTION } = require('../actions/constants');
+
 const initialState = {
   selectedOption: [
     { key: 'car', value: 'Parken' },
@@ -7,7 +9,7 @@ const initialState = {
 };
 function mapParkSelectSlice(state = initialState, action) {
   switch (action.type) {
-    case 'SET_SELECTED_OPTION':
+    case SET_SELECTED_OPTION:
       return {
         ...state,
         selectedOption: action.payload, // update only the selectedOption

@@ -76,6 +76,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Shadow } from 'react-native-shadow-2';
+import { SET_VISIBLE_SEARCH_BOTTOM_SHEET } from '../store/actions/constants';
 
 // Import the logo and calculate the display width and height
 export const APAGImageSrc = require('../img/logo_apag_light_x2.png');
@@ -774,18 +775,14 @@ const AppNavigation = () => {
       const timeOut = setTimeout(() => {
         setIsSearchBottomSheetVisible(false);
       }, 500);
-      dispatch({ type: 'SET_VISIBLE_SEARCH_BOTTOM_SHEET', payload: false });
+      dispatch({ type: SET_VISIBLE_SEARCH_BOTTOM_SHEET, payload: false });
       clearTimeout(timeOut);
     } else {
       setIsSearchBottomSheetVisible(true);
-      dispatch({ type: 'SET_VISIBLE_SEARCH_BOTTOM_SHEET', payload: true });
+      dispatch({ type: SET_VISIBLE_SEARCH_BOTTOM_SHEET, payload: true });
     }
   }, []);
-  useEffect(() => {
-    if (!isBottomSheetVisibleSearch) {
-      handleCloseBottomSheet();
-    }
-  }, [isBottomSheetVisibleSearch]);
+
   const handleOpenBottomSheet = useCallback(() => {
     isModalOpening = true;
     searchBottomSheetRef.current?.present();
@@ -795,6 +792,7 @@ const AppNavigation = () => {
     );
     rotateSv.value = withTiming(1, { duration: rotationDuration, easing });
   }, []);
+
   const handleCloseBottomSheet = useCallback(() => {
     isModalOpening = false;
     opacityIconContainer.value = withDelay(
@@ -802,7 +800,7 @@ const AppNavigation = () => {
       withTiming(0, { duration: rotationDuration }),
     );
     rotateSv.value = withTiming(0, { duration: rotationDuration, easing });
-    dispatch({ type: 'SET_VISIBLE_SEARCH_BOTTOM_SHEET', payload: false });
+    dispatch({ type: SET_VISIBLE_SEARCH_BOTTOM_SHEET, payload: false });
     setTimeout(() => {
       searchBottomSheetRef.current?.close();
     }, 500);
@@ -817,6 +815,12 @@ const AppNavigation = () => {
       },
     ],
   }));
+
+  useEffect(() => {
+    if (!isBottomSheetVisibleSearch) {
+      handleCloseBottomSheet();
+    }
+  }, [isBottomSheetVisibleSearch]);
 
   return (
     <>
@@ -895,7 +899,6 @@ const AppNavigation = () => {
               type="DOWN"
               bgColor={white}
               style={styles.bottomBar}
-              // shadowStyle={styles.shawdow}
               height={55}
               circleWidth={60}
               screenOptions={{
@@ -907,7 +910,6 @@ const AppNavigation = () => {
                   fontFamily: 'Roboto',
                   display: app.app.isInLaunchFlow ? 'none' : 'flex',
                   borderTopWidth: 0,
-                  // height: 90,
                   paddingVertical: 5,
                 },
               }}
@@ -915,8 +917,8 @@ const AppNavigation = () => {
                 <TouchableOpacity
                   activeOpacity={1}
                   onPress={() => {
-                    setIsSearchBottomSheetVisible(true),
-                      handleOpenBottomSheet();
+                    setIsSearchBottomSheetVisible(true);
+                    handleOpenBottomSheet();
                   }}>
                   <Animated.View style={styles.btnCircleUp}>
                     <Ionicons name={'search'} color={white} size={32} />

@@ -192,17 +192,18 @@ class ParkhouseScreen extends Component {
   render() {
     const { parkhouse } = this.props;
     const { manual, marginBottom } = this.state;
+    // Define and extract some default variables to render
+    const { parkhouses } = this.props;
+
+    const { isFetching } = parkhouses;
     const { singleParkObject } = this.props;
-    const item = singleParkObject;
+    const item = isFetching ? {} : singleParkObject;
 
     // Render the screen when the parkhouse is inside the Redux store. It will naturally rerender when the fetch is through. We do not need to wait for isFetching.
     if (item == null) {
       return <LoadingScreen />;
     }
-    // Define and extract some default variables to render
-    const { parkhouses } = this.props;
 
-    const { isFetching } = parkhouses;
     const { auslastung, auslastungTimes } = this.formatData(
       item.history,
       'auslastung',

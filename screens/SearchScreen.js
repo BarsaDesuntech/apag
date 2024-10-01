@@ -26,6 +26,11 @@ import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { useSelector, useDispatch } from 'react-redux';
 import searchPark from '../store/reducers/searchPark';
 import { useNavigation } from '@react-navigation/native';
+import {
+  SET_NEAR_BY_PARK,
+  SET_RECENT_SEARCH,
+  SET_VISIBLE_SEARCH_BOTTOM_SHEET,
+} from '../store/actions/constants';
 const options = [
   {
     id: 1,
@@ -100,20 +105,15 @@ export const SearchScreen = () => {
         ...recentSearches.filter(search => search.id !== item?.id),
       ];
     } else {
-      // Add new search to the top
       updatedSearches = [newRecentSearchObj, ...recentSearches];
     }
 
-    // Limit the array to MAX_RECENT_SEARCHES
-    // if (updatedSearches.length > 5) {
-    //   updatedSearches = updatedSearches.slice(0, 5);
-    // }
     dispatch({
-      type: 'SET_RECENT_SEARCH',
+      type: SET_RECENT_SEARCH,
       payload: updatedSearches,
     });
     dispatch({
-      type: 'SET_VISIBLE_SEARCH_BOTTOM_SHEET',
+      type: SET_VISIBLE_SEARCH_BOTTOM_SHEET,
       payload: false,
     });
     navigation.navigate('Parkhouse', {
@@ -124,13 +124,13 @@ export const SearchScreen = () => {
   const handleDeleteRecentSearch = id => {
     const updatedSearches = recentSearches.filter(search => search.id !== id);
     dispatch({
-      type: 'SET_RECENT_SEARCH',
+      type: SET_RECENT_SEARCH,
       payload: updatedSearches, // Send the updated list of recent searches
     });
   };
   const handlePressOnRecentItem = item => {
     dispatch({
-      type: 'SET_VISIBLE_SEARCH_BOTTOM_SHEET',
+      type: SET_VISIBLE_SEARCH_BOTTOM_SHEET,
       payload: false,
     });
     navigation.navigate('Parkhouse', {
@@ -143,7 +143,7 @@ export const SearchScreen = () => {
       item.id === id ? { ...item, isFavorite: favorite } : item,
     );
     dispatch({
-      type: 'SET_RECENT_SEARCH',
+      type: SET_RECENT_SEARCH,
       payload: updatedSearches, // Send the updated list of recent searches
     });
   };
@@ -297,11 +297,11 @@ export const SearchScreen = () => {
                     key={item.id}
                     onPress={() => {
                       dispatch({
-                        type: 'SET_NEAR_BY_PARK',
+                        type: SET_NEAR_BY_PARK,
                         payload: item?.type,
                       });
                       dispatch({
-                        type: 'SET_VISIBLE_SEARCH_BOTTOM_SHEET',
+                        type: SET_VISIBLE_SEARCH_BOTTOM_SHEET,
                         payload: false,
                       });
                     }}>

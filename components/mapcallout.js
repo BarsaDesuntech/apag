@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {View, Platform, Text} from 'react-native';
-import {Callout} from 'react-native-maps';
+import React, { Component } from 'react';
+import { View, Platform, Text } from 'react-native';
+import { Callout } from 'react-native-maps';
 import Icon from 'react-native-vector-icons/Ionicons';
 import GlobalStyle from '../style';
 import PropTypes from 'prop-types';
@@ -23,7 +23,7 @@ export default class MapCallout extends Component {
    * @param {Object} parkhouse
    * @memberof MapCallout
    */
-  showParkhouse = (parkhouse) => {
+  showParkhouse = parkhouse => {
     this.props.navigation.navigate('Parkhouse', {
       phid: parkhouse.id,
       item: parkhouse,
@@ -31,7 +31,7 @@ export default class MapCallout extends Component {
   };
 
   render() {
-    const {item} = this.props;
+    const { item } = this.props;
     return (
       <Callout onPress={() => this.showParkhouse(item)}>
         <View
@@ -40,7 +40,7 @@ export default class MapCallout extends Component {
             Platform.OS === 'android' ? GlobalStyle.calloutAndroid : {},
           ]}>
           <View style={GlobalStyle.container}>
-            <Text style={GlobalStyle.calloutTitle}>{item.title}</Text>
+            <Text style={GlobalStyle.calloutTitle}>{item.name}</Text>
             <View style={GlobalStyle.flexDirectionRow}>
               <Text style={GlobalStyle.calloutSubTitle}>
                 freie Parkplätze: {item.free}
@@ -63,7 +63,7 @@ export default class MapCallout extends Component {
                 item.trend !== 'down' && (
                   <Icon
                     size={16}
-                    style={{color: '#ebba13', paddingLeft: 5}}
+                    style={{ color: '#ebba13', paddingLeft: 5 }}
                     name="arrow-forward"
                   />
                 )}
