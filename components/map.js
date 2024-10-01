@@ -367,9 +367,6 @@ const HousesMap = ({
   const ready = () => {
     setIsReady(false);
   };
-  console.log('selectedMapOption', selectedMapOption);
-  console.log('selectedParkingOption', selectedParkingOption);
-  console.log('selectedOption redux', selectedOption);
 
   // Completely relies on the MapView
   // Renders target marker if passed (only used by LadenScreen)
