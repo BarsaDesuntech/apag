@@ -59,8 +59,6 @@ export function getParkhouse(params) {
 }
 
 export function getParkhouseSuccess(data) {
-  console.log('data ......', data);
-
   return {
     type: FETCHING_PARKHOUSE_SUCCESS,
     parkhouse: data,
